@@ -1,0 +1,22 @@
+{
+  "name": "festividade-vicosa",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "husky": "^9.1.7",
+    "jscpd": "^5.4.2",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm --prefix api run lint && npm --prefix client run lint",
+    "typecheck": "npm --prefix api run typecheck && npm --prefix client run typecheck",
+    "test": "npm --prefix api test && npm --prefix client test",
+    "duplication": "jscpd",
+    "format:check": "prettier --check .",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run duplication"
+  }
+}

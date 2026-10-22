@@ -1,0 +1,15 @@
+{
+  "path": ["api/src", "client/src"],
+  "ignore": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/migrations/**",
+    "**/node_modules/**"
+  ],
+  "minLines": 6,
+  "minTokens": 60,
+  "threshold": 3,
+  "reporters": ["console"],
+  "gitignore": true
+}
