@@ -15,7 +15,11 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vitest/globals", "node"]
   },
   "include": [
     "next-env.d.ts",
@@ -23,7 +27,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "vitest.config.mts"
   ],
   "exclude": ["node_modules"]
 }
