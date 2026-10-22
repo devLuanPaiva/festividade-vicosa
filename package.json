@@ -14,7 +14,7 @@
     "prepare": "husky",
     "lint": "npm --prefix api run lint && npm --prefix client run lint",
     "typecheck": "npm --prefix api run typecheck && npm --prefix client run typecheck",
-    "test": "npm --prefix api test && npm --prefix client test",
+    "test": "npm --prefix api test && npm --prefix api run test:e2e && npm --prefix client test",
     "duplication": "jscpd",
     "format:check": "prettier --check .",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run duplication"
