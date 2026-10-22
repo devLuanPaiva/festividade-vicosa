@@ -67,7 +67,8 @@ Nunca commitar segredos (`.env`, chaves AWS, senhas). Use `.env.example` com val
 ## Comandos
 
 Na raiz: `npm run lint`, `npm run typecheck`, `npm test`, `npm run duplication`, `npm run verify`.
-API (`cd api`): `npm run start:dev`, `npm test`, `npm run test:e2e`, `npm run lint:fix`.
+API (`cd api`): `npm run start:dev`, `npm test`, `npm run test:e2e`, `npm run lint:fix`, `npm run migration:generate -- src/database/migrations/<Name>`, `npm run migration:run`.
+Banco e API locais: copie `.env.example` para `.env` e rode `docker compose up -d db` (o override expõe o Postgres em `127.0.0.1:5432`). Produção (EC2): `docker compose -f docker-compose.yml up -d --build`, que também sobe o Caddy com HTTPS.
 Client (`cd client`): `npm run dev`, `npm test`, `npm run lint:fix`.
 
 ## Observações
