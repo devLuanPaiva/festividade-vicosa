@@ -6,7 +6,6 @@ export interface NavigationItem {
 export const publicNavigation: NavigationItem[] = [
   { label: 'Início', href: '/' },
   { label: 'Trajetória', href: '/#trajetoria' },
-  { label: 'JOCEV’S', href: '/#jocevs' },
-  { label: 'Jogos', href: '/#jogos' },
+  { label: 'JOCEV’S', href: '/#modalidades' },
   { label: 'Programação', href: '/#programacao' },
 ];

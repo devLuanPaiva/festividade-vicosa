@@ -1,6 +1,6 @@
 # Festividade de Viçosa/RN
 
-Portal da festividade (JOCEV, programação, galeria, história). Monorepo com `api/` (NestJS + TypeORM + PostgreSQL), `client/` (Next.js, pages router) e `core/` (documentação em português: requisitos, regras, modelo, arquitetura).
+Portal da festividade (JOCEV, programação, galeria, história). Monorepo com `api/` (NestJS + TypeORM + PostgreSQL), `client/` (Next.js, App Router) e `core/` (documentação em português: requisitos, regras, modelo, arquitetura).
 
 Antes de implementar algo, leia o doc correspondente em `core/` (regras `RN-xx`, modelo em `07-modelo-dados.md`, decisões em `06-arquitetura.md`).
 
@@ -100,4 +100,9 @@ Client (`cd client`): `npm run dev`, `npm test`, `npm run lint:fix`.
 - Skills de NestJS instaladas em `api/.claude/skills/`.
 - Skill de performance React/Next instalada em `client/.claude/skills/vercel-react-best-practices/`: siga-a ao escrever componentes, páginas e busca de dados (sem barrel files, `Promise.all` para chamadas independentes, `next/dynamic` para componentes pesados).
 - No client, o contrato das respostas da API (`ApiResult`, `ApiPage`, `ApiError`) está em `src/lib/api/api-response.ts`: exiba `error.details.detail` e use `messageForField` para mostrar a mensagem junto ao campo.
-- No client, `src/pages/` só contém rotas finas; a lógica e os componentes ficam em `src/features/<feature>/` (arquivos de teste dentro de `pages/` virariam rotas).
+- No client (App Router), `src/app/` só tem rotas finas, organizadas em grupos que não mudam a URL: `(public)` (layout público) e `(admin)` (layout neutro do painel). A lógica fica fora de `app/`:
+  - `src/features/<feature>/` com `components/`, `data/`, `hooks/`, `lib/` (funções puras) e `services/` (busca de dados no servidor);
+  - `src/components/` compartilhado: `layout/` (cabeçalho, rodapé, seções), `motion/` (animações reutilizáveis) e `ui/` (peças visuais);
+  - `src/lib/` (cliente da API, configuração, fontes) e `src/styles/` (tokens e superfícies).
+- Dados vêm da API **no servidor**: funções de serviço com `'use cache'`, `cacheLife` e `cacheTag` (`cacheComponents` ligado). A falha da API é tratada **dentro** do escopo de cache, com `cacheLife` curto, e a parte que depende da API fica em `<Suspense>`: o build e a página nunca quebram com a API fora. O client nunca chama a API no navegador nas páginas públicas.
+- Animações usam o pacote `motion` e sempre respeitam `prefers-reduced-motion`. Componentes que animam são `'use client'` e ficam em `components/motion/`; as seções continuam componentes de servidor sempre que possível.
