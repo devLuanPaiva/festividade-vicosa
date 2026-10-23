@@ -15,7 +15,7 @@ A API valida tudo na subida (`api/src/config/environment.ts`) e **não sobe** co
 
 ## Desenvolvimento
 1. `cp .env.example .env` e ajuste a senha.
-2. `docker compose up -d db`: Postgres em `127.0.0.1:5432`. Se a porta estiver ocupada por outro projeto, defina `DATABASE_LOCAL_PORT` no `.env` (e use a mesma em `DATABASE_PORT` ao rodar a API fora do Docker).
+2. `docker compose up -d db`: Postgres em `127.0.0.1:5432`.
 3. `cd api && cp .env.example .env && npm run start:dev`: API em `http://localhost:3000`, com `GET /health`.
 4. `docker compose up` (completo) também sobe a API em container na porta 3000; o Caddy fica desligado em desenvolvimento.
 
