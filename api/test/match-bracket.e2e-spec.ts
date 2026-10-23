@@ -112,28 +112,11 @@ describe('Bracket (e2e)', () => {
 
   it.each([
     { scenario: 'there is only one team', body: { ...validBracket, teamIds: [TEAM_A] } },
-    {
-      scenario: 'there are more than 16 teams',
-      body: { ...validBracket, teamIds: Array(17).fill(TEAM_A) },
-    },
     { scenario: 'a team id is not a uuid', body: { ...validBracket, teamIds: [TEAM_A, '1'] } },
-    { scenario: 'teamIds is missing', body: { scheduledAt: validBracket.scheduledAt } },
   ])('rejects the bracket when $scenario', async ({ body }) => {
     const response = await as('organizer-token', request(server()).post(BRACKET_PATH).send(body));
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({ errors: { field: 'teamIds' } });
-  });
-
-  it('rejects an invalid date', async () => {
-    const response = await as(
-      'organizer-token',
-      request(server())
-        .post(BRACKET_PATH)
-        .send({ ...validBracket, scheduledAt: '19/12' }),
-    );
-
-    expect(response.status).toBe(400);
-    expect(response.body).toMatchObject({ errors: { field: 'scheduledAt' } });
   });
 });

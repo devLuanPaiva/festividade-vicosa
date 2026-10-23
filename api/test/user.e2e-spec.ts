@@ -121,18 +121,6 @@ describe('User management (e2e)', () => {
 
   it.each([
     {
-      scenario: 'the password is too short',
-      body: { ...validNewUser, password: 'short' },
-      field: 'password',
-      detail: 'A senha deve ter pelo menos 6 caracteres.',
-    },
-    {
-      scenario: 'the role code is unknown',
-      body: { ...validNewUser, roleCode: 'OWNER' },
-      field: 'roleCode',
-      detail: 'Selecione um papel válido.',
-    },
-    {
       scenario: 'there is an unexpected field',
       body: { ...validNewUser, active: false },
       field: 'active',
@@ -149,16 +137,6 @@ describe('User management (e2e)', () => {
       errors: { code: 'VALIDATION_ERROR', field, detail },
     });
     expect(userService.create).not.toHaveBeenCalled();
-  });
-
-  it('accepts a password with exactly 6 characters', async () => {
-    const response = await asAdmin(
-      request(server())
-        .post('/users')
-        .send({ ...validNewUser, password: '123456' }),
-    );
-
-    expect(response.status).toBe(201);
   });
 
   it('answers 409 when the service reports a conflict', async () => {

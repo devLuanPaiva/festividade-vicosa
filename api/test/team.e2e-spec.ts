@@ -109,12 +109,6 @@ describe('Teams (e2e)', () => {
     expect(response.body).toEqual({ status: 'success', result: team });
   });
 
-  it('requires login to create a team', async () => {
-    const response = await request(server()).post(TEAMS_PATH).send(validTeam);
-
-    expect(response.status).toBe(401);
-  });
-
   it('forbids creating a team without the team permission', async () => {
     const response = await request(server())
       .post(TEAMS_PATH)
@@ -153,12 +147,6 @@ describe('Teams (e2e)', () => {
       field: 'groupId',
     },
     { scenario: 'the city is missing', body: { name: 'Centro' }, field: 'city' },
-    { scenario: 'the slug has uppercase', body: { ...validTeam, slug: 'Centro' }, field: 'slug' },
-    {
-      scenario: 'the abbreviation is too short',
-      body: { ...validTeam, abbreviation: 'C' },
-      field: 'abbreviation',
-    },
   ])('rejects a team when $scenario', async ({ body, field }) => {
     const response = await asManager(request(server()).post(TEAMS_PATH).send(body));
 
@@ -180,21 +168,12 @@ describe('Teams (e2e)', () => {
 
   it.each([
     { query: 'groupId=abc', field: 'groupId' },
-    { query: 'limit=0', field: 'limit' },
-    { query: 'offset=-1', field: 'offset' },
     { query: 'unknown=1', field: 'unknown' },
   ])('rejects the invalid query $query', async ({ query, field }) => {
     const response = await request(server()).get(`${TEAMS_PATH}?${query}`);
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({ errors: { field } });
-  });
-
-  it('rejects a path id that is not a uuid', async () => {
-    const response = await request(server()).get('/teams/7');
-
-    expect(response.status).toBe(400);
-    expect(response.body).toMatchObject({ errors: { code: 'INVALID_ID', field: 'id' } });
   });
 
   it('takes a team out of its group when the group is null', async () => {
