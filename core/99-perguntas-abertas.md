@@ -45,4 +45,5 @@ Marque `[x]` quando resolvida e mova a decisão para o doc correspondente.
 - [ ] Projeto é comercial (patrocínio/contrato)? Define se a Vercel Hobby serve ou precisa do Pro.
 - [ ] **Permissões de cada papel**: validar a proposta da tabela em `05-modelo-dominio.md`.
 - [ ] Quem será o primeiro Admin? (o sistema cria o usuário no primeiro boot a partir de variáveis de ambiente, ver `07-modelo-dados.md`)
-- [ ] Validar a proposta de JWT longo (12 h) sem refresh token. Login por e-mail e senha serve, ou os assistentes precisam de algo mais simples (ex.: PIN)?
+- [x] JWT de 12 h sem refresh token: adotado no MVP (reavaliar se necessário).
+- [ ] Login por e-mail e senha serve, ou os assistentes precisam de algo mais simples (ex.: PIN)?

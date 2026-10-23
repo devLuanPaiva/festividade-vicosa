@@ -14,6 +14,8 @@ Tudo em Markdown, com diagramas em Mermaid, versionado junto do código.
 | [05-modelo-dominio.md](05-modelo-dominio.md) | Diagrama de classes e decisões de modelagem | rascunho |
 | [06-arquitetura.md](06-arquitetura.md) | Stack, ADRs, fluxos de foto/placar/cache, infra AWS | rascunho |
 | [07-modelo-dados.md](07-modelo-dados.md) | Tabelas PostgreSQL/TypeORM, restrições, índices e ordem de implementação | rascunho |
+| [08-ambiente-e-deploy.md](08-ambiente-e-deploy.md) | Variáveis de ambiente, desenvolvimento local e deploy na EC2 | rascunho |
+| [09-api-endpoints.md](09-api-endpoints.md) | Endpoints já implementados, com permissões e regras | ativo |
 | [99-perguntas-abertas.md](99-perguntas-abertas.md) | Dúvidas pendentes (cliente / decisões) | ativo |
 
 ## Convenções
