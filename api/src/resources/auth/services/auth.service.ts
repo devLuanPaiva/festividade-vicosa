@@ -5,6 +5,7 @@ import type { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
 import type { AccessTokenDto } from '../dto/access-token.dto';
 import type { LoginDto } from '../dto/login.dto';
+import { apiError } from '../../../common/errors/api-error';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,9 @@ export class AuthService {
       user !== null && (await this.passwordHasher.verify(credentials.password, user.passwordHash));
 
     if (!user || !passwordMatches) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(
+        apiError('INVALID_CREDENTIALS', 'E-mail ou senha incorretos.'),
+      );
     }
 
     return user;

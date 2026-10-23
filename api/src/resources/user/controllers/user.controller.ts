@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import type { AuthenticatedUser } from '../../auth/dto/authenticated-user.dto';
+import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import { CurrentUser, RequirePermission } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
 import { ChangeRoleDto } from '../dto/change-role.dto';
@@ -30,13 +31,13 @@ export class UserController {
 
   @Patch(':id/activate')
   @RequirePermission(Permission.USER_MANAGE)
-  public async activate(@Param('id', ParseIntPipe) id: number): Promise<UserResponseDto> {
+  public async activate(@Param('id', ParseIdPipe) id: number): Promise<UserResponseDto> {
     return toUserResponse(await this.userAccountService.activate(id));
   }
 
   @Patch(':id/deactivate')
   @RequirePermission(Permission.USER_MANAGE)
-  public async deactivate(@Param('id', ParseIntPipe) id: number): Promise<UserResponseDto> {
+  public async deactivate(@Param('id', ParseIdPipe) id: number): Promise<UserResponseDto> {
     return toUserResponse(await this.userAccountService.deactivate(id));
   }
 
@@ -44,7 +45,7 @@ export class UserController {
   @RequirePermission(Permission.USER_MANAGE_PERMISSIONS)
   public async changeRole(
     @CurrentUser() actor: AuthenticatedUser,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIdPipe) id: number,
     @Body() input: ChangeRoleDto,
   ): Promise<UserResponseDto> {
     return toUserResponse(await this.userAccountService.changeRole(actor.id, id, input.roleCode));

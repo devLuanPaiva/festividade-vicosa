@@ -5,6 +5,7 @@ import { UserRepository } from '../repository/user.repository';
 import type { AccessChange } from '../rules/access-changes';
 import type { AccessSnapshot } from '../rules/access-snapshot';
 import { countPermissionsManagers } from '../rules/permissions-manager.rule';
+import { apiError } from '../../../common/errors/api-error';
 
 @Injectable()
 export class AccessPolicyService {
@@ -16,7 +17,9 @@ export class AccessPolicyService {
 
   public assertNotSelf(actorId: number, targetId: number): void {
     if (actorId === targetId) {
-      throw new ForbiddenException('You cannot change your own permissions');
+      throw new ForbiddenException(
+        apiError('CANNOT_CHANGE_OWN_ACCESS', 'Você não pode alterar as suas próprias permissões.'),
+      );
     }
   }
 
@@ -25,7 +28,12 @@ export class AccessPolicyService {
     const managersAfter = countPermissionsManagers(change(before));
 
     if (countPermissionsManagers(before) > 0 && managersAfter === 0) {
-      throw new ConflictException('At least one active user must keep the permissions management');
+      throw new ConflictException(
+        apiError(
+          'LAST_PERMISSIONS_MANAGER',
+          'É preciso manter ao menos um usuário ativo que gerencie permissões.',
+        ),
+      );
     }
   }
 

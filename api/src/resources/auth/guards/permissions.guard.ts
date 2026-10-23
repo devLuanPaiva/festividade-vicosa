@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import type { Permission } from '../../role/enums/permission.enum';
 import type { AuthenticatedRequest } from '../dto/authenticated-user.dto';
 import { REQUIRED_PERMISSIONS_KEY } from '../decorators/decorators';
+import { apiError } from '../../../common/errors/api-error';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -19,7 +20,9 @@ export class PermissionsGuard implements CanActivate {
     const hasAll = required.every((permission) => user?.permissions.includes(permission));
 
     if (!hasAll) {
-      throw new ForbiddenException('Missing required permission');
+      throw new ForbiddenException(
+        apiError('MISSING_PERMISSION', 'Você não tem permissão para realizar esta ação.'),
+      );
     }
 
     return true;

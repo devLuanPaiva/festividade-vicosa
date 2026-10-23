@@ -5,6 +5,7 @@ import type { NewUserDto } from '../dto/new-user.dto';
 import type { User } from '../entities/user.entity';
 import { UserRepository } from '../repository/user.repository';
 import { PasswordHasher } from './password-hasher';
+import { apiError } from '../../../common/errors/api-error';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
   public async findByIdOrFail(id: number): Promise<User> {
     const user = await this.userRepository.findById(id);
     if (!user) {
-      throw new NotFoundException(`User ${id} not found`);
+      throw new NotFoundException(apiError('USER_NOT_FOUND', 'Usuário não encontrado.', 'id'));
     }
     return user;
   }
@@ -70,7 +71,9 @@ export class UserService {
 
   private async assertEmailAvailable(email: string): Promise<void> {
     if (await this.userRepository.findByEmail(email)) {
-      throw new ConflictException('A user with this email already exists');
+      throw new ConflictException(
+        apiError('EMAIL_ALREADY_EXISTS', 'Já existe um usuário com este e-mail.', 'email'),
+      );
     }
   }
 }
