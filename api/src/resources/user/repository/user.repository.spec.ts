@@ -2,20 +2,49 @@ import type { Repository } from 'typeorm';
 import type { User } from '../entities/user.entity';
 import { UserRepository } from './user.repository';
 
-function createFixture(): {
-  repository: UserRepository;
-  typeorm: Record<'findOneBy' | 'count' | 'create' | 'save', jest.Mock>;
-} {
-  const typeorm = {
+type TypeOrmMock = Record<
+  'find' | 'findOne' | 'findOneBy' | 'count' | 'create' | 'save' | 'update',
+  jest.Mock
+>;
+
+function createFixture(): { repository: UserRepository; typeorm: TypeOrmMock } {
+  const typeorm: TypeOrmMock = {
+    find: jest.fn(),
+    findOne: jest.fn(),
     findOneBy: jest.fn(),
     count: jest.fn(),
     create: jest.fn((entity: Partial<User>) => entity),
     save: jest.fn((entity: Partial<User>) => Promise.resolve(entity)),
+    update: jest.fn(),
   };
   return { repository: new UserRepository(typeorm as unknown as Repository<User>), typeorm };
 }
 
 describe('UserRepository', () => {
+  it('lists every user with the role ordered by id', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findAll();
+
+    expect(typeorm.find).toHaveBeenCalledWith({ relations: { role: true }, order: { id: 'ASC' } });
+  });
+
+  it('finds a user by id with the role', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findById(5);
+
+    expect(typeorm.findOne).toHaveBeenCalledWith({ where: { id: 5 }, relations: { role: true } });
+  });
+
+  it('finds a user by email ignoring the letter case and the active flag', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findByEmail('Ana@Example.COM');
+
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ email: 'ana@example.com' });
+  });
+
   it('finds an active user by email ignoring the letter case', async () => {
     const { repository, typeorm } = createFixture();
 
@@ -30,6 +59,16 @@ describe('UserRepository', () => {
     await repository.findActiveById(5);
 
     expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: 5, active: true });
+  });
+
+  it('selects only the access columns of every user', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findAccessUsers();
+
+    expect(typeorm.find).toHaveBeenCalledWith({
+      select: { id: true, active: true, roleId: true },
+    });
   });
 
   it('counts the registered users', async () => {
@@ -55,5 +94,13 @@ describe('UserRepository', () => {
       passwordHash: 'hashed',
       roleId: 3,
     });
+  });
+
+  it('updates the account fields of a user by id', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.updateAccount(4, { active: false });
+
+    expect(typeorm.update).toHaveBeenCalledWith({ id: 4 }, { active: false });
   });
 });
