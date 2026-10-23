@@ -1,4 +1,4 @@
-import type { MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
+import type { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 
 export interface BestPlayerResponseDto {
   name: string;
@@ -17,6 +17,7 @@ export interface MatchResponseDto {
   status: MatchStatus;
   teamAId: string;
   teamBId: string;
+  resultType: MatchResultType;
   scoreA: number | null;
   scoreB: number | null;
   penaltiesA: number | null;

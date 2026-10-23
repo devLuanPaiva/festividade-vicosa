@@ -15,3 +15,9 @@ export enum MatchStatus {
   SCHEDULED = 'SCHEDULED',
   FINALIZED = 'FINALIZED',
 }
+
+export enum MatchResultType {
+  PLAYED = 'PLAYED',
+  WALKOVER = 'WALKOVER',
+  DOUBLE_WALKOVER = 'DOUBLE_WALKOVER',
+}

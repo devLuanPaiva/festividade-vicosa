@@ -1,5 +1,5 @@
 import type { MatchRepository } from '../repository/match.repository';
-import { MatchStage } from '../enums/match.enums';
+import { MatchResultType, MatchStage } from '../enums/match.enums';
 import { MatchResultService } from './match-result.service';
 import type { MatchService } from './match.service';
 import { MATCH_ID, TEAM_A, TEAM_B, TEAM_C, stored } from './match.service.fixture';
@@ -29,6 +29,7 @@ describe('MatchResultService.record', () => {
     expect(repository.saveResult).toHaveBeenCalledWith(
       MATCH_ID,
       expect.objectContaining({
+        resultType: MatchResultType.PLAYED,
         scoreA: 3,
         scoreB: 1,
         penaltiesA: null,
@@ -93,6 +94,54 @@ describe('MatchResultService.record', () => {
         bestPlayerTeamId: TEAM_A,
       }),
     );
+  });
+
+  it('gives the win to the team that showed up on a walkover, without goals', async () => {
+    const { service, repository } = createFixture();
+
+    await service.record(MATCH_ID, ACTOR_ID, {
+      resultType: MatchResultType.WALKOVER,
+      walkoverWinnerId: TEAM_B,
+    });
+
+    expect(repository.saveResult).toHaveBeenCalledWith(MATCH_ID, {
+      resultType: MatchResultType.WALKOVER,
+      scoreA: null,
+      scoreB: null,
+      penaltiesA: null,
+      penaltiesB: null,
+      winnerId: TEAM_B,
+      finalizedById: ACTOR_ID,
+      finalizedAt: expect.any(Date) as Date,
+      bestPlayerName: null,
+      bestPlayerPhotoKey: null,
+      bestPlayerTeamId: null,
+    });
+  });
+
+  it('records a double walkover without winner', async () => {
+    const { service, repository } = createFixture();
+
+    await service.record(MATCH_ID, ACTOR_ID, { resultType: MatchResultType.DOUBLE_WALKOVER });
+
+    expect(repository.saveResult).toHaveBeenCalledWith(
+      MATCH_ID,
+      expect.objectContaining({ resultType: MatchResultType.DOUBLE_WALKOVER, winnerId: null }),
+    );
+  });
+
+  it('refuses a walkover that also brings a score', async () => {
+    const { service, repository } = createFixture();
+
+    await expect(
+      service.record(MATCH_ID, ACTOR_ID, {
+        resultType: MatchResultType.WALKOVER,
+        walkoverWinnerId: TEAM_A,
+        scoreA: 1,
+        scoreB: 0,
+      }),
+    ).rejects.toMatchObject({ response: { code: 'WALKOVER_HAS_NO_PLAY' } });
+    expect(repository.saveResult).not.toHaveBeenCalled();
   });
 
   it('refuses a result that breaks the rules without saving it', async () => {

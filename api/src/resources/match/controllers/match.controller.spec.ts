@@ -25,6 +25,7 @@ const stored = {
   status: MatchStatus.SCHEDULED,
   teamAId: '00000000-0000-4000-8000-0000000000a1',
   teamBId: '00000000-0000-4000-8000-0000000000b2',
+  resultType: 'PLAYED',
   scoreA: null,
   scoreB: null,
   penaltiesA: null,

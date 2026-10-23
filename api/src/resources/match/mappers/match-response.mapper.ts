@@ -12,29 +12,38 @@ function toBestPlayer(match: Match): BestPlayerResponseDto | null {
   };
 }
 
-function toFixture(
-  match: Match,
-): Omit<
+type Identity = Pick<
   MatchResponseDto,
-  'bestPlayer' | 'scoreA' | 'scoreB' | 'penaltiesA' | 'penaltiesB' | 'winnerId' | 'finalizedAt'
-> {
+  'id' | 'categoryId' | 'stage' | 'groupId' | 'round' | 'teamAId' | 'teamBId'
+>;
+
+type Schedule = Pick<MatchResponseDto, 'scheduledAt' | 'location' | 'status'>;
+
+function toIdentity(match: Match): Identity {
   return {
     id: match.id,
     categoryId: match.categoryId,
     stage: match.stage,
     groupId: match.groupId,
     round: match.round,
-    scheduledAt: match.scheduledAt.toISOString(),
-    location: match.location,
-    status: match.status,
     teamAId: match.teamAId,
     teamBId: match.teamBId,
   };
 }
 
+function toSchedule(match: Match): Schedule {
+  return {
+    scheduledAt: match.scheduledAt.toISOString(),
+    location: match.location,
+    status: match.status,
+  };
+}
+
 export function toMatchResponse(match: Match): MatchResponseDto {
   return {
-    ...toFixture(match),
+    ...toIdentity(match),
+    ...toSchedule(match),
+    resultType: match.resultType,
     scoreA: match.scoreA,
     scoreB: match.scoreB,
     penaltiesA: match.penaltiesA,

@@ -1,5 +1,5 @@
 import type { Match } from '../entities/match.entity';
-import { MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
+import { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 import { toMatchResponse } from './match-response.mapper';
 
 const scheduled: Match = {
@@ -13,6 +13,7 @@ const scheduled: Match = {
   status: MatchStatus.SCHEDULED,
   teamAId: '00000000-0000-4000-8000-0000000000a1',
   teamBId: '00000000-0000-4000-8000-0000000000b2',
+  resultType: MatchResultType.PLAYED,
   scoreA: null,
   scoreB: null,
   penaltiesA: null,
@@ -36,6 +37,23 @@ describe('toMatchResponse', () => {
       finalizedAt: null,
       scoreA: null,
       bestPlayer: null,
+    });
+  });
+
+  it('shows a walkover without score and with the winner', () => {
+    const response = toMatchResponse(
+      matchWith({
+        status: MatchStatus.FINALIZED,
+        resultType: MatchResultType.WALKOVER,
+        winnerId: scheduled.teamBId,
+      }),
+    );
+
+    expect(response).toMatchObject({
+      resultType: 'WALKOVER',
+      scoreA: null,
+      scoreB: null,
+      winnerId: scheduled.teamBId,
     });
   });
 

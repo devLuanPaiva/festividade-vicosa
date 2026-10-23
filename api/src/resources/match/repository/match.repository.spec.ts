@@ -1,6 +1,6 @@
 import { Between, LessThanOrEqual, MoreThanOrEqual, type Repository } from 'typeorm';
 import type { Match } from '../entities/match.entity';
-import { MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
+import { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 import { MatchRepository } from './match.repository';
 
 type TypeOrmMock = Record<
@@ -140,6 +140,7 @@ describe('MatchRepository', () => {
   it('saves a result and marks the match as finalized', async () => {
     const { repository, typeorm } = createFixture();
     const result = {
+      resultType: MatchResultType.PLAYED,
       scoreA: 1,
       scoreB: 0,
       penaltiesA: null,
