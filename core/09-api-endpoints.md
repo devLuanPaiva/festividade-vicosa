@@ -83,6 +83,26 @@ Toda resposta segue o padrão definido por `ResponseInterceptor` e `HttpExceptio
 
 A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festival cultural 8/12, futsal 9–19/12, vôlei de areia e corrida 13/12, ecopedal 20/12, festa 27–28/12) vêm do seed da migration.
 
+## Categorias, grupos e times (RF-22)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/sub-events/:subEventId/categories` | pública | Categorias do sub-evento |
+| GET | `/categories/:id` | pública | Uma categoria |
+| POST | `/sub-events/:subEventId/categories` | `team:manage` | Cria: `name`, `gender` (`MALE`/`FEMALE`), `ageRange?`. 400 se o sub-evento não é futsal nem handebol (RN-03); 409 se o nome já existe no sub-evento |
+| PATCH | `/categories/:id` | `team:manage` | Altera nome, gênero e faixa etária |
+| GET | `/categories/:categoryId/groups` | pública | Grupos da categoria, por nome |
+| GET | `/groups/:id` | pública | Um grupo |
+| POST | `/categories/:categoryId/groups` | `team:manage` | Cria: `name`. 409 se o nome já existe na categoria |
+| PATCH | `/groups/:id` | `team:manage` | Renomeia |
+| DELETE | `/groups/:id` | `team:manage` | Exclui o grupo; os times dele ficam sem grupo. 204 |
+| GET | `/categories/:categoryId/teams` | pública | Times da categoria, por nome |
+| GET | `/teams/:id` | pública | Um time |
+| POST | `/categories/:categoryId/teams` | `team:manage` | Cria: `name`, `groupId?`. 409 se o nome já existe na categoria; 400 se o grupo é de outra categoria (RN-13) |
+| PATCH | `/teams/:id` | `team:manage` | Altera nome e grupo (`groupId: null` tira o time do grupo) |
+| DELETE | `/teams/:id` | `team:manage` | Exclui o time. 204 |
+
+As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. A foto do time entra junto com o resource de fotos; o bloqueio de excluir time com partidas (RN-33) entra junto com o resource de partidas.
+
 ## Papéis
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
