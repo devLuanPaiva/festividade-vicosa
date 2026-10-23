@@ -110,6 +110,18 @@ describe('MatchRepository', () => {
     expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: MATCH_ID });
   });
 
+  it('finds the match of a bracket slot', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findBracketMatch(CATEGORY_ID, MatchRound.FINAL, 0);
+
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({
+      categoryId: CATEGORY_ID,
+      round: MatchRound.FINAL,
+      bracketPosition: 0,
+    });
+  });
+
   it('saves a new match as scheduled', async () => {
     const { repository } = createFixture();
     const record = {
@@ -117,6 +129,7 @@ describe('MatchRepository', () => {
       stage: MatchStage.KNOCKOUT,
       groupId: null,
       round: MatchRound.FINAL,
+      bracketPosition: 0,
       scheduledAt: new Date('2026-12-19T22:00:00Z'),
       location: null,
       teamAId: TEAM_ID,
@@ -127,6 +140,22 @@ describe('MatchRepository', () => {
       ...record,
       status: MatchStatus.SCHEDULED,
     });
+  });
+
+  it('saves several new matches as scheduled in one call', async () => {
+    const { repository, typeorm } = createFixture();
+    const records = [
+      { categoryId: CATEGORY_ID, bracketPosition: 0 },
+      { categoryId: CATEGORY_ID, bracketPosition: 1 },
+    ] as never[];
+
+    await repository.createMany(records);
+
+    expect(typeorm.save).toHaveBeenCalledTimes(1);
+    expect(typeorm.save).toHaveBeenCalledWith([
+      { categoryId: CATEGORY_ID, bracketPosition: 0, status: MatchStatus.SCHEDULED },
+      { categoryId: CATEGORY_ID, bracketPosition: 1, status: MatchStatus.SCHEDULED },
+    ]);
   });
 
   it('updates a match by id', async () => {

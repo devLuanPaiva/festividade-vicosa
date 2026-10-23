@@ -50,6 +50,7 @@ describe('MatchService.create', () => {
       stage: knockoutInput.stage,
       groupId: null,
       round: knockoutInput.round,
+      bracketPosition: null,
       scheduledAt: new Date('2026-12-18T22:00:00.000Z'),
       location: null,
       teamAId: TEAM_A,

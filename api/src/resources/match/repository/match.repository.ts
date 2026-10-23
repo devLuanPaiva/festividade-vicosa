@@ -21,6 +21,7 @@ export interface MatchRecord {
   stage: MatchStage;
   groupId: string | null;
   round: MatchRound | null;
+  bracketPosition: number | null;
   scheduledAt: Date;
   location: string | null;
   teamAId: string;
@@ -102,9 +103,23 @@ export class MatchRepository {
     return this.repository.findOneBy({ id });
   }
 
+  public findBracketMatch(
+    categoryId: string,
+    round: MatchRound,
+    bracketPosition: number,
+  ): Promise<Match | null> {
+    return this.repository.findOneBy({ categoryId, round, bracketPosition });
+  }
+
   public create(record: MatchRecord): Promise<Match> {
     return this.repository.save(
       this.repository.create({ ...record, status: MatchStatus.SCHEDULED }),
+    );
+  }
+
+  public createMany(records: MatchRecord[]): Promise<Match[]> {
+    return this.repository.save(
+      records.map((record) => this.repository.create({ ...record, status: MatchStatus.SCHEDULED })),
     );
   }
 

@@ -33,6 +33,8 @@ export const VALIDATION_MESSAGES = {
   matchStatus: 'Selecione um status de partida válido.',
   dateTime: 'Informe uma data e hora válidas, como 2026-12-09T19:00:00-03:00.',
   teamId: 'Informe o identificador de um time válido.',
+  bracketTeamIds:
+    'Informe de 2 a 16 identificadores de times válidos, do melhor para o pior cabeça de chave.',
   score: 'O placar deve ser um número inteiro entre 0 e 999.',
   penalties: 'Os pênaltis devem ser um número inteiro entre 0 e 999.',
   bestPlayerName: 'O nome do melhor jogador deve ter no máximo 120 caracteres.',
