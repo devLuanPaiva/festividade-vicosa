@@ -109,6 +109,12 @@ export class MatchRepository {
     );
   }
 
+  public createMany(records: MatchRecord[]): Promise<Match[]> {
+    return this.repository.save(
+      records.map((record) => this.repository.create({ ...record, status: MatchStatus.SCHEDULED })),
+    );
+  }
+
   public update(id: string, changes: MatchChanges): Promise<unknown> {
     return this.repository.update({ id }, changes);
   }

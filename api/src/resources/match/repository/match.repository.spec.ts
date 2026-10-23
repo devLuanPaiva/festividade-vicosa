@@ -130,6 +130,22 @@ describe('MatchRepository', () => {
     });
   });
 
+  it('saves several new matches as scheduled in one call', async () => {
+    const { repository, typeorm } = createFixture();
+    const records = [
+      { categoryId: CATEGORY_ID, bracketPosition: 0 },
+      { categoryId: CATEGORY_ID, bracketPosition: 1 },
+    ] as never[];
+
+    await repository.createMany(records);
+
+    expect(typeorm.save).toHaveBeenCalledTimes(1);
+    expect(typeorm.save).toHaveBeenCalledWith([
+      { categoryId: CATEGORY_ID, bracketPosition: 0, status: MatchStatus.SCHEDULED },
+      { categoryId: CATEGORY_ID, bracketPosition: 1, status: MatchStatus.SCHEDULED },
+    ]);
+  });
+
   it('updates a match by id', async () => {
     const { repository, typeorm } = createFixture();
 
