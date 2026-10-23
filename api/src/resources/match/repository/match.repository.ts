@@ -9,7 +9,12 @@ import {
   type FindOptionsWhere,
 } from 'typeorm';
 import { Match } from '../entities/match.entity';
-import { MatchStatus, type MatchRound, type MatchStage } from '../enums/match.enums';
+import {
+  MatchStatus,
+  type MatchResultType,
+  type MatchRound,
+  type MatchStage,
+} from '../enums/match.enums';
 
 export interface MatchRecord {
   categoryId: string;
@@ -27,8 +32,9 @@ export type MatchChanges = Partial<
 >;
 
 export interface MatchResultRecord {
-  scoreA: number;
-  scoreB: number;
+  resultType: MatchResultType;
+  scoreA: number | null;
+  scoreB: number | null;
   penaltiesA: number | null;
   penaltiesB: number | null;
   winnerId: string | null;

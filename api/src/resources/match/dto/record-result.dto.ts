@@ -1,4 +1,5 @@
-import { IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { MatchResultType } from '../enums/match.enums';
 import { BoundedInteger } from '../../../common/validation/field-decorators';
 import {
   MAX_NAME_LENGTH,
@@ -7,11 +8,21 @@ import {
 } from '../../../common/validation/validation-messages';
 
 export class RecordResultDto {
-  @BoundedInteger(VALIDATION_MESSAGES.score)
-  public scoreA!: number;
+  @IsOptional()
+  @IsEnum(MatchResultType, { message: VALIDATION_MESSAGES.resultType })
+  public resultType?: MatchResultType;
 
+  @IsOptional()
+  @IsUUID('4', { message: VALIDATION_MESSAGES.teamId })
+  public walkoverWinnerId?: string | null;
+
+  @IsOptional()
   @BoundedInteger(VALIDATION_MESSAGES.score)
-  public scoreB!: number;
+  public scoreA?: number | null;
+
+  @IsOptional()
+  @BoundedInteger(VALIDATION_MESSAGES.score)
+  public scoreB?: number | null;
 
   @IsOptional()
   @BoundedInteger(VALIDATION_MESSAGES.penalties)

@@ -28,6 +28,8 @@ export const VALIDATION_MESSAGES = {
   active: 'Informe true ou false para filtrar por usuários ativos.',
   stage: 'Selecione a fase da partida: grupos (GROUP) ou mata-mata (KNOCKOUT).',
   round: 'Selecione uma rodada válida do mata-mata.',
+  resultType:
+    'Informe o tipo de resultado: jogado (PLAYED), W.O. (WALKOVER) ou W.O. dos dois times (DOUBLE_WALKOVER).',
   matchStatus: 'Selecione um status de partida válido.',
   dateTime: 'Informe uma data e hora válidas, como 2026-12-09T19:00:00-03:00.',
   teamId: 'Informe o identificador de um time válido.',

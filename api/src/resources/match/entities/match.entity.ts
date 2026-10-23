@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
+import { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 
 @Entity('match')
 export class Match {
@@ -32,6 +32,9 @@ export class Match {
 
   @Column({ type: 'uuid' })
   public teamBId!: string;
+
+  @Column({ type: 'varchar' })
+  public resultType!: MatchResultType;
 
   @Column({ type: 'smallint', nullable: true })
   public scoreA!: number | null;

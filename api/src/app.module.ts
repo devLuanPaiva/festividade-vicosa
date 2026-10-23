@@ -8,6 +8,7 @@ import { EditionModule } from './resources/edition/edition.module';
 import { HealthModule } from './resources/health/health.module';
 import { MatchModule } from './resources/match/match.module';
 import { MatchGroupModule } from './resources/match-group/match-group.module';
+import { StandingModule } from './resources/standing/standing.module';
 import { SubEventModule } from './resources/sub-event/sub-event.module';
 import { TeamModule } from './resources/team/team.module';
 
@@ -23,6 +24,7 @@ import { TeamModule } from './resources/team/team.module';
     MatchGroupModule,
     TeamModule,
     MatchModule,
+    StandingModule,
   ],
 })
 export class AppModule {}

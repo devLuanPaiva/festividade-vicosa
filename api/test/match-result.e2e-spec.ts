@@ -76,6 +76,35 @@ describe('Match results (e2e)', () => {
     expect(resultService.record).toHaveBeenCalledWith(MATCH_ID, users['scorer-token']?.id, body);
   });
 
+  it('records a walkover with the team that showed up', async () => {
+    const body = { resultType: 'WALKOVER', walkoverWinnerId: TEAM_A };
+
+    const response = await as(
+      'scorer-token',
+      request(server()).put(`/matches/${MATCH_ID}/result`).send(body),
+    );
+
+    expect(response.status).toBe(200);
+    expect(resultService.record).toHaveBeenCalledWith(MATCH_ID, users['scorer-token']?.id, body);
+  });
+
+  it.each([
+    { scenario: 'an unknown result type', body: { resultType: 'FORFEIT' }, field: 'resultType' },
+    {
+      scenario: 'a walkover winner that is not a uuid',
+      body: { resultType: 'WALKOVER', walkoverWinnerId: '3' },
+      field: 'walkoverWinnerId',
+    },
+  ])('rejects a result with $scenario', async ({ body, field }) => {
+    const response = await as(
+      'scorer-token',
+      request(server()).put(`/matches/${MATCH_ID}/result`).send(body),
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ errors: { field } });
+  });
+
   it('does not let the organizer without the score permission record a result', async () => {
     const response = await as(
       'organizer-token',
@@ -87,7 +116,6 @@ describe('Match results (e2e)', () => {
 
   it.each([
     { scenario: 'a negative score', body: { scoreA: -1, scoreB: 0 }, field: 'scoreA' },
-    { scenario: 'a missing score', body: { scoreA: 1 }, field: 'scoreB' },
     { scenario: 'a score with decimals', body: { scoreA: 1.5, scoreB: 0 }, field: 'scoreA' },
     {
       scenario: 'penalties that are not numbers',

@@ -1,5 +1,6 @@
-import { MatchStage } from '../enums/match.enums';
+import { MatchResultType, MatchStage } from '../enums/match.enums';
 import { problem, type RuleProblem } from './rule-problem';
+import { findWalkoverProblem } from './walkover.rule';
 
 export interface ResultMatchShape {
   stage: MatchStage;
@@ -8,8 +9,10 @@ export interface ResultMatchShape {
 }
 
 export interface ResultInputShape {
-  scoreA: number;
-  scoreB: number;
+  resultType?: MatchResultType;
+  walkoverWinnerId?: string | null;
+  scoreA?: number | null;
+  scoreB?: number | null;
   penaltiesA?: number | null;
   penaltiesB?: number | null;
   bestPlayerName?: string | null;
@@ -93,22 +96,47 @@ function checkBestPlayer(match: ResultMatchShape, input: ResultInputShape): Rule
       );
 }
 
+function checkScores({ scoreA, scoreB }: ResultInputShape): RuleProblem | null {
+  if (scoreA === undefined || scoreA === null) {
+    return problem('SCORE_REQUIRED', 'Informe o placar do time A.', 'scoreA');
+  }
+  return scoreB === undefined || scoreB === null
+    ? problem('SCORE_REQUIRED', 'Informe o placar do time B.', 'scoreB')
+    : null;
+}
+
+function findPlayedProblem(match: ResultMatchShape, input: ResultInputShape): RuleProblem | null {
+  return checkScores(input) ?? checkPenalties(match, input) ?? checkBestPlayer(match, input);
+}
+
+function isWalkover({ resultType }: ResultInputShape): boolean {
+  return resultType !== undefined && resultType !== MatchResultType.PLAYED;
+}
+
 export function findResultProblem(
   match: ResultMatchShape,
   input: ResultInputShape,
 ): RuleProblem | null {
-  return checkPenalties(match, input) ?? checkBestPlayer(match, input);
+  return isWalkover(input) ? findWalkoverProblem(match, input) : findPlayedProblem(match, input);
 }
 
 function pickWinner(match: ResultMatchShape, teamAWins: boolean): string {
   return teamAWins ? match.teamAId : match.teamBId;
 }
 
+function scoreDecision({ scoreA, scoreB }: ResultInputShape): number {
+  return Math.sign((scoreA ?? 0) - (scoreB ?? 0));
+}
+
+function penaltiesDecision(input: ResultInputShape): number {
+  return hasPenalties(input) ? Math.sign((input.penaltiesA ?? 0) - (input.penaltiesB ?? 0)) : 0;
+}
+
+function resolvePlayedWinnerId(match: ResultMatchShape, input: ResultInputShape): string | null {
+  const decision = scoreDecision(input) || penaltiesDecision(input);
+  return decision === 0 ? null : pickWinner(match, decision > 0);
+}
+
 export function resolveWinnerId(match: ResultMatchShape, input: ResultInputShape): string | null {
-  if (input.scoreA !== input.scoreB) {
-    return pickWinner(match, input.scoreA > input.scoreB);
-  }
-  return hasPenalties(input)
-    ? pickWinner(match, (input.penaltiesA ?? 0) > (input.penaltiesB ?? 0))
-    : null;
+  return isWalkover(input) ? (input.walkoverWinnerId ?? null) : resolvePlayedWinnerId(match, input);
 }
