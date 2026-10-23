@@ -44,6 +44,22 @@ Toda resposta segue o padrão definido por `ResponseInterceptor` e `HttpExceptio
 
 **Como lançar erros no código:** `throw new ConflictException(apiError('CODIGO', 'Frase para o usuário.', 'campo'))` (`common/errors/api-error.ts`). Mensagens de validação dos DTOs ficam em `common/validation/validation-messages.ts`.
 
+## Identificadores e filtros
+- **IDs são UUID v4** (ex.: `a3bb189e-8bf9-4888-9912-ace4e6543002`), gerados pelo banco. Um `:id` que não seja UUID v4 devolve 400 (`INVALID_ID`, campo `id`).
+- **Toda listagem aceita filtros pela query string**, combinados com `E`, além da paginação `?offset=0&limit=100`. Parâmetro desconhecido ou valor inválido devolve 400 (`VALIDATION_ERROR`, com o `field` do parâmetro). Os links `next` e `previous` preservam os filtros.
+- **`search`** faz busca parcial, sem diferenciar maiúsculas de minúsculas, no nome (máx. 120 caracteres). Em `/users` busca no nome ou no e-mail.
+
+| Listagem | Filtros |
+|----------|---------|
+| `GET /editions` | `year`, `search` |
+| `GET /editions/:editionId/sub-events` | `type` |
+| `GET /sub-events/:subEventId/categories` | `gender` (`MALE`/`FEMALE`), `search` |
+| `GET /categories/:categoryId/groups` | `search` |
+| `GET /categories/:categoryId/teams` | `groupId`, `city` (parcial), `search` |
+| `GET /users` | `active` (`true`/`false`), `roleCode`, `search` |
+
+Exemplo: `GET /categories/<id>/teams?city=viçosa&search=cen&limit=20`.
+
 ## Autenticação
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
@@ -97,11 +113,11 @@ A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festiv
 | DELETE | `/groups/:id` | `team:manage` | Exclui o grupo; os times dele ficam sem grupo. 204 |
 | GET | `/categories/:categoryId/teams` | pública | Times da categoria, por nome |
 | GET | `/teams/:id` | pública | Um time |
-| POST | `/categories/:categoryId/teams` | `team:manage` | Cria: `name`, `groupId?`. 409 se o nome já existe na categoria; 400 se o grupo é de outra categoria (RN-13) |
-| PATCH | `/teams/:id` | `team:manage` | Altera nome e grupo (`groupId: null` tira o time do grupo) |
+| POST | `/categories/:categoryId/teams` | `team:manage` | Cria: `name`, `city`, `slug?`, `abbreviation?` (2 a 10 caracteres), `photoKey?`, `groupId?`. Sem `slug`, ele é gerado do nome. 409 se o nome ou o slug já existem na categoria; 400 se o grupo é de outra categoria (RN-13) |
+| PATCH | `/teams/:id` | `team:manage` | Altera os campos informados (`groupId: null` tira o time do grupo; `abbreviation: null` e `photoKey: null` limpam o campo). O slug não muda sozinho quando o nome muda |
 | DELETE | `/teams/:id` | `team:manage` | Exclui o time. 204 |
 
-As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. A foto do time entra junto com o resource de fotos; o bloqueio de excluir time com partidas (RN-33) entra junto com o resource de partidas.
+As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave do arquivo da foto (`photoKey`); o upload entra com o resource de fotos; o bloqueio de excluir time com partidas (RN-33) entra junto com o resource de partidas.
 
 ## Papéis
 | Método | Rota | Permissão | Descrição |

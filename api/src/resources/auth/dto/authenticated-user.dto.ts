@@ -2,7 +2,7 @@ import type { Request } from 'express';
 import type { Permission } from '../../role/enums/permission.enum';
 
 export interface AuthenticatedUser {
-  id: number;
+  id: string;
   name: string;
   email: string;
   permissions: Permission[];

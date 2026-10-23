@@ -5,7 +5,7 @@ import { SubEvent } from '../entities/sub-event.entity';
 import type { SubEventType } from '../enums/sub-event-type.enum';
 
 export interface SubEventRecord {
-  editionId: number;
+  editionId: string;
   type: SubEventType;
   name: string;
   description: string | null;
@@ -16,21 +16,28 @@ export interface SubEventRecord {
 
 export type SubEventChanges = Partial<Omit<SubEventRecord, 'editionId' | 'type'>>;
 
+export interface SubEventFilters {
+  type?: SubEventType;
+}
+
 @Injectable()
 export class SubEventRepository {
   public constructor(
     @InjectRepository(SubEvent) private readonly repository: Repository<SubEvent>,
   ) {}
 
-  public findByEdition(editionId: number): Promise<SubEvent[]> {
-    return this.repository.find({ where: { editionId }, order: { startDate: 'ASC', id: 'ASC' } });
+  public findByEdition(editionId: string, filters: SubEventFilters): Promise<SubEvent[]> {
+    return this.repository.find({
+      where: { editionId, ...(filters.type && { type: filters.type }) },
+      order: { startDate: 'ASC', id: 'ASC' },
+    });
   }
 
-  public findById(id: number): Promise<SubEvent | null> {
+  public findById(id: string): Promise<SubEvent | null> {
     return this.repository.findOneBy({ id });
   }
 
-  public findByEditionAndType(editionId: number, type: SubEventType): Promise<SubEvent | null> {
+  public findByEditionAndType(editionId: string, type: SubEventType): Promise<SubEvent | null> {
     return this.repository.findOneBy({ editionId, type });
   }
 
@@ -38,7 +45,7 @@ export class SubEventRepository {
     return this.repository.save(this.repository.create(record));
   }
 
-  public update(id: number, changes: SubEventChanges): Promise<unknown> {
+  public update(id: string, changes: SubEventChanges): Promise<unknown> {
     return this.repository.update({ id }, changes);
   }
 }

@@ -17,7 +17,7 @@ import { PermissionsGuard } from '../src/resources/auth/guards/permissions.guard
 const ASSISTANT_TOKEN = 'assistant-token';
 
 const assistant: AuthenticatedUser = {
-  id: 2,
+  id: '00000000-0000-4000-8000-000000000002',
   name: 'Assistant',
   email: 'assistant@example.com',
   permissions: [Permission.MATCH_RECORD_SCORE],

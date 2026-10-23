@@ -7,12 +7,12 @@ import type { UserRepository } from '../repository/user.repository';
 import { changeUserRole, deactivateUser, removeOverride } from '../rules/access-changes';
 import { AccessPolicyService } from './access-policy.service';
 
-const MANAGER_ROLE = 1;
-const ASSISTANT_ROLE = 2;
+const MANAGER_ROLE = '00000000-0000-4000-8000-000000000001';
+const ASSISTANT_ROLE = '00000000-0000-4000-8000-000000000002';
 
 interface Fixture {
-  users: { id: number; active: boolean; roleId: number }[];
-  overrides?: { userId: number; permissionCode: Permission; effect: PermissionEffect }[];
+  users: { id: string; active: boolean; roleId: string }[];
+  overrides?: { userId: string; permissionCode: Permission; effect: PermissionEffect }[];
 }
 
 function createService({ users, overrides = [] }: Fixture): AccessPolicyService {
@@ -31,12 +31,12 @@ function createService({ users, overrides = [] }: Fixture): AccessPolicyService 
 }
 
 const twoManagers = [
-  { id: 1, active: true, roleId: MANAGER_ROLE },
-  { id: 2, active: true, roleId: MANAGER_ROLE },
+  { id: '00000000-0000-4000-8000-000000000001', active: true, roleId: MANAGER_ROLE },
+  { id: '00000000-0000-4000-8000-000000000002', active: true, roleId: MANAGER_ROLE },
 ];
 const oneManager = [
-  { id: 1, active: true, roleId: MANAGER_ROLE },
-  { id: 3, active: true, roleId: ASSISTANT_ROLE },
+  { id: '00000000-0000-4000-8000-000000000001', active: true, roleId: MANAGER_ROLE },
+  { id: '00000000-0000-4000-8000-000000000003', active: true, roleId: ASSISTANT_ROLE },
 ];
 
 describe('AccessPolicyService.assertNotSelf', () => {
@@ -44,13 +44,19 @@ describe('AccessPolicyService.assertNotSelf', () => {
 
   it('forbids a user from changing their own permissions', () => {
     expect(() => {
-      service.assertNotSelf(5, 5);
+      service.assertNotSelf(
+        '00000000-0000-4000-8000-000000000005',
+        '00000000-0000-4000-8000-000000000005',
+      );
     }).toThrow(ForbiddenException);
   });
 
   it('allows changing the permissions of another user', () => {
     expect(() => {
-      service.assertNotSelf(5, 6);
+      service.assertNotSelf(
+        '00000000-0000-4000-8000-000000000005',
+        '00000000-0000-4000-8000-000000000006',
+      );
     }).not.toThrow();
   });
 });
@@ -60,38 +66,47 @@ describe('AccessPolicyService.assertPermissionsManagerRemains', () => {
     const service = createService({ users: twoManagers });
 
     await expect(
-      service.assertPermissionsManagerRemains(deactivateUser(1)),
+      service.assertPermissionsManagerRemains(
+        deactivateUser('00000000-0000-4000-8000-000000000001'),
+      ),
     ).resolves.toBeUndefined();
   });
 
   it('blocks deactivating the last active manager', async () => {
     const service = createService({ users: oneManager });
 
-    await expect(service.assertPermissionsManagerRemains(deactivateUser(1))).rejects.toBeInstanceOf(
-      ConflictException,
-    );
+    await expect(
+      service.assertPermissionsManagerRemains(
+        deactivateUser('00000000-0000-4000-8000-000000000001'),
+      ),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('blocks moving the last manager to a role without the permission', async () => {
     const service = createService({ users: oneManager });
 
     await expect(
-      service.assertPermissionsManagerRemains(changeUserRole(1, ASSISTANT_ROLE)),
+      service.assertPermissionsManagerRemains(
+        changeUserRole('00000000-0000-4000-8000-000000000001', ASSISTANT_ROLE),
+      ),
     ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('blocks removing the individual grant that makes a user the last manager', async () => {
     const service = createService({
-      users: [{ id: 1, active: true, roleId: ASSISTANT_ROLE }],
+      users: [{ id: '00000000-0000-4000-8000-000000000001', active: true, roleId: ASSISTANT_ROLE }],
       overrides: [
         {
-          userId: 1,
+          userId: '00000000-0000-4000-8000-000000000001',
           permissionCode: Permission.USER_MANAGE_PERMISSIONS,
           effect: PermissionEffect.GRANTED,
         },
       ],
     });
-    const removeGrant = removeOverride(1, Permission.USER_MANAGE_PERMISSIONS);
+    const removeGrant = removeOverride(
+      '00000000-0000-4000-8000-000000000001',
+      Permission.USER_MANAGE_PERMISSIONS,
+    );
 
     await expect(service.assertPermissionsManagerRemains(removeGrant)).rejects.toBeInstanceOf(
       ConflictException,
@@ -102,7 +117,9 @@ describe('AccessPolicyService.assertPermissionsManagerRemains', () => {
     const service = createService({ users: oneManager });
 
     await expect(
-      service.assertPermissionsManagerRemains(deactivateUser(3)),
+      service.assertPermissionsManagerRemains(
+        deactivateUser('00000000-0000-4000-8000-000000000003'),
+      ),
     ).resolves.toBeUndefined();
   });
 });

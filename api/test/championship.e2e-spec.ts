@@ -14,22 +14,34 @@ import { CategoryService } from '../src/resources/category/services/category.ser
 import { MatchGroupController } from '../src/resources/match-group/controllers/match-group.controller';
 import { MatchGroupService } from '../src/resources/match-group/services/match-group.service';
 import { Permission } from '../src/resources/role/enums/permission.enum';
-import { TeamController } from '../src/resources/team/controllers/team.controller';
-import { TeamService } from '../src/resources/team/services/team.service';
 
 const users: Record<string, AuthenticatedUser> = {
   'manager-token': {
-    id: 1,
+    id: '00000000-0000-4000-8000-000000000001',
     name: 'Manager',
     email: 'manager@example.com',
     permissions: [Permission.TEAM_MANAGE],
   },
-  'assistant-token': { id: 2, name: 'Assistant', email: 'assistant@example.com', permissions: [] },
+  'assistant-token': {
+    id: '00000000-0000-4000-8000-000000000002',
+    name: 'Assistant',
+    email: 'assistant@example.com',
+    permissions: [],
+  },
 };
 
-const category = { id: 5, subEventId: 2, name: 'Adulto', gender: Gender.MALE, ageRange: null };
-const group = { id: 1, categoryId: 5, name: 'Grupo A' };
-const team = { id: 7, categoryId: 5, groupId: 1, name: 'Centro' };
+const category = {
+  id: '00000000-0000-4000-8000-000000000005',
+  subEventId: '00000000-0000-4000-8000-000000000002',
+  name: 'Adulto',
+  gender: Gender.MALE,
+  ageRange: null,
+};
+const group = {
+  id: '00000000-0000-4000-8000-000000000001',
+  categoryId: '00000000-0000-4000-8000-000000000005',
+  name: 'Grupo A',
+};
 
 const categoryService = {
   listBySubEvent: jest.fn(),
@@ -44,13 +56,6 @@ const matchGroupService = {
   update: jest.fn(),
   remove: jest.fn(),
 };
-const teamService = {
-  listByCategory: jest.fn(),
-  findByIdOrFail: jest.fn(),
-  create: jest.fn(),
-  update: jest.fn(),
-  remove: jest.fn(),
-};
 
 function authenticate(token: string): Promise<AuthenticatedUser> {
   const user = users[token];
@@ -59,11 +64,10 @@ function authenticate(token: string): Promise<AuthenticatedUser> {
 
 async function createApp(): Promise<INestApplication> {
   const moduleFixture = await Test.createTestingModule({
-    controllers: [CategoryController, MatchGroupController, TeamController],
+    controllers: [CategoryController, MatchGroupController],
     providers: [
       { provide: CategoryService, useValue: categoryService },
       { provide: MatchGroupService, useValue: matchGroupService },
-      { provide: TeamService, useValue: teamService },
       { provide: AuthenticationService, useValue: { authenticate } },
       { provide: APP_GUARD, useClass: JwtAuthGuard },
       { provide: APP_GUARD, useClass: PermissionsGuard },
@@ -74,7 +78,7 @@ async function createApp(): Promise<INestApplication> {
   return app.init();
 }
 
-describe('Categories, groups and teams (e2e)', () => {
+describe('Categories and groups (e2e)', () => {
   let app: INestApplication;
   const server = (): App => app.getHttpServer() as App;
   const asManager = (call: request.Test): request.Test =>
@@ -95,17 +99,11 @@ describe('Categories, groups and teams (e2e)', () => {
     categoryService.create.mockResolvedValue(category);
     matchGroupService.listByCategory.mockResolvedValue([group]);
     matchGroupService.create.mockResolvedValue(group);
-    teamService.listByCategory.mockResolvedValue([team]);
-    teamService.findByIdOrFail.mockResolvedValue(team);
-    teamService.create.mockResolvedValue(team);
-    teamService.update.mockResolvedValue(team);
-    teamService.remove.mockResolvedValue(undefined);
   });
 
   it.each([
-    { path: '/sub-events/2/categories', result: category },
-    { path: '/categories/5/groups', result: group },
-    { path: '/categories/5/teams', result: team },
+    { path: '/sub-events/00000000-0000-4000-8000-000000000002/categories', result: category },
+    { path: '/categories/00000000-0000-4000-8000-000000000005/groups', result: group },
   ])('lets a visitor list $path without logging in', async ({ path, result }) => {
     const response = await request(server()).get(path);
 
@@ -113,16 +111,12 @@ describe('Categories, groups and teams (e2e)', () => {
     expect(response.body).toMatchObject({ status: 'success', count: 1, results: [result] });
   });
 
-  it('lets a visitor read one team', async () => {
-    const response = await request(server()).get('/teams/7');
-
-    expect(response.body).toEqual({ status: 'success', result: team });
-  });
-
   it.each([
-    { path: '/sub-events/2/categories', body: { name: 'Adulto', gender: 'MALE' } },
-    { path: '/categories/5/groups', body: { name: 'Grupo A' } },
-    { path: '/categories/5/teams', body: { name: 'Centro' } },
+    {
+      path: '/sub-events/00000000-0000-4000-8000-000000000002/categories',
+      body: { name: 'Adulto', gender: 'MALE' },
+    },
+    { path: '/categories/00000000-0000-4000-8000-000000000005/groups', body: { name: 'Grupo A' } },
   ])('requires login to create at $path', async ({ path, body }) => {
     const response = await request(server()).post(path).send(body);
 
@@ -130,9 +124,11 @@ describe('Categories, groups and teams (e2e)', () => {
   });
 
   it.each([
-    { path: '/sub-events/2/categories', body: { name: 'Adulto', gender: 'MALE' } },
-    { path: '/categories/5/groups', body: { name: 'Grupo A' } },
-    { path: '/categories/5/teams', body: { name: 'Centro' } },
+    {
+      path: '/sub-events/00000000-0000-4000-8000-000000000002/categories',
+      body: { name: 'Adulto', gender: 'MALE' },
+    },
+    { path: '/categories/00000000-0000-4000-8000-000000000005/groups', body: { name: 'Grupo A' } },
   ])('forbids creating at $path without the team permission', async ({ path, body }) => {
     const response = await request(server())
       .post(path)
@@ -144,11 +140,16 @@ describe('Categories, groups and teams (e2e)', () => {
 
   it('creates a category with a valid body', async () => {
     const response = await asManager(
-      request(server()).post('/sub-events/2/categories').send({ name: 'Adulto', gender: 'MALE' }),
+      request(server())
+        .post('/sub-events/00000000-0000-4000-8000-000000000002/categories')
+        .send({ name: 'Adulto', gender: 'MALE' }),
     );
 
     expect(response.status).toBe(201);
-    expect(categoryService.create).toHaveBeenCalledWith(2, { name: 'Adulto', gender: 'MALE' });
+    expect(categoryService.create).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000002', {
+      name: 'Adulto',
+      gender: 'MALE',
+    });
   });
 
   it.each([
@@ -160,56 +161,33 @@ describe('Categories, groups and teams (e2e)', () => {
     { scenario: 'the name is empty', body: { name: '', gender: 'MALE' }, field: 'name' },
     { scenario: 'the gender is missing', body: { name: 'Adulto' }, field: 'gender' },
   ])('rejects a category when $scenario', async ({ body, field }) => {
-    const response = await asManager(request(server()).post('/sub-events/2/categories').send(body));
+    const response = await asManager(
+      request(server())
+        .post('/sub-events/00000000-0000-4000-8000-000000000002/categories')
+        .send(body),
+    );
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({ errors: { code: 'VALIDATION_ERROR', field } });
   });
 
-  it('creates a team inside a group', async () => {
-    const response = await asManager(
-      request(server()).post('/categories/5/teams').send({ name: 'Centro', groupId: 1 }),
-    );
+  it.each(['gender=OTHER', 'gender=MALE&search=' + 'a'.repeat(121)])(
+    'rejects the invalid category filter %s',
+    async (query) => {
+      const response = await request(server()).get(
+        `/sub-events/00000000-0000-4000-8000-000000000002/categories?${query}`,
+      );
 
-    expect(response.status).toBe(201);
-    expect(teamService.create).toHaveBeenCalledWith(5, { name: 'Centro', groupId: 1 });
-  });
-
-  it('rejects a team with an invalid group id', async () => {
-    const response = await asManager(
-      request(server()).post('/categories/5/teams').send({ name: 'Centro', groupId: 'abc' }),
-    );
-
-    expect(response.status).toBe(400);
-    expect(response.body).toMatchObject({ errors: { field: 'groupId' } });
-  });
-
-  it('takes a team out of its group when the group is null', async () => {
-    const response = await asManager(request(server()).patch('/teams/7').send({ groupId: null }));
-
-    expect(response.status).toBe(200);
-    expect(teamService.update).toHaveBeenCalledWith(7, { groupId: null });
-  });
-
-  it('removes a team with no content in the response', async () => {
-    const response = await asManager(request(server()).delete('/teams/7'));
-
-    expect(response.status).toBe(204);
-    expect(teamService.remove).toHaveBeenCalledWith(7);
-  });
+      expect(response.status).toBe(400);
+    },
+  );
 
   it('removes a group with no content in the response', async () => {
-    const response = await asManager(request(server()).delete('/groups/1'));
+    const response = await asManager(
+      request(server()).delete('/groups/00000000-0000-4000-8000-000000000001'),
+    );
 
     expect(response.status).toBe(204);
-    expect(matchGroupService.remove).toHaveBeenCalledWith(1);
-  });
-
-  it('forbids removing a team without the team permission', async () => {
-    const response = await request(server())
-      .delete('/teams/7')
-      .set('Authorization', 'Bearer assistant-token');
-
-    expect(response.status).toBe(403);
+    expect(matchGroupService.remove).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
   });
 });

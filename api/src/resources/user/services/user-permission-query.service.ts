@@ -10,7 +10,7 @@ export class UserPermissionQueryService {
     private readonly accessControlService: AccessControlService,
   ) {}
 
-  public async getPermissions(userId: number): Promise<UserPermissionsResponseDto> {
+  public async getPermissions(userId: string): Promise<UserPermissionsResponseDto> {
     const user = await this.userService.findByIdOrFail(userId);
     return this.accessControlService.describeAccess(user);
   }

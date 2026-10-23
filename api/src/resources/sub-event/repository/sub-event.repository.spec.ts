@@ -23,10 +23,23 @@ describe('SubEventRepository', () => {
   it('lists the sub-events of an edition ordered by start date', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findByEdition(1);
+    await repository.findByEdition('00000000-0000-4000-8000-000000000001', {});
 
     expect(typeorm.find).toHaveBeenCalledWith({
-      where: { editionId: 1 },
+      where: { editionId: '00000000-0000-4000-8000-000000000001' },
+      order: { startDate: 'ASC', id: 'ASC' },
+    });
+  });
+
+  it('filters the sub-events by type', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findByEdition('00000000-0000-4000-8000-000000000001', {
+      type: SubEventType.JOCEV_FUTSAL,
+    });
+
+    expect(typeorm.find).toHaveBeenCalledWith({
+      where: { editionId: '00000000-0000-4000-8000-000000000001', type: SubEventType.JOCEV_FUTSAL },
       order: { startDate: 'ASC', id: 'ASC' },
     });
   });
@@ -34,18 +47,21 @@ describe('SubEventRepository', () => {
   it('finds a sub-event by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findById(4);
+    await repository.findById('00000000-0000-4000-8000-000000000004');
 
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: 4 });
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: '00000000-0000-4000-8000-000000000004' });
   });
 
   it('finds a sub-event by edition and type', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findByEditionAndType(1, SubEventType.ECOPEDAL);
+    await repository.findByEditionAndType(
+      '00000000-0000-4000-8000-000000000001',
+      SubEventType.ECOPEDAL,
+    );
 
     expect(typeorm.findOneBy).toHaveBeenCalledWith({
-      editionId: 1,
+      editionId: '00000000-0000-4000-8000-000000000001',
       type: SubEventType.ECOPEDAL,
     });
   });
@@ -53,7 +69,7 @@ describe('SubEventRepository', () => {
   it('saves a new sub-event', async () => {
     const { repository } = createFixture();
     const record = {
-      editionId: 1,
+      editionId: '00000000-0000-4000-8000-000000000001',
       type: SubEventType.ECOPEDAL,
       name: 'Ecopedal',
       description: null,
@@ -68,8 +84,11 @@ describe('SubEventRepository', () => {
   it('updates a sub-event by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.update(4, { location: 'Praça central' });
+    await repository.update('00000000-0000-4000-8000-000000000004', { location: 'Praça central' });
 
-    expect(typeorm.update).toHaveBeenCalledWith({ id: 4 }, { location: 'Praça central' });
+    expect(typeorm.update).toHaveBeenCalledWith(
+      { id: '00000000-0000-4000-8000-000000000004' },
+      { location: 'Praça central' },
+    );
   });
 });

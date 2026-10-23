@@ -4,8 +4,8 @@ import { Permission } from '../enums/permission.enum';
 
 @Entity('user_permission_overrides')
 export class UserPermissionOverride {
-  @PrimaryColumn({ type: 'int' })
-  public userId!: number;
+  @PrimaryColumn({ type: 'uuid' })
+  public userId!: string;
 
   @PrimaryColumn({ type: 'varchar' })
   public permissionCode!: Permission;

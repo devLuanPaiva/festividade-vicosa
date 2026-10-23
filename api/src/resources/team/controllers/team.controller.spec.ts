@@ -3,7 +3,20 @@ import { Permission } from '../../role/enums/permission.enum';
 import type { TeamService } from '../services/team.service';
 import { TeamController } from './team.controller';
 
-const stored = { id: 7, categoryId: 5, groupId: null, name: 'Centro' };
+const TEAM_ID = '00000000-0000-4000-8000-000000000007';
+const CATEGORY_ID = '00000000-0000-4000-8000-000000000005';
+const GROUP_ID = '00000000-0000-4000-8000-000000000001';
+
+const stored = {
+  id: TEAM_ID,
+  categoryId: CATEGORY_ID,
+  groupId: null,
+  name: 'Centro',
+  slug: 'centro',
+  city: 'Viçosa',
+  abbreviation: null,
+  photoKey: null,
+};
 
 function createController(): {
   controller: TeamController;
@@ -20,41 +33,43 @@ function createController(): {
 }
 
 describe('TeamController', () => {
-  it('lists the teams of a category as response dtos', async () => {
+  it('lists the teams of a category as response dtos passing the filters on', async () => {
     const { controller, service } = createController();
+    const filters = { city: 'Viçosa', groupId: GROUP_ID };
 
-    await expect(controller.listByCategory(5)).resolves.toEqual([stored]);
-    expect(service.listByCategory).toHaveBeenCalledWith(5);
+    await expect(controller.listByCategory(CATEGORY_ID, filters)).resolves.toEqual([stored]);
+    expect(service.listByCategory).toHaveBeenCalledWith(CATEGORY_ID, filters);
   });
 
   it('gets one team by id', async () => {
     const { controller } = createController();
 
-    await expect(controller.get(7)).resolves.toEqual(stored);
+    await expect(controller.get(TEAM_ID)).resolves.toEqual(stored);
   });
 
   it('creates a team inside the category of the url', async () => {
     const { controller, service } = createController();
+    const input = { name: 'Centro', city: 'Viçosa', groupId: GROUP_ID };
 
-    await controller.create(5, { name: 'Centro', groupId: 1 });
+    await controller.create(CATEGORY_ID, input);
 
-    expect(service.create).toHaveBeenCalledWith(5, { name: 'Centro', groupId: 1 });
+    expect(service.create).toHaveBeenCalledWith(CATEGORY_ID, input);
   });
 
   it('updates a team', async () => {
     const { controller, service } = createController();
 
-    await controller.update(7, { groupId: null });
+    await controller.update(TEAM_ID, { groupId: null });
 
-    expect(service.update).toHaveBeenCalledWith(7, { groupId: null });
+    expect(service.update).toHaveBeenCalledWith(TEAM_ID, { groupId: null });
   });
 
   it('removes a team', async () => {
     const { controller, service } = createController();
 
-    await controller.remove(7);
+    await controller.remove(TEAM_ID);
 
-    expect(service.remove).toHaveBeenCalledWith(7);
+    expect(service.remove).toHaveBeenCalledWith(TEAM_ID);
   });
 });
 

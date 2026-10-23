@@ -1,4 +1,4 @@
-import type { Repository } from 'typeorm';
+import { ILike, type Repository } from 'typeorm';
 import type { Team } from '../entities/team.entity';
 import { TeamRepository } from './team.repository';
 
@@ -6,6 +6,10 @@ type TypeOrmMock = Record<
   'find' | 'findOneBy' | 'create' | 'save' | 'update' | 'delete',
   jest.Mock
 >;
+
+const TEAM_ID = '00000000-0000-4000-8000-000000000007';
+const CATEGORY_ID = '00000000-0000-4000-8000-000000000005';
+const GROUP_ID = '00000000-0000-4000-8000-000000000001';
 
 function createFixture(): { repository: TeamRepository; typeorm: TypeOrmMock } {
   const typeorm: TypeOrmMock = {
@@ -22,37 +26,75 @@ function createFixture(): { repository: TeamRepository; typeorm: TypeOrmMock } {
   };
 }
 
-describe('TeamRepository', () => {
-  it('lists the teams of a category ordered by name', async () => {
+describe('TeamRepository.findByCategory', () => {
+  it('lists the teams of a category ordered by name when there are no filters', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findByCategory(5);
+    await repository.findByCategory(CATEGORY_ID, {});
 
     expect(typeorm.find).toHaveBeenCalledWith({
-      where: { categoryId: 5 },
+      where: { categoryId: CATEGORY_ID },
       order: { name: 'ASC', id: 'ASC' },
     });
   });
 
+  it('filters by group, city and name search', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findByCategory(CATEGORY_ID, {
+      groupId: GROUP_ID,
+      city: 'Viçosa',
+      search: 'cen',
+    });
+
+    expect(typeorm.find).toHaveBeenCalledWith({
+      where: {
+        categoryId: CATEGORY_ID,
+        groupId: GROUP_ID,
+        city: ILike('%Viçosa%'),
+        name: ILike('%cen%'),
+      },
+      order: { name: 'ASC', id: 'ASC' },
+    });
+  });
+});
+
+describe('TeamRepository', () => {
   it('finds a team by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findById(7);
+    await repository.findById(TEAM_ID);
 
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: 7 });
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: TEAM_ID });
   });
 
   it('finds a team by category and name', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findByCategoryAndName(5, 'Centro');
+    await repository.findByCategoryAndName(CATEGORY_ID, 'Centro');
 
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ categoryId: 5, name: 'Centro' });
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ categoryId: CATEGORY_ID, name: 'Centro' });
+  });
+
+  it('finds a team by category and slug', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findByCategoryAndSlug(CATEGORY_ID, 'centro');
+
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ categoryId: CATEGORY_ID, slug: 'centro' });
   });
 
   it('saves a new team', async () => {
     const { repository } = createFixture();
-    const record = { categoryId: 5, groupId: null, name: 'Centro' };
+    const record = {
+      categoryId: CATEGORY_ID,
+      groupId: null,
+      name: 'Centro',
+      slug: 'centro',
+      city: 'Viçosa',
+      abbreviation: null,
+      photoKey: null,
+    };
 
     await expect(repository.create(record)).resolves.toEqual(record);
   });
@@ -60,16 +102,16 @@ describe('TeamRepository', () => {
   it('updates a team by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.update(7, { groupId: null });
+    await repository.update(TEAM_ID, { groupId: null });
 
-    expect(typeorm.update).toHaveBeenCalledWith({ id: 7 }, { groupId: null });
+    expect(typeorm.update).toHaveBeenCalledWith({ id: TEAM_ID }, { groupId: null });
   });
 
   it('deletes a team by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.remove(7);
+    await repository.remove(TEAM_ID);
 
-    expect(typeorm.delete).toHaveBeenCalledWith({ id: 7 });
+    expect(typeorm.delete).toHaveBeenCalledWith({ id: TEAM_ID });
   });
 });

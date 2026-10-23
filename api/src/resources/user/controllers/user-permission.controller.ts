@@ -18,7 +18,7 @@ export class UserPermissionController {
 
   @Get()
   @RequirePermission(Permission.USER_MANAGE)
-  public get(@Param('id', ParseIdPipe) id: number): Promise<UserPermissionsResponseDto> {
+  public get(@Param('id', ParseIdPipe) id: string): Promise<UserPermissionsResponseDto> {
     return this.queryService.getPermissions(id);
   }
 

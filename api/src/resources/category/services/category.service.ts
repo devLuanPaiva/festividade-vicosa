@@ -10,7 +10,7 @@ import { SubEventService } from '../../sub-event/services/sub-event.service';
 import type { CreateCategoryDto } from '../dto/create-category.dto';
 import type { UpdateCategoryDto } from '../dto/update-category.dto';
 import type { Category } from '../entities/category.entity';
-import { CategoryRepository } from '../repository/category.repository';
+import { CategoryRepository, type CategoryFilters } from '../repository/category.repository';
 import { hasChampionship } from '../rules/championship.rule';
 
 @Injectable()
@@ -20,12 +20,12 @@ export class CategoryService {
     private readonly subEventService: SubEventService,
   ) {}
 
-  public async listBySubEvent(subEventId: number): Promise<Category[]> {
+  public async listBySubEvent(subEventId: string, filters: CategoryFilters): Promise<Category[]> {
     await this.subEventService.findByIdOrFail(subEventId);
-    return this.categoryRepository.findBySubEvent(subEventId);
+    return this.categoryRepository.findBySubEvent(subEventId, filters);
   }
 
-  public async findByIdOrFail(id: number): Promise<Category> {
+  public async findByIdOrFail(id: string): Promise<Category> {
     const category = await this.categoryRepository.findById(id);
     if (!category) {
       throw new NotFoundException(
@@ -35,7 +35,7 @@ export class CategoryService {
     return category;
   }
 
-  public async create(subEventId: number, input: CreateCategoryDto): Promise<Category> {
+  public async create(subEventId: string, input: CreateCategoryDto): Promise<Category> {
     const subEvent = await this.subEventService.findByIdOrFail(subEventId);
     this.assertHasChampionship(subEvent.type);
     await this.assertNameAvailable(subEventId, input.name);
@@ -48,7 +48,7 @@ export class CategoryService {
     });
   }
 
-  public async update(id: number, changes: UpdateCategoryDto): Promise<Category> {
+  public async update(id: string, changes: UpdateCategoryDto): Promise<Category> {
     const current = await this.findByIdOrFail(id);
     if (changes.name !== undefined && changes.name !== current.name) {
       await this.assertNameAvailable(current.subEventId, changes.name);
@@ -69,7 +69,7 @@ export class CategoryService {
     }
   }
 
-  private async assertNameAvailable(subEventId: number, name: string): Promise<void> {
+  private async assertNameAvailable(subEventId: string, name: string): Promise<void> {
     if (await this.categoryRepository.findBySubEventAndName(subEventId, name)) {
       throw new ConflictException(
         apiError('CATEGORY_NAME_TAKEN', 'Já existe uma categoria com este nome.', 'name'),

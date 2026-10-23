@@ -26,7 +26,7 @@ export class RoleService {
 
   private permissionsOfRole(
     rolePermissions: RolePermission[],
-    roleId: number,
+    roleId: string,
   ): RoleResponseDto['permissions'] {
     return rolePermissions
       .filter((rolePermission) => rolePermission.roleId === roleId)

@@ -17,7 +17,11 @@ type UserRepositoryMock = Record<
   jest.Mock
 >;
 
-const storedUser = { id: 8, name: 'Ana', roleId: 3 };
+const storedUser = {
+  id: '00000000-0000-4000-8000-000000000008',
+  name: 'Ana',
+  roleId: '00000000-0000-4000-8000-000000000003',
+};
 
 function createFixture(): {
   service: UserService;
@@ -31,11 +35,15 @@ function createFixture(): {
     findActiveByEmail: jest.fn(),
     findActiveById: jest.fn(),
     count: jest.fn(),
-    create: jest.fn((record: object) => Promise.resolve({ id: 8, ...record })),
+    create: jest.fn((record: object) =>
+      Promise.resolve({ id: '00000000-0000-4000-8000-000000000008', ...record }),
+    ),
     updateAccount: jest.fn().mockResolvedValue(undefined),
   };
   const roleRepository = {
-    findByCodeOrFail: jest.fn().mockResolvedValue({ id: 3, code: RoleCode.ADMIN }),
+    findByCodeOrFail: jest
+      .fn()
+      .mockResolvedValue({ id: '00000000-0000-4000-8000-000000000003', code: RoleCode.ADMIN }),
   };
   const passwordHasher = { hash: jest.fn().mockResolvedValue('hashed-password') };
   const service = new UserService(
@@ -53,20 +61,24 @@ describe('UserService queries', () => {
     const { service, userRepository } = createFixture();
     userRepository.findAll.mockResolvedValue([storedUser]);
 
-    await expect(service.list()).resolves.toEqual([storedUser]);
+    await expect(service.list({})).resolves.toEqual([storedUser]);
   });
 
   it('returns the user found by id', async () => {
     const { service } = createFixture();
 
-    await expect(service.findByIdOrFail(8)).resolves.toBe(storedUser);
+    await expect(service.findByIdOrFail('00000000-0000-4000-8000-000000000008')).resolves.toBe(
+      storedUser,
+    );
   });
 
   it('throws not found when the user does not exist', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(service.findByIdOrFail(99)).rejects.toBeInstanceOf(NotFoundException);
+    await expect(
+      service.findByIdOrFail('00000000-0000-4000-8000-000000000099'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('delegates the active lookups and the count to the repository', async () => {
@@ -74,10 +86,12 @@ describe('UserService queries', () => {
     userRepository.count.mockResolvedValue(2);
 
     await service.findActiveByEmail('ana@example.com');
-    await service.findActiveById(5);
+    await service.findActiveById('00000000-0000-4000-8000-000000000005');
 
     expect(userRepository.findActiveByEmail).toHaveBeenCalledWith('ana@example.com');
-    expect(userRepository.findActiveById).toHaveBeenCalledWith(5);
+    expect(userRepository.findActiveById).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000005',
+    );
     await expect(service.count()).resolves.toBe(2);
   });
 });
@@ -93,7 +107,7 @@ describe('UserService commands', () => {
       name: 'Ana',
       email: 'ana@example.com',
       passwordHash: 'hashed-password',
-      roleId: 3,
+      roleId: '00000000-0000-4000-8000-000000000003',
     });
   });
 
@@ -116,24 +130,35 @@ describe('UserService commands', () => {
   it('changes the active flag of an existing user', async () => {
     const { service, userRepository } = createFixture();
 
-    await service.setActive(8, false);
+    await service.setActive('00000000-0000-4000-8000-000000000008', false);
 
-    expect(userRepository.updateAccount).toHaveBeenCalledWith(8, { active: false });
+    expect(userRepository.updateAccount).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000008',
+      { active: false },
+    );
   });
 
   it('changes the role of an existing user', async () => {
     const { service, userRepository } = createFixture();
 
-    await service.setRole(8, 5);
+    await service.setRole(
+      '00000000-0000-4000-8000-000000000008',
+      '00000000-0000-4000-8000-000000000005',
+    );
 
-    expect(userRepository.updateAccount).toHaveBeenCalledWith(8, { roleId: 5 });
+    expect(userRepository.updateAccount).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000008',
+      { roleId: '00000000-0000-4000-8000-000000000005' },
+    );
   });
 
   it('does not update a user that does not exist', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(service.setActive(99, false)).rejects.toBeInstanceOf(NotFoundException);
+    await expect(
+      service.setActive('00000000-0000-4000-8000-000000000099', false),
+    ).rejects.toBeInstanceOf(NotFoundException);
     expect(userRepository.updateAccount).not.toHaveBeenCalled();
   });
 });

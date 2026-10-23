@@ -14,17 +14,17 @@ export class UserAccountService {
     private readonly accessPolicy: AccessPolicyService,
   ) {}
 
-  public activate(id: number): Promise<User> {
+  public activate(id: string): Promise<User> {
     return this.userService.setActive(id, true);
   }
 
-  public async deactivate(id: number): Promise<User> {
+  public async deactivate(id: string): Promise<User> {
     await this.userService.findByIdOrFail(id);
     await this.accessPolicy.assertPermissionsManagerRemains(deactivateUser(id));
     return this.userService.setActive(id, false);
   }
 
-  public async changeRole(actorId: number, id: number, roleCode: RoleCode): Promise<User> {
+  public async changeRole(actorId: string, id: string, roleCode: RoleCode): Promise<User> {
     this.accessPolicy.assertNotSelf(actorId, id);
     await this.userService.findByIdOrFail(id);
     const role = await this.roleRepository.findByCodeOrFail(roleCode);

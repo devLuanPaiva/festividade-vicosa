@@ -14,13 +14,21 @@ describe('UserPermissionQueryService', () => {
     const describeAccess = jest.fn().mockResolvedValue(access);
     const service = new UserPermissionQueryService(
       {
-        findByIdOrFail: jest.fn().mockResolvedValue({ id: 7, roleId: 3 }),
+        findByIdOrFail: jest.fn().mockResolvedValue({
+          id: '00000000-0000-4000-8000-000000000007',
+          roleId: '00000000-0000-4000-8000-000000000003',
+        }),
       } as unknown as UserService,
       { describeAccess } as unknown as AccessControlService,
     );
 
-    await expect(service.getPermissions(7)).resolves.toBe(access);
-    expect(describeAccess).toHaveBeenCalledWith({ id: 7, roleId: 3 });
+    await expect(service.getPermissions('00000000-0000-4000-8000-000000000007')).resolves.toBe(
+      access,
+    );
+    expect(describeAccess).toHaveBeenCalledWith({
+      id: '00000000-0000-4000-8000-000000000007',
+      roleId: '00000000-0000-4000-8000-000000000003',
+    });
   });
 
   it('fails when the user does not exist', async () => {
@@ -31,6 +39,8 @@ describe('UserPermissionQueryService', () => {
       {} as unknown as AccessControlService,
     );
 
-    await expect(service.getPermissions(99)).rejects.toBeInstanceOf(NotFoundException);
+    await expect(
+      service.getPermissions('00000000-0000-4000-8000-000000000099'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

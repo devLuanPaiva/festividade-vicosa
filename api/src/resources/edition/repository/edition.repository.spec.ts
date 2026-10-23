@@ -1,4 +1,4 @@
-import type { Repository } from 'typeorm';
+import { ILike, type Repository } from 'typeorm';
 import type { Edition } from '../entities/edition.entity';
 import { EditionRepository } from './edition.repository';
 
@@ -19,17 +19,28 @@ describe('EditionRepository', () => {
   it('lists the editions with the most recent year first', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findAll();
+    await repository.findAll({});
 
-    expect(typeorm.find).toHaveBeenCalledWith({ order: { year: 'DESC' } });
+    expect(typeorm.find).toHaveBeenCalledWith({ where: {}, order: { year: 'DESC' } });
+  });
+
+  it('filters the editions by year and name search', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findAll({ year: 2026, search: 'viçosa' });
+
+    expect(typeorm.find).toHaveBeenCalledWith({
+      where: { year: 2026, name: ILike('%viçosa%') },
+      order: { year: 'DESC' },
+    });
   });
 
   it('finds an edition by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findById(3);
+    await repository.findById('00000000-0000-4000-8000-000000000003');
 
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: 3 });
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: '00000000-0000-4000-8000-000000000003' });
   });
 
   it('finds an edition by year', async () => {
@@ -50,8 +61,11 @@ describe('EditionRepository', () => {
   it('updates an edition by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.update(3, { name: 'Novo nome' });
+    await repository.update('00000000-0000-4000-8000-000000000003', { name: 'Novo nome' });
 
-    expect(typeorm.update).toHaveBeenCalledWith({ id: 3 }, { name: 'Novo nome' });
+    expect(typeorm.update).toHaveBeenCalledWith(
+      { id: '00000000-0000-4000-8000-000000000003' },
+      { name: 'Novo nome' },
+    );
   });
 });

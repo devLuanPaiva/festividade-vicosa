@@ -5,8 +5,8 @@ import { toCategoryResponse } from './category-response.mapper';
 describe('toCategoryResponse', () => {
   it('exposes the public fields of the category', () => {
     const category: Category = {
-      id: 3,
-      subEventId: 1,
+      id: '00000000-0000-4000-8000-000000000003',
+      subEventId: '00000000-0000-4000-8000-000000000001',
       name: 'Sub-13',
       gender: Gender.MALE,
       ageRange: 'Sub-13',

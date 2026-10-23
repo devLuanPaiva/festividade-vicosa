@@ -17,7 +17,7 @@ describe('AuthController', () => {
   it('returns the authenticated user as the current user', () => {
     const controller = new AuthController({} as unknown as AuthService);
     const user: AuthenticatedUser = {
-      id: 1,
+      id: '00000000-0000-4000-8000-000000000001',
       name: 'Ana',
       email: 'ana@example.com',
       permissions: [],

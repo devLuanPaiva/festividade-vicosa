@@ -15,7 +15,7 @@ export class AccessPolicyService {
     private readonly overrideRepository: UserPermissionOverrideRepository,
   ) {}
 
-  public assertNotSelf(actorId: number, targetId: number): void {
+  public assertNotSelf(actorId: string, targetId: string): void {
     if (actorId === targetId) {
       throw new ForbiddenException(
         apiError('CANNOT_CHANGE_OWN_ACCESS', 'Você não pode alterar as suas próprias permissões.'),

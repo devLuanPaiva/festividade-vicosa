@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('edition')
 export class Edition {
-  @PrimaryGeneratedColumn('identity', { generatedIdentity: 'ALWAYS' })
-  public id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id!: string;
 
   @Column({ type: 'int', unique: true })
   public year!: number;

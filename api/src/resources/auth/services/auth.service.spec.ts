@@ -6,7 +6,11 @@ import type { User } from '../../user/entities/user.entity';
 import type { UserService } from '../../user/services/user.service';
 import { AuthService } from './auth.service';
 
-const user = { id: 9, email: 'ana@example.com', passwordHash: randomUUID() } as User;
+const user = {
+  id: '00000000-0000-4000-8000-000000000009',
+  email: 'ana@example.com',
+  passwordHash: randomUUID(),
+} as User;
 const credentials = { email: 'ana@example.com', password: randomUUID() };
 
 function createFixture(foundUser: User | null, passwordMatches: boolean): AuthService {

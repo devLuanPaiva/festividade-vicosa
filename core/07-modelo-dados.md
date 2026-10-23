@@ -3,7 +3,7 @@
 Tradução do [modelo de domínio](05-modelo-dominio.md) para tabelas. Nomes de tabela e coluna em `snake_case`; no TypeORM, entidades em inglês e `PascalCase` (`Match`, `SubEvent`) com `@Entity('match')`.
 
 ## Convenções
-- **PK:** `integer` com identidade (`GENERATED ALWAYS AS IDENTITY`). Os IDs aparecem em URLs públicas (`/times/12`) e o volume é pequeno, então UUID não compensa.
+- **PK:** `uuid` v4 gerado pelo próprio banco (`DEFAULT gen_random_uuid()`), nunca enviado pelo client. Os IDs não são sequenciais nem adivinháveis. Nas URLs públicas do portal o time é identificado pelo `slug` (`/categorias/<categoria>/times/bairro-centro`), não pelo ID.
 - **Datas:** `timestamptz` em UTC; o front formata no fuso `America/Fortaleza`. Datas sem hora (dia do sub-evento) usam `date`.
 - **Enums:** `varchar` + `CHECK` (não `ENUM` nativo do Postgres), porque mudar enum nativo em migration é chato. No código, `enum` TypeScript.
 - **Exclusão:** `ON DELETE RESTRICT` por padrão. Só `photo` e `schedule_item` somem em cascata junto com o pai.
@@ -56,8 +56,10 @@ erDiagram
 |--------|-------------------|-----------|
 | `category` | `id`, `sub_event_id`, `name`, `gender`, `age_range` | `UNIQUE(sub_event_id, name)`; só aceita sub-evento `JOCEV_HANDBALL`/`JOCEV_FUTSAL` (validado na API, RN-03) |
 | `match_group` | `id`, `category_id`, `name` | `UNIQUE(category_id, name)`; `UNIQUE(id, category_id)` (alvo das FKs compostas) |
-| `team` | `id`, `category_id`, `group_id` (nulo), `name`, `photo_id` (nulo) | `UNIQUE(category_id, name)`; `UNIQUE(id, category_id)`; **FK composta `(group_id, category_id)` → `match_group(id, category_id)`** garante que o grupo é da mesma categoria (RN-13) |
+| `team` | `id`, `category_id`, `group_id` (nulo), `name`, `slug`, `city`, `abbreviation` (nulo), `photo_key` (nulo) | `UNIQUE(category_id, name)`; `UNIQUE(category_id, slug)`; `UNIQUE(id, category_id)`; **FK composta `(group_id, category_id)` → `match_group(id, category_id)`** garante que o grupo é da mesma categoria (RN-13) |
 | `match` | ver abaixo | ver abaixo |
+
+**Campos do time:** `slug` é gerado do nome (`Bairro Açude` vira `bairro-acude`) quando não informado e fica estável se o nome mudar depois; `city` é obrigatória; `abbreviation` (2 a 10 caracteres) e `photo_key` (chave do arquivo, como o `storage_key` das fotos) são opcionais. `photo_key` vira FK para `photo` quando o resource de fotos existir.
 
 **`match`**
 | Coluna | Tipo | Nota |
@@ -135,7 +137,7 @@ Para um grupo, considerando só partidas `FINALIZED` da fase `GROUP`: cada parti
 
 ## Decisões para validar
 1. **`Modalidade` removida** (explicado acima).
-2. **IDs inteiros** em vez de UUID.
+2. **IDs UUID v4** gerados pelo banco, em todas as tabelas (a conversão dos ids inteiros foi feita pela migration `ConvertIdsToUuid` e não tem volta).
 3. **Foto de time e de melhor jogador** vivem na mesma tabela `photo`, como foto avulsa.
 4. **Autenticação do MVP:** JWT de acesso com validade longa (ex.: 12 h), sem refresh token. Para um painel usado por poucas pessoas durante um mês, simplifica bastante. Contrapartida: um token vazado vale até expirar; mitigado por HTTPS e por desativar o usuário (a API confere `active` a cada requisição).
 5. **Integridade pesada no banco** (FKs compostas e `CHECK`s). Custa um pouco mais de trabalho nas migrations e dá segurança extra no lançamento de placar pelo celular.

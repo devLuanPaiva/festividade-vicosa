@@ -17,16 +17,16 @@ export class UserPermissionOverrideRepository {
     return this.repository.find();
   }
 
-  public async findByUserId(userId: number): Promise<PermissionOverride[]> {
+  public async findByUserId(userId: string): Promise<PermissionOverride[]> {
     const overrides = await this.repository.findBy({ userId });
     return overrides.map(({ permissionCode, effect }) => ({ permission: permissionCode, effect }));
   }
 
-  public save(userId: number, permission: Permission, effect: PermissionEffect): Promise<unknown> {
+  public save(userId: string, permission: Permission, effect: PermissionEffect): Promise<unknown> {
     return this.repository.save({ userId, permissionCode: permission, effect });
   }
 
-  public remove(userId: number, permission: Permission): Promise<unknown> {
+  public remove(userId: string, permission: Permission): Promise<unknown> {
     return this.repository.delete({ userId, permissionCode: permission });
   }
 }

@@ -1,5 +1,5 @@
 export interface MatchGroupResponseDto {
-  id: number;
-  categoryId: number;
+  id: string;
+  categoryId: string;
   name: string;
 }

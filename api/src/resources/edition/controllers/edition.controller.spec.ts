@@ -4,7 +4,12 @@ import type { Edition } from '../entities/edition.entity';
 import type { EditionService } from '../services/edition.service';
 import { EditionController } from './edition.controller';
 
-const publicEdition = { id: 1, year: 2026, name: 'Festividade 2026', description: null };
+const publicEdition = {
+  id: '00000000-0000-4000-8000-000000000001',
+  year: 2026,
+  name: 'Festividade 2026',
+  description: null,
+};
 const stored = publicEdition as Edition;
 
 function createController(): {
@@ -24,14 +29,16 @@ describe('EditionController', () => {
   it('lists the editions as response dtos', async () => {
     const { controller } = createController();
 
-    await expect(controller.list()).resolves.toEqual([publicEdition]);
+    await expect(controller.list({})).resolves.toEqual([publicEdition]);
   });
 
   it('gets one edition by id', async () => {
     const { controller, service } = createController();
 
-    await expect(controller.get(1)).resolves.toEqual(publicEdition);
-    expect(service.findByIdOrFail).toHaveBeenCalledWith(1);
+    await expect(controller.get('00000000-0000-4000-8000-000000000001')).resolves.toEqual(
+      publicEdition,
+    );
+    expect(service.findByIdOrFail).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
   });
 
   it('creates an edition', async () => {
@@ -46,9 +53,11 @@ describe('EditionController', () => {
   it('updates an edition', async () => {
     const { controller, service } = createController();
 
-    await controller.update(1, { name: 'Novo nome' });
+    await controller.update('00000000-0000-4000-8000-000000000001', { name: 'Novo nome' });
 
-    expect(service.update).toHaveBeenCalledWith(1, { name: 'Novo nome' });
+    expect(service.update).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001', {
+      name: 'Novo nome',
+    });
   });
 });
 

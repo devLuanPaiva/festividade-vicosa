@@ -1,7 +1,7 @@
 import type { RoleCode } from '../../role/enums/role-code.enum';
 
 export interface UserResponseDto {
-  id: number;
+  id: string;
   name: string;
   email: string;
   active: boolean;

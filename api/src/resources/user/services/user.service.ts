@@ -1,9 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+﻿import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { RoleCode } from '../../role/enums/role-code.enum';
 import { RoleRepository } from '../../role/repository/role.repository';
 import type { NewUserDto } from '../dto/new-user.dto';
 import type { User } from '../entities/user.entity';
-import { UserRepository } from '../repository/user.repository';
+import { UserRepository, type UserFilters } from '../repository/user.repository';
 import { PasswordHasher } from './password-hasher';
 import { apiError } from '../../../common/errors/api-error';
 
@@ -15,14 +15,14 @@ export class UserService {
     private readonly passwordHasher: PasswordHasher,
   ) {}
 
-  public list(): Promise<User[]> {
-    return this.userRepository.findAll();
+  public list(filters: UserFilters): Promise<User[]> {
+    return this.userRepository.findAll(filters);
   }
 
-  public async findByIdOrFail(id: number): Promise<User> {
+  public async findByIdOrFail(id: string): Promise<User> {
     const user = await this.userRepository.findById(id);
     if (!user) {
-      throw new NotFoundException(apiError('USER_NOT_FOUND', 'Usuário não encontrado.', 'id'));
+      throw new NotFoundException(apiError('USER_NOT_FOUND', 'UsuÃ¡rio nÃ£o encontrado.', 'id'));
     }
     return user;
   }
@@ -31,7 +31,7 @@ export class UserService {
     return this.userRepository.findActiveByEmail(email);
   }
 
-  public findActiveById(id: number): Promise<User | null> {
+  public findActiveById(id: string): Promise<User | null> {
     return this.userRepository.findActiveById(id);
   }
 
@@ -57,13 +57,13 @@ export class UserService {
     });
   }
 
-  public async setActive(id: number, active: boolean): Promise<User> {
+  public async setActive(id: string, active: boolean): Promise<User> {
     await this.findByIdOrFail(id);
     await this.userRepository.updateAccount(id, { active });
     return this.findByIdOrFail(id);
   }
 
-  public async setRole(id: number, roleId: number): Promise<User> {
+  public async setRole(id: string, roleId: string): Promise<User> {
     await this.findByIdOrFail(id);
     await this.userRepository.updateAccount(id, { roleId });
     return this.findByIdOrFail(id);
@@ -72,7 +72,7 @@ export class UserService {
   private async assertEmailAvailable(email: string): Promise<void> {
     if (await this.userRepository.findByEmail(email)) {
       throw new ConflictException(
-        apiError('EMAIL_ALREADY_EXISTS', 'Já existe um usuário com este e-mail.', 'email'),
+        apiError('EMAIL_ALREADY_EXISTS', 'JÃ¡ existe um usuÃ¡rio com este e-mail.', 'email'),
       );
     }
   }
