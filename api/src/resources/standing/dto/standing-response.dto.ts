@@ -1,4 +1,4 @@
-import type { StandingRow } from '../rules/standings.rule';
+import type { StandingRow } from '../rules/standing-tally.rule';
 
 export type StandingRowResponseDto = StandingRow;
 

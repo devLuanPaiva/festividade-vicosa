@@ -1,4 +1,4 @@
-import type { StandingRow } from './standings.rule';
+import type { StandingRow } from './standing-tally.rule';
 
 type Criterion = (first: StandingRow, second: StandingRow) => number;
 
@@ -9,7 +9,7 @@ const TIE_BREAK_CRITERIA: Criterion[] = [
   (first, second): number => first.teamName.localeCompare(second.teamName, 'pt-BR'),
 ];
 
-export function compareStandingRows(first: StandingRow, second: StandingRow): number {
+function compareStandingRows(first: StandingRow, second: StandingRow): number {
   for (const criterion of TIE_BREAK_CRITERIA) {
     const difference = criterion(first, second);
     if (difference !== 0) {
@@ -17,4 +17,8 @@ export function compareStandingRows(first: StandingRow, second: StandingRow): nu
     }
   }
   return 0;
+}
+
+export function rankStandingRows(rows: StandingRow[]): StandingRow[] {
+  return [...rows].sort(compareStandingRows);
 }

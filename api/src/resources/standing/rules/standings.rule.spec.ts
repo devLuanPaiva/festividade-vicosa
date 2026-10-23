@@ -1,5 +1,6 @@
 import { MatchResultType } from '../../match/enums/match.enums';
-import { calculateStandings, type StandingMatch, type StandingTeam } from './standings.rule';
+import { calculateStandings } from './standings.rule';
+import type { StandingMatch, StandingTeam } from './standing-tally.rule';
 
 const ALFA: StandingTeam = { id: 'alfa', name: 'Alfa' };
 const BETA: StandingTeam = { id: 'beta', name: 'Beta' };
@@ -120,26 +121,47 @@ describe('calculateStandings points and results (RN-19, RN-20)', () => {
   });
 });
 
-describe('calculateStandings walkovers', () => {
-  it('gives the win to the team that showed up, without goals', () => {
+describe('calculateStandings walkovers (edital: W.O. counts 2x0)', () => {
+  it('gives the win and a 2x0 score to the team that showed up', () => {
     const rows = calculateStandings(TEAMS, [walkover('alfa', 'beta', 'beta')]);
 
     expect(rowOf(rows, 'beta')).toMatchObject({
       played: 1,
       wins: 1,
       points: 3,
-      goalsFor: 0,
+      goalsFor: 2,
       goalsAgainst: 0,
-      goalDifference: 0,
+      goalDifference: 2,
+      walkoverLosses: 0,
     });
-    expect(rowOf(rows, 'alfa')).toMatchObject({ played: 1, losses: 1, points: 0, goalsAgainst: 0 });
+    expect(rowOf(rows, 'alfa')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      goalsFor: 0,
+      goalsAgainst: 2,
+      goalDifference: -2,
+      walkoverLosses: 1,
+    });
   });
 
-  it('counts a loss and no points for both teams on a double walkover', () => {
+  it('counts a loss, no points and no goals for both teams on a double walkover', () => {
     const rows = calculateStandings(TEAMS, [doubleWalkover('alfa', 'beta')]);
 
-    expect(rowOf(rows, 'alfa')).toMatchObject({ played: 1, losses: 1, points: 0 });
-    expect(rowOf(rows, 'beta')).toMatchObject({ played: 1, losses: 1, points: 0 });
+    expect(rowOf(rows, 'alfa')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
+      walkoverLosses: 1,
+    });
+    expect(rowOf(rows, 'beta')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      walkoverLosses: 1,
+    });
   });
 });
 
