@@ -147,8 +147,10 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 |--------|------|-----------|-----------|
 | GET | `/categories/:categoryId/standings` | pública | Tabela de cada grupo da categoria: `[{ groupId, groupName, rows }]` |
 | GET | `/groups/:id/standings` | pública | Tabela de um grupo |
+| GET | `/categories/:categoryId/seeding` | pública | Classificados confirmados de todos os grupos na ordem sugerida de cabeças de chave: `[{ seed, teamId, teamName, groupId, groupName, qualifiedPosition }]` (RN-29). Vazio enquanto nenhum grupo confirmou |
+| PUT | `/groups/:id/qualified` | `team:manage` | Confirma os classificados do grupo: `{ teamIds }` do 1º ao último colocado, só times do grupo e sem repetir (`TEAM_NOT_IN_GROUP`, `QUALIFIED_TEAMS_DUPLICATED`). Substitui a lista anterior; lista vazia limpa a confirmação. Devolve `[{ teamId, position }]` |
 
-A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference` e `points`. Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória e vale 2x0 no saldo (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Cada linha também traz `walkoverLosses` (jogos em que o time faltou). Desempate pelo edital (RN-21). Quantos times classificam por grupo ainda não está definido, então a tabela não marca classificados.
+A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference`, `points`, `walkoverLosses`, `tied` (os critérios não separaram o time de outro, RN-21) e `qualifiedPosition` (posição confirmada pela equipe técnica, ou nulo, RN-29). Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória e vale 2x0 no saldo (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Desempate pelo edital (RN-21). A tabela não calcula quem classifica: a equipe técnica confirma os classificados de cada grupo (RN-29).
 
 ## Papéis
 | Método | Rota | Permissão | Descrição |

@@ -91,3 +91,23 @@ describe('tie break among three or more teams (ART. 16)', () => {
     expect(orderOf(rows)).toEqual(['alfa', 'beta', 'gama']);
   });
 });
+
+describe('teams tied on every criterion', () => {
+  it('flags only the teams the criteria could not separate', () => {
+    const rows = calculateStandings(
+      [GAMA, BETA, ALFA],
+      [game('alfa', [1, 0], 'beta'), game('beta', [1, 0], 'gama'), game('gama', [1, 0], 'alfa')],
+    );
+
+    expect(rows.every((row) => row.tied)).toBe(true);
+  });
+
+  it('does not flag a team that the criteria placed apart', () => {
+    const rows = calculateStandings(FOUR_TEAMS, [
+      game('alfa', [3, 0], 'gama'),
+      game('beta', [1, 0], 'delta'),
+    ]);
+
+    expect(rows.map((row) => row.tied)).toEqual([false, false, false, false]);
+  });
+});

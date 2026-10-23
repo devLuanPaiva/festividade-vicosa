@@ -26,6 +26,8 @@ erDiagram
   category ||--o{ match : tem
   match_group |o--o{ team : agrupa
   match_group |o--o{ match : "fase de grupos"
+  match_group ||--o{ qualified_team : "classificados confirmados"
+  team ||--o{ qualified_team : classifica
   team ||--o{ match : "team_a / team_b"
   match |o--o| album : gallery
   history_item |o--o| album : fotos
@@ -60,6 +62,12 @@ erDiagram
 | `match` | ver abaixo | ver abaixo |
 
 **Campos do time:** `slug` é gerado do nome (`Bairro Açude` vira `bairro-acude`) quando não informado e fica estável se o nome mudar depois; `city` é obrigatória; `abbreviation` (2 a 10 caracteres) e `photo_key` (chave do arquivo, como o `storage_key` das fotos) são opcionais. `photo_key` vira FK para `photo` quando o resource de fotos existir.
+
+**`qualified_team`** (RN-29)
+| Coluna | Tipo | Nota |
+|--------|------|------|
+| `group_id`, `team_id` | uuid | PK composta; `ON DELETE CASCADE` nos dois lados |
+| `position` | smallint | `>= 1`; `UNIQUE(group_id, position)`. Posição confirmada pela equipe técnica; a lista de um grupo é substituída por inteiro numa transação |
 
 **`match`**
 | Coluna | Tipo | Nota |
