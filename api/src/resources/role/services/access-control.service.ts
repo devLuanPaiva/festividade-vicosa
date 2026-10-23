@@ -8,8 +8,8 @@ import {
 } from '../rules/resolve-effective-permissions';
 
 export interface PermissionSubject {
-  id: number;
-  roleId: number;
+  id: string;
+  roleId: string;
 }
 
 export interface AccessDescription {

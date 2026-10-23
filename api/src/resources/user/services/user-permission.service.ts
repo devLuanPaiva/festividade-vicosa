@@ -14,7 +14,7 @@ export class UserPermissionService {
     private readonly accessPolicy: AccessPolicyService,
   ) {}
 
-  public async setOverride(actorId: number, override: AccessOverride): Promise<void> {
+  public async setOverride(actorId: string, override: AccessOverride): Promise<void> {
     this.accessPolicy.assertNotSelf(actorId, override.userId);
     await this.userService.findByIdOrFail(override.userId);
     await this.accessPolicy.assertPermissionsManagerRemains(setOverride(override));
@@ -22,8 +22,8 @@ export class UserPermissionService {
   }
 
   public async removeOverride(
-    actorId: number,
-    targetId: number,
+    actorId: string,
+    targetId: string,
     permission: Permission,
   ): Promise<void> {
     this.accessPolicy.assertNotSelf(actorId, targetId);

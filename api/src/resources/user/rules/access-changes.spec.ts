@@ -5,31 +5,66 @@ import type { AccessSnapshot } from './access-snapshot';
 
 const snapshot: AccessSnapshot = {
   users: [
-    { id: 1, active: true, roleId: 10 },
-    { id: 2, active: true, roleId: 20 },
+    {
+      id: '00000000-0000-4000-8000-000000000001',
+      active: true,
+      roleId: '00000000-0000-4000-8000-000000000010',
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000002',
+      active: true,
+      roleId: '00000000-0000-4000-8000-000000000020',
+    },
   ],
   rolePermissions: [],
-  overrides: [{ userId: 1, permission: Permission.PHOTO_UPLOAD, effect: PermissionEffect.GRANTED }],
+  overrides: [
+    {
+      userId: '00000000-0000-4000-8000-000000000001',
+      permission: Permission.PHOTO_UPLOAD,
+      effect: PermissionEffect.GRANTED,
+    },
+  ],
 };
 
 describe('access changes', () => {
   it('deactivates only the given user', () => {
-    expect(deactivateUser(1)(snapshot).users).toEqual([
-      { id: 1, active: false, roleId: 10 },
-      { id: 2, active: true, roleId: 20 },
+    expect(deactivateUser('00000000-0000-4000-8000-000000000001')(snapshot).users).toEqual([
+      {
+        id: '00000000-0000-4000-8000-000000000001',
+        active: false,
+        roleId: '00000000-0000-4000-8000-000000000010',
+      },
+      {
+        id: '00000000-0000-4000-8000-000000000002',
+        active: true,
+        roleId: '00000000-0000-4000-8000-000000000020',
+      },
     ]);
   });
 
   it('changes the role of only the given user', () => {
-    expect(changeUserRole(2, 30)(snapshot).users).toEqual([
-      { id: 1, active: true, roleId: 10 },
-      { id: 2, active: true, roleId: 30 },
+    expect(
+      changeUserRole(
+        '00000000-0000-4000-8000-000000000002',
+        '00000000-0000-4000-8000-000000000030',
+      )(snapshot).users,
+    ).toEqual([
+      {
+        id: '00000000-0000-4000-8000-000000000001',
+        active: true,
+        roleId: '00000000-0000-4000-8000-000000000010',
+      },
+      {
+        id: '00000000-0000-4000-8000-000000000002',
+        active: true,
+        roleId: '00000000-0000-4000-8000-000000000030',
+      },
     ]);
   });
 
   it('replaces an existing override of the same user and permission', () => {
     const revoked = {
-      userId: 1,
+      userId: '00000000-0000-4000-8000-000000000001',
       permission: Permission.PHOTO_UPLOAD,
       effect: PermissionEffect.REVOKED,
     };
@@ -39,7 +74,7 @@ describe('access changes', () => {
 
   it('adds an override for a permission that had none', () => {
     const granted = {
-      userId: 2,
+      userId: '00000000-0000-4000-8000-000000000002',
       permission: Permission.TEAM_MANAGE,
       effect: PermissionEffect.GRANTED,
     };
@@ -48,12 +83,18 @@ describe('access changes', () => {
   });
 
   it('removes only the override of the given user and permission', () => {
-    expect(removeOverride(1, Permission.PHOTO_UPLOAD)(snapshot).overrides).toEqual([]);
-    expect(removeOverride(2, Permission.PHOTO_UPLOAD)(snapshot).overrides).toHaveLength(1);
+    expect(
+      removeOverride('00000000-0000-4000-8000-000000000001', Permission.PHOTO_UPLOAD)(snapshot)
+        .overrides,
+    ).toEqual([]);
+    expect(
+      removeOverride('00000000-0000-4000-8000-000000000002', Permission.PHOTO_UPLOAD)(snapshot)
+        .overrides,
+    ).toHaveLength(1);
   });
 
   it('does not mutate the original snapshot', () => {
-    deactivateUser(1)(snapshot);
+    deactivateUser('00000000-0000-4000-8000-000000000001')(snapshot);
 
     expect(snapshot.users[0]?.active).toBe(true);
   });

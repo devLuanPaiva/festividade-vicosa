@@ -3,13 +3,13 @@ import { Permission } from '../../role/enums/permission.enum';
 import type { AccessSnapshot } from './access-snapshot';
 import { countPermissionsManagers } from './permissions-manager.rule';
 
-const MANAGER_ROLE = 1;
-const ASSISTANT_ROLE = 2;
+const MANAGER_ROLE = '00000000-0000-4000-8000-000000000001';
+const ASSISTANT_ROLE = '00000000-0000-4000-8000-000000000002';
 
 const baseSnapshot: AccessSnapshot = {
   users: [
-    { id: 1, active: true, roleId: MANAGER_ROLE },
-    { id: 2, active: true, roleId: ASSISTANT_ROLE },
+    { id: '00000000-0000-4000-8000-000000000001', active: true, roleId: MANAGER_ROLE },
+    { id: '00000000-0000-4000-8000-000000000002', active: true, roleId: ASSISTANT_ROLE },
   ],
   rolePermissions: [
     { roleId: MANAGER_ROLE, permission: Permission.USER_MANAGE_PERMISSIONS },
@@ -27,7 +27,12 @@ describe('countPermissionsManagers', () => {
     },
     {
       scenario: 'ignores inactive users',
-      snapshot: { ...baseSnapshot, users: [{ id: 1, active: false, roleId: MANAGER_ROLE }] },
+      snapshot: {
+        ...baseSnapshot,
+        users: [
+          { id: '00000000-0000-4000-8000-000000000001', active: false, roleId: MANAGER_ROLE },
+        ],
+      },
       expected: 0,
     },
     {
@@ -36,7 +41,7 @@ describe('countPermissionsManagers', () => {
         ...baseSnapshot,
         overrides: [
           {
-            userId: 2,
+            userId: '00000000-0000-4000-8000-000000000002',
             permission: Permission.USER_MANAGE_PERMISSIONS,
             effect: PermissionEffect.GRANTED,
           },
@@ -50,7 +55,7 @@ describe('countPermissionsManagers', () => {
         ...baseSnapshot,
         overrides: [
           {
-            userId: 1,
+            userId: '00000000-0000-4000-8000-000000000001',
             permission: Permission.USER_MANAGE_PERMISSIONS,
             effect: PermissionEffect.REVOKED,
           },

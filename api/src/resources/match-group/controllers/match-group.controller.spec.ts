@@ -3,7 +3,11 @@ import { Permission } from '../../role/enums/permission.enum';
 import type { MatchGroupService } from '../services/match-group.service';
 import { MatchGroupController } from './match-group.controller';
 
-const stored = { id: 1, categoryId: 5, name: 'Grupo A' };
+const stored = {
+  id: '00000000-0000-4000-8000-000000000001',
+  categoryId: '00000000-0000-4000-8000-000000000005',
+  name: 'Grupo A',
+};
 
 function createController(): {
   controller: MatchGroupController;
@@ -26,38 +30,44 @@ describe('MatchGroupController', () => {
   it('lists the groups of a category as response dtos', async () => {
     const { controller, service } = createController();
 
-    await expect(controller.listByCategory(5)).resolves.toEqual([stored]);
-    expect(service.listByCategory).toHaveBeenCalledWith(5);
+    await expect(
+      controller.listByCategory('00000000-0000-4000-8000-000000000005', {}),
+    ).resolves.toEqual([stored]);
+    expect(service.listByCategory).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000005', {});
   });
 
   it('gets one group by id', async () => {
     const { controller } = createController();
 
-    await expect(controller.get(1)).resolves.toEqual(stored);
+    await expect(controller.get('00000000-0000-4000-8000-000000000001')).resolves.toEqual(stored);
   });
 
   it('creates a group inside the category of the url', async () => {
     const { controller, service } = createController();
 
-    await controller.create(5, { name: 'Grupo A' });
+    await controller.create('00000000-0000-4000-8000-000000000005', { name: 'Grupo A' });
 
-    expect(service.create).toHaveBeenCalledWith(5, { name: 'Grupo A' });
+    expect(service.create).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000005', {
+      name: 'Grupo A',
+    });
   });
 
   it('renames a group', async () => {
     const { controller, service } = createController();
 
-    await controller.update(1, { name: 'Grupo B' });
+    await controller.update('00000000-0000-4000-8000-000000000001', { name: 'Grupo B' });
 
-    expect(service.update).toHaveBeenCalledWith(1, { name: 'Grupo B' });
+    expect(service.update).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001', {
+      name: 'Grupo B',
+    });
   });
 
   it('removes a group', async () => {
     const { controller, service } = createController();
 
-    await controller.remove(1);
+    await controller.remove('00000000-0000-4000-8000-000000000001');
 
-    expect(service.remove).toHaveBeenCalledWith(1);
+    expect(service.remove).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
   });
 });
 

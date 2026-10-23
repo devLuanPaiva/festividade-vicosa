@@ -6,7 +6,7 @@ import type { AuthenticatedUser } from '../dto/authenticated-user.dto';
 import { apiError } from '../../../common/errors/api-error';
 
 interface AccessTokenPayload {
-  sub: number;
+  sub: string;
 }
 
 @Injectable()

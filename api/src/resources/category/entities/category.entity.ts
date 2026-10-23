@@ -3,11 +3,11 @@ import { Gender } from '../enums/gender.enum';
 
 @Entity('category')
 export class Category {
-  @PrimaryGeneratedColumn('identity', { generatedIdentity: 'ALWAYS' })
-  public id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id!: string;
 
-  @Column({ type: 'int' })
-  public subEventId!: number;
+  @Column({ type: 'uuid' })
+  public subEventId!: string;
 
   @Column({ type: 'varchar' })
   public name!: string;

@@ -14,7 +14,7 @@ export class RolePermissionRepository {
     return this.repository.find();
   }
 
-  public async findPermissionsByRoleId(roleId: number): Promise<Permission[]> {
+  public async findPermissionsByRoleId(roleId: string): Promise<Permission[]> {
     const rolePermissions = await this.repository.findBy({ roleId });
     return rolePermissions.map((rolePermission) => rolePermission.permissionCode);
   }

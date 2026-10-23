@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, type FindOptionsWhere } from 'typeorm';
+import { containsText } from '../../../common/database/text-search';
 import { Edition } from '../entities/edition.entity';
 
 export interface EditionRecord {
@@ -9,15 +10,27 @@ export interface EditionRecord {
   description: string | null;
 }
 
+export interface EditionFilters {
+  year?: number;
+  search?: string;
+}
+
+function buildWhere(filters: EditionFilters): FindOptionsWhere<Edition> {
+  return {
+    ...(filters.year !== undefined && { year: filters.year }),
+    ...(filters.search && { name: containsText(filters.search) }),
+  };
+}
+
 @Injectable()
 export class EditionRepository {
   public constructor(@InjectRepository(Edition) private readonly repository: Repository<Edition>) {}
 
-  public findAll(): Promise<Edition[]> {
-    return this.repository.find({ order: { year: 'DESC' } });
+  public findAll(filters: EditionFilters): Promise<Edition[]> {
+    return this.repository.find({ where: buildWhere(filters), order: { year: 'DESC' } });
   }
 
-  public findById(id: number): Promise<Edition | null> {
+  public findById(id: string): Promise<Edition | null> {
     return this.repository.findOneBy({ id });
   }
 
@@ -29,7 +42,7 @@ export class EditionRepository {
     return this.repository.save(this.repository.create(record));
   }
 
-  public update(id: number, changes: Partial<EditionRecord>): Promise<unknown> {
+  public update(id: string, changes: Partial<EditionRecord>): Promise<unknown> {
     return this.repository.update({ id }, changes);
   }
 }

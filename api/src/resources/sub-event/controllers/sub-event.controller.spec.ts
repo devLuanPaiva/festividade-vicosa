@@ -6,8 +6,8 @@ import type { SubEventService } from '../services/sub-event.service';
 import { SubEventController } from './sub-event.controller';
 
 const stored: SubEvent = {
-  id: 4,
-  editionId: 1,
+  id: '00000000-0000-4000-8000-000000000004',
+  editionId: '00000000-0000-4000-8000-000000000001',
   type: SubEventType.ECOPEDAL,
   name: 'Ecopedal',
   description: null,
@@ -33,14 +33,16 @@ describe('SubEventController', () => {
   it('lists the sub-events of an edition as response dtos', async () => {
     const { controller, service } = createController();
 
-    await expect(controller.listByEdition(1)).resolves.toEqual([stored]);
-    expect(service.listByEdition).toHaveBeenCalledWith(1);
+    await expect(
+      controller.listByEdition('00000000-0000-4000-8000-000000000001', {}),
+    ).resolves.toEqual([stored]);
+    expect(service.listByEdition).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001', {});
   });
 
   it('gets one sub-event by id', async () => {
     const { controller } = createController();
 
-    await expect(controller.get(4)).resolves.toEqual(stored);
+    await expect(controller.get('00000000-0000-4000-8000-000000000004')).resolves.toEqual(stored);
   });
 
   it('creates a sub-event inside the edition of the url', async () => {
@@ -52,17 +54,19 @@ describe('SubEventController', () => {
       endDate: '2026-12-20',
     };
 
-    await controller.create(1, input);
+    await controller.create('00000000-0000-4000-8000-000000000001', input);
 
-    expect(service.create).toHaveBeenCalledWith(1, input);
+    expect(service.create).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001', input);
   });
 
   it('updates a sub-event', async () => {
     const { controller, service } = createController();
 
-    await controller.update(4, { location: 'Praça' });
+    await controller.update('00000000-0000-4000-8000-000000000004', { location: 'Praça' });
 
-    expect(service.update).toHaveBeenCalledWith(4, { location: 'Praça' });
+    expect(service.update).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000004', {
+      location: 'Praça',
+    });
   });
 });
 

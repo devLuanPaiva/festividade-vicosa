@@ -8,7 +8,11 @@ type RepositoryMock = Record<
   jest.Mock
 >;
 
-const stored = { id: 1, categoryId: 5, name: 'Grupo A' };
+const stored = {
+  id: '00000000-0000-4000-8000-000000000001',
+  categoryId: '00000000-0000-4000-8000-000000000005',
+  name: 'Grupo A',
+};
 
 function createFixture(): {
   service: MatchGroupService;
@@ -19,11 +23,15 @@ function createFixture(): {
     findByCategory: jest.fn().mockResolvedValue([stored]),
     findById: jest.fn().mockResolvedValue(stored),
     findByCategoryAndName: jest.fn().mockResolvedValue(null),
-    create: jest.fn((record: object) => Promise.resolve({ id: 9, ...record })),
+    create: jest.fn((record: object) =>
+      Promise.resolve({ id: '00000000-0000-4000-8000-000000000009', ...record }),
+    ),
     update: jest.fn().mockResolvedValue(undefined),
     remove: jest.fn().mockResolvedValue(undefined),
   };
-  const categoryService = { findByIdOrFail: jest.fn().mockResolvedValue({ id: 5 }) };
+  const categoryService = {
+    findByIdOrFail: jest.fn().mockResolvedValue({ id: '00000000-0000-4000-8000-000000000005' }),
+  };
   const service = new MatchGroupService(
     repository as unknown as MatchGroupRepository,
     categoryService as unknown as CategoryService,
@@ -35,14 +43,18 @@ describe('MatchGroupService queries', () => {
   it('lists the groups of an existing category', async () => {
     const { service } = createFixture();
 
-    await expect(service.listByCategory(5)).resolves.toEqual([stored]);
+    await expect(
+      service.listByCategory('00000000-0000-4000-8000-000000000005', {}),
+    ).resolves.toEqual([stored]);
   });
 
   it('does not list the groups of a category that does not exist', async () => {
     const { service, categoryService, repository } = createFixture();
     categoryService.findByIdOrFail.mockRejectedValue(new NotFoundException());
 
-    await expect(service.listByCategory(99)).rejects.toBeInstanceOf(NotFoundException);
+    await expect(
+      service.listByCategory('00000000-0000-4000-8000-000000000099', {}),
+    ).rejects.toBeInstanceOf(NotFoundException);
     expect(repository.findByCategory).not.toHaveBeenCalled();
   });
 
@@ -50,7 +62,9 @@ describe('MatchGroupService queries', () => {
     const { service, repository } = createFixture();
     repository.findById.mockResolvedValue(null);
 
-    await expect(service.findByIdOrFail(99)).rejects.toMatchObject({
+    await expect(
+      service.findByIdOrFail('00000000-0000-4000-8000-000000000099'),
+    ).rejects.toMatchObject({
       response: { code: 'GROUP_NOT_FOUND', field: 'id' },
     });
   });
@@ -60,16 +74,21 @@ describe('MatchGroupService.create', () => {
   it('creates a group inside the category', async () => {
     const { service, repository } = createFixture();
 
-    await service.create(5, { name: 'Grupo B' });
+    await service.create('00000000-0000-4000-8000-000000000005', { name: 'Grupo B' });
 
-    expect(repository.create).toHaveBeenCalledWith({ categoryId: 5, name: 'Grupo B' });
+    expect(repository.create).toHaveBeenCalledWith({
+      categoryId: '00000000-0000-4000-8000-000000000005',
+      name: 'Grupo B',
+    });
   });
 
   it('refuses a repeated name inside the category', async () => {
     const { service, repository } = createFixture();
     repository.findByCategoryAndName.mockResolvedValue(stored);
 
-    await expect(service.create(5, { name: 'Grupo A' })).rejects.toMatchObject({
+    await expect(
+      service.create('00000000-0000-4000-8000-000000000005', { name: 'Grupo A' }),
+    ).rejects.toMatchObject({
       response: { code: 'GROUP_NAME_TAKEN', field: 'name' },
     });
     expect(repository.create).not.toHaveBeenCalled();
@@ -80,16 +99,24 @@ describe('MatchGroupService.update', () => {
   it('renames the group', async () => {
     const { service, repository } = createFixture();
 
-    await service.update(1, { name: 'Grupo B' });
+    await service.update('00000000-0000-4000-8000-000000000001', { name: 'Grupo B' });
 
-    expect(repository.update).toHaveBeenCalledWith(1, 'Grupo B');
+    expect(repository.update).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      'Grupo B',
+    );
   });
 
   it('refuses renaming to a name already used in the category', async () => {
     const { service, repository } = createFixture();
-    repository.findByCategoryAndName.mockResolvedValue({ ...stored, id: 2 });
+    repository.findByCategoryAndName.mockResolvedValue({
+      ...stored,
+      id: '00000000-0000-4000-8000-000000000002',
+    });
 
-    await expect(service.update(1, { name: 'Grupo B' })).rejects.toMatchObject({
+    await expect(
+      service.update('00000000-0000-4000-8000-000000000001', { name: 'Grupo B' }),
+    ).rejects.toMatchObject({
       response: { code: 'GROUP_NAME_TAKEN' },
     });
     expect(repository.update).not.toHaveBeenCalled();
@@ -98,7 +125,7 @@ describe('MatchGroupService.update', () => {
   it('does not check the name when it did not change', async () => {
     const { service, repository } = createFixture();
 
-    await service.update(1, { name: 'Grupo A' });
+    await service.update('00000000-0000-4000-8000-000000000001', { name: 'Grupo A' });
 
     expect(repository.findByCategoryAndName).not.toHaveBeenCalled();
   });
@@ -108,16 +135,18 @@ describe('MatchGroupService.remove', () => {
   it('deletes an existing group', async () => {
     const { service, repository } = createFixture();
 
-    await service.remove(1);
+    await service.remove('00000000-0000-4000-8000-000000000001');
 
-    expect(repository.remove).toHaveBeenCalledWith(1);
+    expect(repository.remove).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
   });
 
   it('does not delete a group that does not exist', async () => {
     const { service, repository } = createFixture();
     repository.findById.mockResolvedValue(null);
 
-    await expect(service.remove(99)).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.remove('00000000-0000-4000-8000-000000000099')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
     expect(repository.remove).not.toHaveBeenCalled();
   });
 });

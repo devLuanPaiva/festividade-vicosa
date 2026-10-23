@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import { Public, RequirePermission } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
 import { CreateEditionDto } from '../dto/create-edition.dto';
+import { ListEditionsQueryDto } from '../dto/list-editions-query.dto';
 import type { EditionResponseDto } from '../dto/edition-response.dto';
 import { UpdateEditionDto } from '../dto/update-edition.dto';
 import { toEditionResponse } from '../mappers/edition-response.mapper';
@@ -14,13 +15,13 @@ export class EditionController {
 
   @Public()
   @Get()
-  public async list(): Promise<EditionResponseDto[]> {
-    return (await this.editionService.list()).map(toEditionResponse);
+  public async list(@Query() filters: ListEditionsQueryDto): Promise<EditionResponseDto[]> {
+    return (await this.editionService.list(filters)).map(toEditionResponse);
   }
 
   @Public()
   @Get(':id')
-  public async get(@Param('id', ParseIdPipe) id: number): Promise<EditionResponseDto> {
+  public async get(@Param('id', ParseIdPipe) id: string): Promise<EditionResponseDto> {
     return toEditionResponse(await this.editionService.findByIdOrFail(id));
   }
 
@@ -33,7 +34,7 @@ export class EditionController {
   @Patch(':id')
   @RequirePermission(Permission.SCHEDULE_MANAGE)
   public async update(
-    @Param('id', ParseIdPipe) id: number,
+    @Param('id', ParseIdPipe) id: string,
     @Body() changes: UpdateEditionDto,
   ): Promise<EditionResponseDto> {
     return toEditionResponse(await this.editionService.update(id, changes));

@@ -9,7 +9,7 @@ import { UserController } from './user.controller';
 
 const createdAt = new Date('2026-10-22T12:00:00Z');
 const storedUser = {
-  id: 4,
+  id: '00000000-0000-4000-8000-000000000004',
   name: 'Ana',
   email: 'ana@example.com',
   passwordHash: 'secret-hash',
@@ -18,7 +18,7 @@ const storedUser = {
   createdAt,
 } as User;
 const publicUser = {
-  id: 4,
+  id: '00000000-0000-4000-8000-000000000004',
   name: 'Ana',
   email: 'ana@example.com',
   active: true,
@@ -26,7 +26,7 @@ const publicUser = {
   createdAt,
 };
 const actor: AuthenticatedUser = {
-  id: 1,
+  id: '00000000-0000-4000-8000-000000000001',
   name: 'Admin',
   email: 'admin@example.com',
   permissions: [],
@@ -57,7 +57,7 @@ describe('UserController', () => {
   it('lists the users without exposing the password hash', async () => {
     const { controller } = createController();
 
-    await expect(controller.list()).resolves.toEqual([publicUser]);
+    await expect(controller.list({})).resolves.toEqual([publicUser]);
   });
 
   it('creates a user with the requested role', async () => {
@@ -76,23 +76,33 @@ describe('UserController', () => {
   it('activates a user', async () => {
     const { controller, accountService } = createController();
 
-    await expect(controller.activate(4)).resolves.toEqual(publicUser);
-    expect(accountService.activate).toHaveBeenCalledWith(4);
+    await expect(controller.activate('00000000-0000-4000-8000-000000000004')).resolves.toEqual(
+      publicUser,
+    );
+    expect(accountService.activate).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000004');
   });
 
   it('deactivates a user', async () => {
     const { controller, accountService } = createController();
 
-    await expect(controller.deactivate(4)).resolves.toEqual(publicUser);
-    expect(accountService.deactivate).toHaveBeenCalledWith(4);
+    await expect(controller.deactivate('00000000-0000-4000-8000-000000000004')).resolves.toEqual(
+      publicUser,
+    );
+    expect(accountService.deactivate).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000004');
   });
 
   it('changes the role on behalf of the authenticated user', async () => {
     const { controller, accountService } = createController();
 
-    await controller.changeRole(actor, 4, { roleCode: RoleCode.ASSISTANT });
+    await controller.changeRole(actor, '00000000-0000-4000-8000-000000000004', {
+      roleCode: RoleCode.ASSISTANT,
+    });
 
-    expect(accountService.changeRole).toHaveBeenCalledWith(1, 4, RoleCode.ASSISTANT);
+    expect(accountService.changeRole).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      '00000000-0000-4000-8000-000000000004',
+      RoleCode.ASSISTANT,
+    );
   });
 });
 

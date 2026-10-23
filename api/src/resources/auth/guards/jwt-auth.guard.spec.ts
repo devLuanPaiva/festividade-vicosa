@@ -5,7 +5,7 @@ import type { AuthenticationService } from '../services/authentication.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 const authenticatedUser: AuthenticatedUser = {
-  id: 1,
+  id: '00000000-0000-4000-8000-000000000001',
   name: 'Ana',
   email: 'ana@example.com',
   permissions: [],

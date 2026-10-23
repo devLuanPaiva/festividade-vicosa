@@ -6,8 +6,8 @@ import type { CategoryService } from '../services/category.service';
 import { CategoryController } from './category.controller';
 
 const stored: Category = {
-  id: 5,
-  subEventId: 2,
+  id: '00000000-0000-4000-8000-000000000005',
+  subEventId: '00000000-0000-4000-8000-000000000002',
   name: 'Adulto',
   gender: Gender.MALE,
   ageRange: null,
@@ -30,31 +30,35 @@ describe('CategoryController', () => {
   it('lists the categories of a sub-event as response dtos', async () => {
     const { controller, service } = createController();
 
-    await expect(controller.listBySubEvent(2)).resolves.toEqual([stored]);
-    expect(service.listBySubEvent).toHaveBeenCalledWith(2);
+    await expect(
+      controller.listBySubEvent('00000000-0000-4000-8000-000000000002', {}),
+    ).resolves.toEqual([stored]);
+    expect(service.listBySubEvent).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000002', {});
   });
 
   it('gets one category by id', async () => {
     const { controller } = createController();
 
-    await expect(controller.get(5)).resolves.toEqual(stored);
+    await expect(controller.get('00000000-0000-4000-8000-000000000005')).resolves.toEqual(stored);
   });
 
   it('creates a category inside the sub-event of the url', async () => {
     const { controller, service } = createController();
     const input = { name: 'Adulto', gender: Gender.MALE };
 
-    await controller.create(2, input);
+    await controller.create('00000000-0000-4000-8000-000000000002', input);
 
-    expect(service.create).toHaveBeenCalledWith(2, input);
+    expect(service.create).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000002', input);
   });
 
   it('updates a category', async () => {
     const { controller, service } = createController();
 
-    await controller.update(5, { name: 'Principal' });
+    await controller.update('00000000-0000-4000-8000-000000000005', { name: 'Principal' });
 
-    expect(service.update).toHaveBeenCalledWith(5, { name: 'Principal' });
+    expect(service.update).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000005', {
+      name: 'Principal',
+    });
   });
 });
 

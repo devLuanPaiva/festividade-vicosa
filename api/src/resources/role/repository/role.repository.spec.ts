@@ -17,7 +17,11 @@ describe('RoleRepository', () => {
   });
 
   it('finds a role by its code', async () => {
-    const role = { id: 3, code: RoleCode.MANAGER, name: 'Manager' };
+    const role = {
+      id: '00000000-0000-4000-8000-000000000003',
+      code: RoleCode.MANAGER,
+      name: 'Manager',
+    };
     const findOneByOrFail = jest.fn().mockResolvedValue(role);
 
     await expect(

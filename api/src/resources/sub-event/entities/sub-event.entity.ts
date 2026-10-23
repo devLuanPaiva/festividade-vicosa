@@ -3,11 +3,11 @@ import { SubEventType } from '../enums/sub-event-type.enum';
 
 @Entity('sub_event')
 export class SubEvent {
-  @PrimaryGeneratedColumn('identity', { generatedIdentity: 'ALWAYS' })
-  public id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id!: string;
 
-  @Column({ type: 'int' })
-  public editionId!: number;
+  @Column({ type: 'uuid' })
+  public editionId!: string;
 
   @Column({ type: 'varchar' })
   public type!: SubEventType;

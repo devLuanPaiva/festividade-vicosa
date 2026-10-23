@@ -1,4 +1,5 @@
-import type { Repository } from 'typeorm';
+import { ILike, type Repository } from 'typeorm';
+import { RoleCode } from '../../role/enums/role-code.enum';
 import type { User } from '../entities/user.entity';
 import { UserRepository } from './user.repository';
 
@@ -21,20 +22,49 @@ function createFixture(): { repository: UserRepository; typeorm: TypeOrmMock } {
 }
 
 describe('UserRepository', () => {
-  it('lists every user with the role ordered by id', async () => {
+  it('lists every user with the role ordered by name', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findAll();
+    await repository.findAll({});
 
-    expect(typeorm.find).toHaveBeenCalledWith({ relations: { role: true }, order: { id: 'ASC' } });
+    expect(typeorm.find).toHaveBeenCalledWith({
+      where: [{}],
+      relations: { role: true },
+      order: { name: 'ASC', id: 'ASC' },
+    });
+  });
+
+  it('filters the users by active flag and role', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findAll({ active: false, roleCode: RoleCode.MANAGER });
+
+    expect(typeorm.find).toHaveBeenCalledWith(
+      expect.objectContaining({ where: [{ active: false, role: { code: RoleCode.MANAGER } }] }),
+    );
+  });
+
+  it('searches the text in the name or in the e-mail', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findAll({ search: 'ana' });
+
+    expect(typeorm.find).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: [{ name: ILike('%ana%') }, { email: ILike('%ana%') }],
+      }),
+    );
   });
 
   it('finds a user by id with the role', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findById(5);
+    await repository.findById('00000000-0000-4000-8000-000000000005');
 
-    expect(typeorm.findOne).toHaveBeenCalledWith({ where: { id: 5 }, relations: { role: true } });
+    expect(typeorm.findOne).toHaveBeenCalledWith({
+      where: { id: '00000000-0000-4000-8000-000000000005' },
+      relations: { role: true },
+    });
   });
 
   it('finds a user by email ignoring the letter case and the active flag', async () => {
@@ -56,9 +86,12 @@ describe('UserRepository', () => {
   it('finds an active user by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.findActiveById(5);
+    await repository.findActiveById('00000000-0000-4000-8000-000000000005');
 
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: 5, active: true });
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({
+      id: '00000000-0000-4000-8000-000000000005',
+      active: true,
+    });
   });
 
   it('selects only the access columns of every user', async () => {
@@ -85,22 +118,25 @@ describe('UserRepository', () => {
       name: 'Ana',
       email: 'Ana@Example.com',
       passwordHash: 'hashed',
-      roleId: 3,
+      roleId: '00000000-0000-4000-8000-000000000003',
     });
 
     expect(user).toEqual({
       name: 'Ana',
       email: 'ana@example.com',
       passwordHash: 'hashed',
-      roleId: 3,
+      roleId: '00000000-0000-4000-8000-000000000003',
     });
   });
 
   it('updates the account fields of a user by id', async () => {
     const { repository, typeorm } = createFixture();
 
-    await repository.updateAccount(4, { active: false });
+    await repository.updateAccount('00000000-0000-4000-8000-000000000004', { active: false });
 
-    expect(typeorm.update).toHaveBeenCalledWith({ id: 4 }, { active: false });
+    expect(typeorm.update).toHaveBeenCalledWith(
+      { id: '00000000-0000-4000-8000-000000000004' },
+      { active: false },
+    );
   });
 });

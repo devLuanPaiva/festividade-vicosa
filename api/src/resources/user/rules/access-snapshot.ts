@@ -2,18 +2,18 @@ import type { PermissionEffect } from '../../role/enums/permission-effect.enum';
 import type { Permission } from '../../role/enums/permission.enum';
 
 export interface AccessUser {
-  id: number;
+  id: string;
   active: boolean;
-  roleId: number;
+  roleId: string;
 }
 
 export interface AccessRolePermission {
-  roleId: number;
+  roleId: string;
   permission: Permission;
 }
 
 export interface AccessOverride {
-  userId: number;
+  userId: string;
   permission: Permission;
   effect: PermissionEffect;
 }

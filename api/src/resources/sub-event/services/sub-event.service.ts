@@ -10,7 +10,7 @@ import type { CreateSubEventDto } from '../dto/create-sub-event.dto';
 import type { UpdateSubEventDto } from '../dto/update-sub-event.dto';
 import type { SubEvent } from '../entities/sub-event.entity';
 import type { SubEventType } from '../enums/sub-event-type.enum';
-import { SubEventRepository } from '../repository/sub-event.repository';
+import { SubEventRepository, type SubEventFilters } from '../repository/sub-event.repository';
 import { isValidDateRange } from '../rules/date-range.rule';
 
 @Injectable()
@@ -20,12 +20,12 @@ export class SubEventService {
     private readonly editionService: EditionService,
   ) {}
 
-  public async listByEdition(editionId: number): Promise<SubEvent[]> {
+  public async listByEdition(editionId: string, filters: SubEventFilters): Promise<SubEvent[]> {
     await this.editionService.findByIdOrFail(editionId);
-    return this.subEventRepository.findByEdition(editionId);
+    return this.subEventRepository.findByEdition(editionId, filters);
   }
 
-  public async findByIdOrFail(id: number): Promise<SubEvent> {
+  public async findByIdOrFail(id: string): Promise<SubEvent> {
     const subEvent = await this.subEventRepository.findById(id);
     if (!subEvent) {
       throw new NotFoundException(
@@ -35,7 +35,7 @@ export class SubEventService {
     return subEvent;
   }
 
-  public async create(editionId: number, input: CreateSubEventDto): Promise<SubEvent> {
+  public async create(editionId: string, input: CreateSubEventDto): Promise<SubEvent> {
     await this.editionService.findByIdOrFail(editionId);
     this.assertValidDateRange(input.startDate, input.endDate);
     await this.assertTypeAvailable(editionId, input.type);
@@ -51,7 +51,7 @@ export class SubEventService {
     });
   }
 
-  public async update(id: number, changes: UpdateSubEventDto): Promise<SubEvent> {
+  public async update(id: string, changes: UpdateSubEventDto): Promise<SubEvent> {
     const current = await this.findByIdOrFail(id);
     this.assertValidDateRange(
       changes.startDate ?? current.startDate,
@@ -73,7 +73,7 @@ export class SubEventService {
     }
   }
 
-  private async assertTypeAvailable(editionId: number, type: SubEventType): Promise<void> {
+  private async assertTypeAvailable(editionId: string, type: SubEventType): Promise<void> {
     if (await this.subEventRepository.findByEditionAndType(editionId, type)) {
       throw new ConflictException(
         apiError('SUB_EVENT_TYPE_TAKEN', 'Esta edição já possui um sub-evento deste tipo.', 'type'),

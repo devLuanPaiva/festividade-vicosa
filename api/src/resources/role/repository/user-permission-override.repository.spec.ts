@@ -13,7 +13,11 @@ function createRepository(typeorm: object): UserPermissionOverrideRepository {
 describe('UserPermissionOverrideRepository', () => {
   it('lists every override', async () => {
     const rows = [
-      { userId: 7, permissionCode: Permission.PHOTO_DELETE, effect: PermissionEffect.GRANTED },
+      {
+        userId: '00000000-0000-4000-8000-000000000007',
+        permissionCode: Permission.PHOTO_DELETE,
+        effect: PermissionEffect.GRANTED,
+      },
     ];
 
     await expect(
@@ -23,24 +27,38 @@ describe('UserPermissionOverrideRepository', () => {
 
   it('returns the overrides of a user as permission and effect pairs', async () => {
     const findBy = jest.fn().mockResolvedValue([
-      { userId: 7, permissionCode: Permission.PHOTO_DELETE, effect: PermissionEffect.GRANTED },
-      { userId: 7, permissionCode: Permission.PHOTO_UPLOAD, effect: PermissionEffect.REVOKED },
+      {
+        userId: '00000000-0000-4000-8000-000000000007',
+        permissionCode: Permission.PHOTO_DELETE,
+        effect: PermissionEffect.GRANTED,
+      },
+      {
+        userId: '00000000-0000-4000-8000-000000000007',
+        permissionCode: Permission.PHOTO_UPLOAD,
+        effect: PermissionEffect.REVOKED,
+      },
     ]);
 
-    await expect(createRepository({ findBy }).findByUserId(7)).resolves.toEqual([
+    await expect(
+      createRepository({ findBy }).findByUserId('00000000-0000-4000-8000-000000000007'),
+    ).resolves.toEqual([
       { permission: Permission.PHOTO_DELETE, effect: PermissionEffect.GRANTED },
       { permission: Permission.PHOTO_UPLOAD, effect: PermissionEffect.REVOKED },
     ]);
-    expect(findBy).toHaveBeenCalledWith({ userId: 7 });
+    expect(findBy).toHaveBeenCalledWith({ userId: '00000000-0000-4000-8000-000000000007' });
   });
 
   it('saves an override for a user and permission', async () => {
     const save = jest.fn().mockResolvedValue({});
 
-    await createRepository({ save }).save(7, Permission.TEAM_MANAGE, PermissionEffect.GRANTED);
+    await createRepository({ save }).save(
+      '00000000-0000-4000-8000-000000000007',
+      Permission.TEAM_MANAGE,
+      PermissionEffect.GRANTED,
+    );
 
     expect(save).toHaveBeenCalledWith({
-      userId: 7,
+      userId: '00000000-0000-4000-8000-000000000007',
       permissionCode: Permission.TEAM_MANAGE,
       effect: PermissionEffect.GRANTED,
     });
@@ -49,8 +67,14 @@ describe('UserPermissionOverrideRepository', () => {
   it('removes the override of a user and permission', async () => {
     const remove = jest.fn().mockResolvedValue({});
 
-    await createRepository({ delete: remove }).remove(7, Permission.TEAM_MANAGE);
+    await createRepository({ delete: remove }).remove(
+      '00000000-0000-4000-8000-000000000007',
+      Permission.TEAM_MANAGE,
+    );
 
-    expect(remove).toHaveBeenCalledWith({ userId: 7, permissionCode: Permission.TEAM_MANAGE });
+    expect(remove).toHaveBeenCalledWith({
+      userId: '00000000-0000-4000-8000-000000000007',
+      permissionCode: Permission.TEAM_MANAGE,
+    });
   });
 });

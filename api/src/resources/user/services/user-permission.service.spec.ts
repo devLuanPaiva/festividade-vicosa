@@ -17,7 +17,9 @@ function createFixture(): {
     assertPermissionsManagerRemains: jest.fn().mockResolvedValue(undefined),
   };
   const service = new UserPermissionService(
-    { findByIdOrFail: jest.fn().mockResolvedValue({ id: 7 }) } as unknown as UserService,
+    {
+      findByIdOrFail: jest.fn().mockResolvedValue({ id: '00000000-0000-4000-8000-000000000007' }),
+    } as unknown as UserService,
     overrideRepository as unknown as UserPermissionOverrideRepository,
     accessPolicy as unknown as AccessPolicyService,
   );
@@ -25,7 +27,7 @@ function createFixture(): {
 }
 
 const override = {
-  userId: 7,
+  userId: '00000000-0000-4000-8000-000000000007',
   permission: Permission.PHOTO_DELETE,
   effect: PermissionEffect.GRANTED,
 };
@@ -34,10 +36,10 @@ describe('UserPermissionService.setOverride', () => {
   it('saves the override of another user', async () => {
     const { service, overrideRepository } = createFixture();
 
-    await service.setOverride(1, override);
+    await service.setOverride('00000000-0000-4000-8000-000000000001', override);
 
     expect(overrideRepository.save).toHaveBeenCalledWith(
-      7,
+      '00000000-0000-4000-8000-000000000007',
       Permission.PHOTO_DELETE,
       PermissionEffect.GRANTED,
     );
@@ -49,7 +51,9 @@ describe('UserPermissionService.setOverride', () => {
       throw new ForbiddenException();
     });
 
-    await expect(service.setOverride(7, override)).rejects.toBeInstanceOf(ForbiddenException);
+    await expect(
+      service.setOverride('00000000-0000-4000-8000-000000000007', override),
+    ).rejects.toBeInstanceOf(ForbiddenException);
     expect(overrideRepository.save).not.toHaveBeenCalled();
   });
 
@@ -57,7 +61,9 @@ describe('UserPermissionService.setOverride', () => {
     const { service, overrideRepository, accessPolicy } = createFixture();
     accessPolicy.assertPermissionsManagerRemains.mockRejectedValue(new ConflictException());
 
-    await expect(service.setOverride(1, override)).rejects.toBeInstanceOf(ConflictException);
+    await expect(
+      service.setOverride('00000000-0000-4000-8000-000000000001', override),
+    ).rejects.toBeInstanceOf(ConflictException);
     expect(overrideRepository.save).not.toHaveBeenCalled();
   });
 });
@@ -66,9 +72,16 @@ describe('UserPermissionService.removeOverride', () => {
   it('removes the override of another user', async () => {
     const { service, overrideRepository } = createFixture();
 
-    await service.removeOverride(1, 7, Permission.PHOTO_DELETE);
+    await service.removeOverride(
+      '00000000-0000-4000-8000-000000000001',
+      '00000000-0000-4000-8000-000000000007',
+      Permission.PHOTO_DELETE,
+    );
 
-    expect(overrideRepository.remove).toHaveBeenCalledWith(7, Permission.PHOTO_DELETE);
+    expect(overrideRepository.remove).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000007',
+      Permission.PHOTO_DELETE,
+    );
   });
 
   it('forbids removing an override of the own permissions', async () => {
@@ -77,9 +90,13 @@ describe('UserPermissionService.removeOverride', () => {
       throw new ForbiddenException();
     });
 
-    await expect(service.removeOverride(7, 7, Permission.PHOTO_DELETE)).rejects.toBeInstanceOf(
-      ForbiddenException,
-    );
+    await expect(
+      service.removeOverride(
+        '00000000-0000-4000-8000-000000000007',
+        '00000000-0000-4000-8000-000000000007',
+        Permission.PHOTO_DELETE,
+      ),
+    ).rejects.toBeInstanceOf(ForbiddenException);
     expect(overrideRepository.remove).not.toHaveBeenCalled();
   });
 
@@ -88,7 +105,11 @@ describe('UserPermissionService.removeOverride', () => {
     accessPolicy.assertPermissionsManagerRemains.mockRejectedValue(new ConflictException());
 
     await expect(
-      service.removeOverride(1, 7, Permission.USER_MANAGE_PERMISSIONS),
+      service.removeOverride(
+        '00000000-0000-4000-8000-000000000001',
+        '00000000-0000-4000-8000-000000000007',
+        Permission.USER_MANAGE_PERMISSIONS,
+      ),
     ).rejects.toBeInstanceOf(ConflictException);
     expect(overrideRepository.remove).not.toHaveBeenCalled();
   });

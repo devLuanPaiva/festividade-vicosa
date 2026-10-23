@@ -7,7 +7,7 @@ import type { UserPermissionService } from '../services/user-permission.service'
 import { UserPermissionController } from './user-permission.controller';
 
 const actor: AuthenticatedUser = {
-  id: 1,
+  id: '00000000-0000-4000-8000-000000000001',
   name: 'Admin',
   email: 'admin@example.com',
   permissions: [],
@@ -36,8 +36,13 @@ describe('UserPermissionController', () => {
   it('returns the permissions of a user', async () => {
     const { controller, queryService } = createController();
 
-    await expect(controller.get(7)).resolves.toEqual({ permissions: [], overrides: [] });
-    expect(queryService.getPermissions).toHaveBeenCalledWith(7);
+    await expect(controller.get('00000000-0000-4000-8000-000000000007')).resolves.toEqual({
+      permissions: [],
+      overrides: [],
+    });
+    expect(queryService.getPermissions).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000007',
+    );
   });
 
   it('sets an override on behalf of the authenticated user', async () => {
@@ -45,23 +50,33 @@ describe('UserPermissionController', () => {
 
     await controller.set(
       actor,
-      { id: 7, permission: Permission.PHOTO_DELETE },
+      { id: '00000000-0000-4000-8000-000000000007', permission: Permission.PHOTO_DELETE },
       { effect: PermissionEffect.GRANTED },
     );
 
-    expect(permissionService.setOverride).toHaveBeenCalledWith(1, {
-      userId: 7,
-      permission: Permission.PHOTO_DELETE,
-      effect: PermissionEffect.GRANTED,
-    });
+    expect(permissionService.setOverride).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      {
+        userId: '00000000-0000-4000-8000-000000000007',
+        permission: Permission.PHOTO_DELETE,
+        effect: PermissionEffect.GRANTED,
+      },
+    );
   });
 
   it('removes an override on behalf of the authenticated user', async () => {
     const { controller, permissionService } = createController();
 
-    await controller.remove(actor, { id: 7, permission: Permission.PHOTO_DELETE });
+    await controller.remove(actor, {
+      id: '00000000-0000-4000-8000-000000000007',
+      permission: Permission.PHOTO_DELETE,
+    });
 
-    expect(permissionService.removeOverride).toHaveBeenCalledWith(1, 7, Permission.PHOTO_DELETE);
+    expect(permissionService.removeOverride).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      '00000000-0000-4000-8000-000000000007',
+      Permission.PHOTO_DELETE,
+    );
   });
 
   it.each([
