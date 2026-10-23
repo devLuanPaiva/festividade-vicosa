@@ -15,6 +15,7 @@
     "lint:files": "eslint --no-warn-ignored --fix"
   },
   "dependencies": {
+    "motion": "12.43.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"

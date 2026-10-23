@@ -1,9 +1,28 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { ClosingSection } from './components/closing/ClosingSection';
+import { HeroSection } from './components/hero/HeroSection';
+import { MarqueeBand } from './components/MarqueeBand';
+import { ModalitiesSection } from './components/modalities/ModalitiesSection';
+import { ProgramSection } from './components/program/ProgramSection';
+import { StatsSection } from './components/stats/StatsSection';
+import { TrajectorySection } from './components/trajectory/TrajectorySection';
+import { marqueeBottomItems, marqueeTopItems } from './data/home-content';
 
-export function HomePage(): ReactElement {
+export interface HomePageProps {
+  programContent: ReactNode;
+}
+
+export function HomePage({ programContent }: HomePageProps): ReactElement {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      <h1 className="text-3xl font-semibold text-black dark:text-zinc-50">Festividade de Viçosa</h1>
-    </main>
+    <>
+      <HeroSection />
+      <StatsSection />
+      <TrajectorySection />
+      <MarqueeBand items={marqueeTopItems} />
+      <ModalitiesSection />
+      <ProgramSection>{programContent}</ProgramSection>
+      <MarqueeBand items={marqueeBottomItems} reverse tilt="right" />
+      <ClosingSection />
+    </>
   );
 }

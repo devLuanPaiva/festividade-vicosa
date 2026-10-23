@@ -22,4 +22,4 @@ Tudo em Markdown, com diagramas em Mermaid, versionado junto do código.
 
 - Requisitos funcionais: `RF-xx`; não funcionais: `RNF-xx`; regras de negócio: `RN-xx`; casos de uso: `UC-xx`.
 - Item sem confirmação do cliente fica marcado como **(a confirmar)**.
-- Stack atual do repositório: `api/` (NestJS) e `client/` (Next.js, pages router).
+- Stack atual do repositório: `api/` (NestJS) e `client/` (Next.js, App Router).

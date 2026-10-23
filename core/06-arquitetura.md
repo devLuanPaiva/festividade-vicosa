@@ -39,7 +39,7 @@ flowchart LR
 ## Stack
 | Camada | Tecnologia | Observação |
 |--------|-----------|------------|
-| Front | Next.js (pages router) na **Vercel** | Já no repo. Páginas públicas com ISR; painel admin renderizado no navegador |
+| Front | Next.js (**App Router**, Cache Components) na **Vercel** | Já no repo. Páginas públicas com cache no servidor (`use cache`); painel admin renderizado no navegador |
 | API | NestJS + **TypeORM** | Já no repo. Roda em container na EC2 |
 | Banco | **PostgreSQL** em container | Mesmo `docker-compose` da API; volume persistente + backup para o S3 (ADR-04) |
 | Proxy/HTTPS | Caddy em container | Certificado Let's Encrypt automático para `api.dominio` |
@@ -77,7 +77,7 @@ flowchart LR
 - **Por quê:** volume minúsculo (algumas centenas de partidas); RDS custaria mais que a EC2 inteira.
 
 ### ADR-05 — Cache e atualização do placar (sem tempo real)
-- Páginas públicas (home, jogos, classificação, galeria) usam **ISR** com `revalidate` curto (ex.: 60 s) como rede de segurança.
+- Páginas públicas (home, jogos, classificação, galeria) buscam dados **no servidor** em funções com `'use cache'`, `cacheLife` curto (ex.: minutos) como rede de segurança e `cacheTag` por assunto (`schedule`, `matches`, `standings`). A falha da API é tratada dentro do escopo de cache, com vida curta, e a parte que depende dela fica em `<Suspense>`.
 - Ao **finalizar uma partida**, a API chama (com um segredo compartilhado) a rota de *on-demand revalidation* do Next na Vercel, que atualiza só as páginas afetadas (partida, time, jogos, classificação).
 - Meta: resultado no ar em até ~1 min (RNF-04). Sem WebSocket e sem polling no client.
 - Classificação calculada pela API na hora da requisição e cacheada. Não é gravada (RN-19).
@@ -109,9 +109,13 @@ api/src/
     user/ role/ auth/ health/
     <resource>/{controllers,services,repository,dto,entities,...}/ e <resource>.module.ts
 client/src/
-  pages/            # público (/, /jogos, /times/[id], /galeria, /historia) e /admin/*
-  features/         # jogos, galeria, historia, admin
-  styles/tokens.css # identidade visual trocável (RNF-06)
+  app/              # só rotas finas e layouts (App Router)
+    (public)/       # /, /jogos, /times/[id], /galeria, /historia (layout público)
+    (admin)/admin/  # painel (layout neutro, renderizado no navegador)
+  features/         # home, schedule, jogos, galeria, admin: components/, data/, hooks/, lib/, services/
+  components/       # compartilhados: layout/, motion/ (animações), ui/
+  lib/              # cliente da API, configuração, fontes
+  styles/           # tokens.css e surfaces.css: identidade visual trocável (RNF-06)
 ```
 
 ## Riscos
