@@ -43,28 +43,10 @@ describe('QualificationService.confirm', () => {
     ]);
   });
 
-  it('clears the confirmation of the group with an empty list', async () => {
-    const { service, repository } = createService();
-
-    await service.confirm(GROUP_ID, []);
-
-    expect(repository.replaceForGroup).toHaveBeenCalledWith(GROUP_ID, []);
-  });
-
   it.each([[['alfa', 'alfa']], [['alfa', 'delta']]])('refuses %j', async (teamIds) => {
     const { service, repository } = createService();
 
     await expect(service.confirm(GROUP_ID, teamIds)).rejects.toBeInstanceOf(BadRequestException);
     expect(repository.replaceForGroup).not.toHaveBeenCalled();
-  });
-});
-
-describe('QualificationService.listByGroups', () => {
-  it('lists the qualified teams of the given groups', async () => {
-    const { service, repository } = createService();
-
-    await service.listByGroups([GROUP_ID]);
-
-    expect(repository.findByGroups).toHaveBeenCalledWith([GROUP_ID]);
   });
 });

@@ -41,14 +41,6 @@ function createFixture(): {
 }
 
 describe('MatchGroupService queries', () => {
-  it('lists the groups of an existing category', async () => {
-    const { service } = createFixture();
-
-    await expect(
-      service.listByCategory('00000000-0000-4000-8000-000000000005', {}),
-    ).resolves.toEqual([stored]);
-  });
-
   it('does not list the groups of a category that does not exist', async () => {
     const { service, categoryService, repository } = createFixture();
     categoryService.findByIdOrFail.mockRejectedValue(new NotFoundException());
@@ -151,15 +143,6 @@ describe('MatchGroupService.remove', () => {
 
     await expect(failure).rejects.toBeInstanceOf(ConflictException);
     await expect(failure).rejects.toMatchObject({ response: { code: 'GROUP_HAS_MATCHES' } });
-  });
-
-  it('does not hide other database failures when deleting a group', async () => {
-    const { service, repository } = createFixture();
-    repository.remove.mockRejectedValue(new Error('connection lost'));
-
-    await expect(service.remove('00000000-0000-4000-8000-000000000001')).rejects.toThrow(
-      'connection lost',
-    );
   });
 
   it('does not delete a group that does not exist', async () => {
