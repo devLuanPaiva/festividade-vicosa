@@ -14,7 +14,7 @@ function toBestPlayer(match: Match): BestPlayerResponseDto | null {
 
 type Identity = Pick<
   MatchResponseDto,
-  'id' | 'categoryId' | 'stage' | 'groupId' | 'round' | 'teamAId' | 'teamBId'
+  'id' | 'categoryId' | 'stage' | 'groupId' | 'round' | 'bracketPosition' | 'teamAId' | 'teamBId'
 >;
 
 type Schedule = Pick<MatchResponseDto, 'scheduledAt' | 'location' | 'status'>;
@@ -26,6 +26,7 @@ function toIdentity(match: Match): Identity {
     stage: match.stage,
     groupId: match.groupId,
     round: match.round,
+    bracketPosition: match.bracketPosition,
     teamAId: match.teamAId,
     teamBId: match.teamBId,
   };

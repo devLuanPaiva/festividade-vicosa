@@ -8,6 +8,7 @@ const scheduled: Match = {
   stage: MatchStage.KNOCKOUT,
   groupId: null,
   round: MatchRound.FINAL,
+  bracketPosition: 0,
   scheduledAt: new Date('2026-12-19T22:00:00.000Z'),
   location: 'Ginásio',
   status: MatchStatus.SCHEDULED,

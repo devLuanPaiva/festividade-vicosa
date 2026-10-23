@@ -37,6 +37,7 @@ export class MatchService {
       stage: input.stage,
       groupId: input.groupId ?? null,
       round: input.round ?? null,
+      bracketPosition: null,
       scheduledAt: new Date(input.scheduledAt),
       location: input.location ?? null,
       teamAId: input.teamAId,

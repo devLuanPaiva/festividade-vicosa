@@ -117,6 +117,7 @@ describe('MatchRepository', () => {
       stage: MatchStage.KNOCKOUT,
       groupId: null,
       round: MatchRound.FINAL,
+      bracketPosition: 0,
       scheduledAt: new Date('2026-12-19T22:00:00Z'),
       location: null,
       teamAId: TEAM_ID,

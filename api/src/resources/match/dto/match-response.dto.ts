@@ -12,6 +12,7 @@ export interface MatchResponseDto {
   stage: MatchStage;
   groupId: string | null;
   round: MatchRound | null;
+  bracketPosition: number | null;
   scheduledAt: string;
   location: string | null;
   status: MatchStatus;

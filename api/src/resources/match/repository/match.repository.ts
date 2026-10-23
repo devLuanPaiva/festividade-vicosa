@@ -21,6 +21,7 @@ export interface MatchRecord {
   stage: MatchStage;
   groupId: string | null;
   round: MatchRound | null;
+  bracketPosition: number | null;
   scheduledAt: Date;
   location: string | null;
   teamAId: string;

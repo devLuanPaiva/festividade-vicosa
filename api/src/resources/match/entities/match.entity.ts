@@ -18,6 +18,9 @@ export class Match {
   @Column({ type: 'varchar', nullable: true })
   public round!: MatchRound | null;
 
+  @Column({ type: 'smallint', nullable: true })
+  public bracketPosition!: number | null;
+
   @Column({ type: 'timestamptz' })
   public scheduledAt!: Date;
 
