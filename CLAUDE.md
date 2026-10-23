@@ -36,7 +36,7 @@ resources/user/
   <nome>.module.ts
 ```
 
-- **Obrigatórios em todo resource com API:** `controllers/`, `services/`, `repository/`, `dto/` e o `*.module.ts`, **todos com testes** (`*.spec.ts` ao lado do arquivo).
+- **Obrigatórios em todo resource com API:** `controllers/`, `services/`, `repository/`, `dto/` e o `*.module.ts`. Os testes seguem a seção Testes: ficam ao lado do arquivo (`*.spec.ts`) e só onde há regra a proteger.
 - O resto entra **só quando necessário**: `guards/`, `validators/`, `decorators/`, `enums/`, `rules/` (funções puras de regra), `mappers/` etc. Não crie pasta vazia.
 - Resource sem persistência própria (ex.: `auth`, `health`) dispensa `repository/` e `entities/`.
 - Services dependem de repositories, nunca do `Repository` do TypeORM diretamente.
@@ -61,10 +61,13 @@ Baseado na skill `nestjs-best-practices`:
 ## Testes
 
 - **Exceção:** `api/src/database/demo/` (seed de demonstração) é ferramenta só do localhost, sem testes e fora da cobertura.
-- **Toda feature entra com testes unitários** no mesmo PR: `*.spec.ts` na API (Jest), `*.test.ts(x)` no client (Vitest + Testing Library).
-- Teste comportamento, não implementação. Cubra caso feliz, bordas e erros das regras `RN-xx` envolvidas.
-- Cobertura mínima de 80% (linhas, funções, branches).
+- **Qualidade acima de quantidade:** poucos testes que previnem regressão real valem mais que muitos que só conferem se um parâmetro chegou na função. Cada teste precisa responder "que bug este teste pega?". Sem resposta, não escreva.
+- **Toda feature entra com testes no mesmo PR, escolhidos por risco:** `*.spec.ts` na API (Jest), `*.test.ts(x)` no client (Vitest + Testing Library). Teste regra de negócio (`RN-xx`), integridade de dados, segurança e erros que o client exibe.
+- **Não escreva teste de:** controller que só repassa para o serviço, repository que só chama o TypeORM, mapper 1:1, decorator, validação que o `class-validator` já garante, nem de código só do localhost.
+- Teste comportamento, não implementação: verifique o resultado, não as chamadas do mock. Cubra caso feliz, bordas e erros da regra envolvida.
+- Todo teste segue F.I.R.S.T.: rápido, independente, repetível, autovalidável e escrito junto da regra. Nome que descreve a regra e o mínimo de expressão para dizer isso.
 - Regras de negócio puras (ex.: classificação do grupo) com testes por tabela de casos.
+- Cobertura mínima de 80% (linhas, funções, branches) sobre a lógica: controllers, repositories e mappers ficam fora da coleta. Cobertura é consequência, não meta.
 - **Todos os testes passam antes de abrir o PR:** `npm run verify` na raiz (lint + typecheck + testes + duplicação). O hook de `pre-push` roda isso.
 
 ## Git flow
