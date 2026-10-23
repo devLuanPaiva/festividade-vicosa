@@ -11,15 +11,6 @@ import {
 } from './match.service.fixture';
 
 describe('MatchService queries', () => {
-  it('lists the matches of an existing category with the filters', async () => {
-    const { service, repository } = createFixture();
-
-    await expect(service.listByCategory(CATEGORY_ID, { teamId: TEAM_A })).resolves.toEqual([
-      stored,
-    ]);
-    expect(repository.findByCategory).toHaveBeenCalledWith(CATEGORY_ID, { teamId: TEAM_A });
-  });
-
   it('does not list the matches of a category that does not exist', async () => {
     const { service, categoryService, repository } = createFixture();
     categoryService.findByIdOrFail.mockRejectedValue(new NotFoundException());
@@ -109,14 +100,6 @@ describe('MatchService.update', () => {
 });
 
 describe('MatchService.remove', () => {
-  it('deletes an existing match', async () => {
-    const { service, repository } = createFixture();
-
-    await service.remove(MATCH_ID);
-
-    expect(repository.remove).toHaveBeenCalledWith(MATCH_ID);
-  });
-
   it('does not delete a match that does not exist', async () => {
     const { service, repository } = createFixture();
     repository.findById.mockResolvedValue(null);

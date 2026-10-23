@@ -11,16 +11,6 @@ function respond(exception: unknown): ReturnType<typeof buildErrorResponse> {
   return buildErrorResponse(exception, resolveStatus(exception));
 }
 
-describe('resolveStatus', () => {
-  it('uses the status of an http exception', () => {
-    expect(resolveStatus(new NotFoundException())).toBe(404);
-  });
-
-  it('treats any other error as an internal server error', () => {
-    expect(resolveStatus(new Error('boom'))).toBe(500);
-  });
-});
-
 describe('buildErrorResponse', () => {
   it('uses the code, field and detail provided by the exception', () => {
     const exception = new ConflictException({

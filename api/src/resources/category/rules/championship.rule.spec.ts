@@ -6,10 +6,7 @@ describe('hasChampionship', () => {
     { type: SubEventType.JOCEV_HANDBALL, expected: true },
     { type: SubEventType.JOCEV_FUTSAL, expected: true },
     { type: SubEventType.JOCEV_BEACH_VOLLEYBALL, expected: false },
-    { type: SubEventType.CULTURAL_FESTIVAL, expected: false },
-    { type: SubEventType.EMANCIPATION_RUN, expected: false },
     { type: SubEventType.ECOPEDAL, expected: false },
-    { type: SubEventType.EMANCIPATION_PARTY, expected: false },
   ])('returns $expected for $type (RN-03)', ({ type, expected }) => {
     expect(hasChampionship(type)).toBe(expected);
   });

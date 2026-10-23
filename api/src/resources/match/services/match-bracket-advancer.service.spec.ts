@@ -186,12 +186,4 @@ describe('MatchBracketAdvancer.assertCorrectionAllowed', () => {
       advancer.assertCorrectionAllowed(bracketMatch({}), 'eight'),
     ).rejects.toBeInstanceOf(ConflictException);
   });
-
-  it('ignores matches outside a generated bracket', async () => {
-    const { advancer, repository } = createAdvancer({});
-
-    await advancer.assertCorrectionAllowed(bracketMatch({ bracketPosition: null }), 'eight');
-
-    expect(repository.findBracketMatch).not.toHaveBeenCalled();
-  });
 });

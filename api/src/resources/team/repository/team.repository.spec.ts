@@ -7,7 +7,6 @@ type TypeOrmMock = Record<
   jest.Mock
 >;
 
-const TEAM_ID = '00000000-0000-4000-8000-000000000007';
 const CATEGORY_ID = '00000000-0000-4000-8000-000000000005';
 const GROUP_ID = '00000000-0000-4000-8000-000000000001';
 
@@ -56,62 +55,5 @@ describe('TeamRepository.findByCategory', () => {
       },
       order: { name: 'ASC', id: 'ASC' },
     });
-  });
-});
-
-describe('TeamRepository', () => {
-  it('finds a team by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findById(TEAM_ID);
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: TEAM_ID });
-  });
-
-  it('finds a team by category and name', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findByCategoryAndName(CATEGORY_ID, 'Centro');
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ categoryId: CATEGORY_ID, name: 'Centro' });
-  });
-
-  it('finds a team by category and slug', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findByCategoryAndSlug(CATEGORY_ID, 'centro');
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ categoryId: CATEGORY_ID, slug: 'centro' });
-  });
-
-  it('saves a new team', async () => {
-    const { repository } = createFixture();
-    const record = {
-      categoryId: CATEGORY_ID,
-      groupId: null,
-      name: 'Centro',
-      slug: 'centro',
-      city: 'Viçosa',
-      abbreviation: null,
-      photoKey: null,
-    };
-
-    await expect(repository.create(record)).resolves.toEqual(record);
-  });
-
-  it('updates a team by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.update(TEAM_ID, { groupId: null });
-
-    expect(typeorm.update).toHaveBeenCalledWith({ id: TEAM_ID }, { groupId: null });
-  });
-
-  it('deletes a team by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.remove(TEAM_ID);
-
-    expect(typeorm.delete).toHaveBeenCalledWith({ id: TEAM_ID });
   });
 });

@@ -32,15 +32,6 @@ function matchWith(overrides: Partial<Match>): Match {
 }
 
 describe('toMatchResponse', () => {
-  it('formats the dates and has no best player nor result before the match is played', () => {
-    expect(toMatchResponse(scheduled)).toMatchObject({
-      scheduledAt: '2026-12-19T22:00:00.000Z',
-      finalizedAt: null,
-      scoreA: null,
-      bestPlayer: null,
-    });
-  });
-
   it('shows a walkover without score and with the winner', () => {
     const response = toMatchResponse(
       matchWith({

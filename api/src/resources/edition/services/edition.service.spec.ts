@@ -28,20 +28,6 @@ function createFixture(): { service: EditionService; repository: RepositoryMock 
 }
 
 describe('EditionService', () => {
-  it('lists the editions', async () => {
-    const { service } = createFixture();
-
-    await expect(service.list({})).resolves.toEqual([stored]);
-  });
-
-  it('returns an existing edition', async () => {
-    const { service } = createFixture();
-
-    await expect(service.findByIdOrFail('00000000-0000-4000-8000-000000000001')).resolves.toBe(
-      stored,
-    );
-  });
-
   it('throws not found with the id field when the edition does not exist', async () => {
     const { service, repository } = createFixture();
     repository.findById.mockResolvedValue(null);

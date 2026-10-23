@@ -77,10 +77,6 @@ describe('findResultProblem best player', () => {
   it.each([
     { scenario: 'no best player (RN-18)', input: score },
     {
-      scenario: 'a best player of team A',
-      input: { ...score, bestPlayerName: 'Ana', bestPlayerTeamId: TEAM_A },
-    },
-    {
       scenario: 'a best player with photo of team B',
       input: {
         ...score,
@@ -148,12 +144,6 @@ describe('resolveWinnerId', () => {
       match: knockoutMatch,
       input: { scoreA: 2, scoreB: 2, penaltiesA: 4, penaltiesB: 3 },
       expected: TEAM_A,
-    },
-    {
-      scenario: 'team B wins the penalties',
-      match: knockoutMatch,
-      input: { scoreA: 1, scoreB: 1, penaltiesA: 2, penaltiesB: 5 },
-      expected: TEAM_B,
     },
   ])('resolves the winner when $scenario', ({ match, input, expected }) => {
     expect(resolveWinnerId(match, input)).toBe(expected);

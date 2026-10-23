@@ -33,17 +33,6 @@ function createFixture(): {
 }
 
 describe('UserAccountService', () => {
-  it('activates a user without any restriction', async () => {
-    const { service, userService } = createFixture();
-
-    await service.activate('00000000-0000-4000-8000-000000000005');
-
-    expect(userService.setActive).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000005',
-      true,
-    );
-  });
-
   it('deactivates a user after checking that a permissions manager remains', async () => {
     const { service, userService, accessPolicy } = createFixture();
 

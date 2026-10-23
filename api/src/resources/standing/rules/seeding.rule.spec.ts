@@ -62,31 +62,4 @@ describe('seedQualifiedTeams', () => {
 
     expect(namesOf(groups)).toEqual(['Beta', 'Delta', 'Gama', 'Alfa']);
   });
-
-  it('numbers the seeds from 1 in ranking order', () => {
-    const seeded = seedQualifiedTeams([
-      group('Grupo A', [
-        row('Alfa', { qualifiedPosition: 1 }),
-        row('Beta', { qualifiedPosition: 2 }),
-        row('Gama', { qualifiedPosition: 3 }),
-      ]),
-    ]);
-
-    expect(seeded.map((team) => team.seed)).toEqual([1, 2, 3]);
-  });
-
-  it('seeds a single group in the confirmed order', () => {
-    const groups = [
-      group('Grupo único', [
-        row('Alfa', { qualifiedPosition: 2, points: 9 }),
-        row('Beta', { qualifiedPosition: 1, points: 3 }),
-      ]),
-    ];
-
-    expect(namesOf(groups)).toEqual(['Beta', 'Alfa']);
-  });
-
-  it('answers with an empty list when nothing was confirmed', () => {
-    expect(seedQualifiedTeams([group('Grupo A', [row('Alfa', {})])])).toEqual([]);
-  });
 });

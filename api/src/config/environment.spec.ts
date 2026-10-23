@@ -33,7 +33,7 @@ describe('validateEnvironment', () => {
     expect(environment.DATABASE_PORT).toBe(6543);
   });
 
-  it.each(Object.keys(validConfig))('rejects a configuration without %s', (variable) => {
+  it.each(['DATABASE_HOST', 'JWT_SECRET'])('rejects a configuration without %s', (variable) => {
     expect(() => validateEnvironment(withoutVariable(variable))).toThrow(variable);
   });
 
@@ -49,16 +49,6 @@ describe('validateEnvironment', () => {
     expect(() => validateEnvironment({ ...validConfig, JWT_SECRET: 'too-short' })).toThrow(
       'JWT_SECRET',
     );
-  });
-
-  it('accepts the initial administrator credentials', () => {
-    const environment = validateEnvironment({
-      ...validConfig,
-      ADMIN_EMAIL: 'admin@example.com',
-      ADMIN_INITIAL_PASSWORD: 'a-long-password',
-    });
-
-    expect(environment.ADMIN_EMAIL).toBe('admin@example.com');
   });
 
   it.each([

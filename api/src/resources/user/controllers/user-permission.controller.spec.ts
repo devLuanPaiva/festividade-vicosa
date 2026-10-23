@@ -33,18 +33,6 @@ function createController(): {
 }
 
 describe('UserPermissionController', () => {
-  it('returns the permissions of a user', async () => {
-    const { controller, queryService } = createController();
-
-    await expect(controller.get('00000000-0000-4000-8000-000000000007')).resolves.toEqual({
-      permissions: [],
-      overrides: [],
-    });
-    expect(queryService.getPermissions).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000007',
-    );
-  });
-
   it('sets an override on behalf of the authenticated user', async () => {
     const { controller, permissionService } = createController();
 

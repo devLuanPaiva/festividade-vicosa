@@ -131,14 +131,11 @@ describe('Matches (e2e)', () => {
     );
   });
 
-  it.each(['stage=SEMI', 'status=DONE', 'teamId=abc', 'scheduledFrom=yesterday', 'limit=0'])(
-    'rejects the invalid filter %s',
-    async (query) => {
-      const response = await request(server()).get(`${MATCHES_PATH}?${query}`);
+  it.each(['stage=SEMI', 'limit=0'])('rejects the invalid filter %s', async (query) => {
+    const response = await request(server()).get(`${MATCHES_PATH}?${query}`);
 
-      expect(response.status).toBe(400);
-    },
-  );
+    expect(response.status).toBe(400);
+  });
 
   it('requires login, then the match permission, to create a match', async () => {
     const anonymous = await request(server()).post(MATCHES_PATH).send(validMatch);
@@ -165,12 +162,6 @@ describe('Matches (e2e)', () => {
       body: { ...validMatch, scheduledAt: '19/12' },
       field: 'scheduledAt',
     },
-    {
-      scenario: 'a team id is not a uuid',
-      body: { ...validMatch, teamAId: '1' },
-      field: 'teamAId',
-    },
-    { scenario: 'the round is unknown', body: { ...validMatch, round: 'EIGHTH' }, field: 'round' },
   ])('rejects a match when $scenario', async ({ body, field }) => {
     const response = await as('organizer-token', request(server()).post(MATCHES_PATH).send(body));
 

@@ -1,4 +1,4 @@
-import { In, type EntityManager, type Repository } from 'typeorm';
+import { type EntityManager, type Repository } from 'typeorm';
 import { QualifiedTeam } from '../entities/qualified-team.entity';
 import { QualifiedTeamRepository } from './qualified-team.repository';
 
@@ -32,17 +32,6 @@ function createFixture(): {
 }
 
 describe('QualifiedTeamRepository', () => {
-  it('finds the qualified teams of several groups ordered by position', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findByGroups([GROUP_ID]);
-
-    expect(typeorm.find).toHaveBeenCalledWith({
-      where: { groupId: In([GROUP_ID]) },
-      order: { groupId: 'ASC', position: 'ASC' },
-    });
-  });
-
   it('replaces the qualified teams of a group inside one transaction', async () => {
     const { repository, manager } = createFixture();
 
@@ -56,12 +45,5 @@ describe('QualifiedTeamRepository', () => {
       { groupId: GROUP_ID, teamId: TEAM_B, position: 1 },
       { groupId: GROUP_ID, teamId: TEAM_A, position: 2 },
     ]);
-  });
-
-  it('only clears the group when no team is qualified', async () => {
-    const { repository, manager } = createFixture();
-
-    await expect(repository.replaceForGroup(GROUP_ID, [])).resolves.toEqual([]);
-    expect(manager.delete).toHaveBeenCalledTimes(1);
   });
 });

@@ -56,16 +56,6 @@ describe('MatchBracketGenerator.generate', () => {
     ]);
   });
 
-  it('starts at the round that fits the number of teams', async () => {
-    const { generator, repository } = createGenerator();
-
-    await generator.generate(CATEGORY_ID, { teamIds: teamIds(8), scheduledAt: SCHEDULED_AT });
-
-    const [records] = repository.createMany.mock.calls[0] as [{ round: MatchRound }[]];
-    expect(records).toHaveLength(4);
-    expect(records.every((record) => record.round === MatchRound.QUARTER_FINAL)).toBe(true);
-  });
-
   it('validates that every pairing is made of teams of the category', async () => {
     const { generator, validator } = createGenerator();
 

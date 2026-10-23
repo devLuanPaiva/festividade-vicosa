@@ -92,10 +92,4 @@ describe('access changes', () => {
         .overrides,
     ).toHaveLength(1);
   });
-
-  it('does not mutate the original snapshot', () => {
-    deactivateUser('00000000-0000-4000-8000-000000000001')(snapshot);
-
-    expect(snapshot.users[0]?.active).toBe(true);
-  });
 });

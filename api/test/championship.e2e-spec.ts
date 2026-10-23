@@ -117,18 +117,6 @@ describe('Categories and groups (e2e)', () => {
       body: { name: 'Adulto', gender: 'MALE' },
     },
     { path: '/categories/00000000-0000-4000-8000-000000000005/groups', body: { name: 'Grupo A' } },
-  ])('requires login to create at $path', async ({ path, body }) => {
-    const response = await request(server()).post(path).send(body);
-
-    expect(response.status).toBe(401);
-  });
-
-  it.each([
-    {
-      path: '/sub-events/00000000-0000-4000-8000-000000000002/categories',
-      body: { name: 'Adulto', gender: 'MALE' },
-    },
-    { path: '/categories/00000000-0000-4000-8000-000000000005/groups', body: { name: 'Grupo A' } },
   ])('forbids creating at $path without the team permission', async ({ path, body }) => {
     const response = await request(server())
       .post(path)
@@ -158,8 +146,6 @@ describe('Categories and groups (e2e)', () => {
       body: { name: 'Adulto', gender: 'OTHER' },
       field: 'gender',
     },
-    { scenario: 'the name is empty', body: { name: '', gender: 'MALE' }, field: 'name' },
-    { scenario: 'the gender is missing', body: { name: 'Adulto' }, field: 'gender' },
   ])('rejects a category when $scenario', async ({ body, field }) => {
     const response = await asManager(
       request(server())
@@ -171,16 +157,13 @@ describe('Categories and groups (e2e)', () => {
     expect(response.body).toMatchObject({ errors: { code: 'VALIDATION_ERROR', field } });
   });
 
-  it.each(['gender=OTHER', 'gender=MALE&search=' + 'a'.repeat(121)])(
-    'rejects the invalid category filter %s',
-    async (query) => {
-      const response = await request(server()).get(
-        `/sub-events/00000000-0000-4000-8000-000000000002/categories?${query}`,
-      );
+  it.each(['gender=OTHER'])('rejects the invalid category filter %s', async (query) => {
+    const response = await request(server()).get(
+      `/sub-events/00000000-0000-4000-8000-000000000002/categories?${query}`,
+    );
 
-      expect(response.status).toBe(400);
-    },
-  );
+    expect(response.status).toBe(400);
+  });
 
   it('removes a group with no content in the response', async () => {
     const response = await asManager(

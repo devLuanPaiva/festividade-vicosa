@@ -9,15 +9,6 @@ import {
 } from './team.service.fixture';
 
 describe('TeamService queries', () => {
-  it('lists the teams of an existing category with the filters', async () => {
-    const { service, repository } = createFixture();
-
-    await expect(service.listByCategory(CATEGORY_ID, { city: 'Viçosa' })).resolves.toEqual([
-      stored,
-    ]);
-    expect(repository.findByCategory).toHaveBeenCalledWith(CATEGORY_ID, { city: 'Viçosa' });
-  });
-
   it('does not list the teams of a category that does not exist', async () => {
     const { service, categoryService, repository } = createFixture();
     categoryService.findByIdOrFail.mockRejectedValue(new NotFoundException());

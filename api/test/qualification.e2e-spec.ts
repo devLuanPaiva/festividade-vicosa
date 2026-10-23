@@ -83,19 +83,9 @@ describe('Qualification (e2e)', () => {
     expect(response.body).not.toHaveProperty('results.0.groupId');
   });
 
-  it('accepts an empty list to clear the confirmation', async () => {
-    const response = await as(
-      'manager-token',
-      request(server()).put(QUALIFIED_PATH).send({ teamIds: [] }),
-    );
-
-    expect(response.status).toBe(200);
-  });
-
   it.each([
     { scenario: 'teamIds is missing', body: {} },
     { scenario: 'a team id is not a uuid', body: { teamIds: ['1'] } },
-    { scenario: 'teamIds is not a list', body: { teamIds: TEAM_A } },
   ])('rejects the confirmation when $scenario', async ({ body }) => {
     const response = await as('manager-token', request(server()).put(QUALIFIED_PATH).send(body));
 

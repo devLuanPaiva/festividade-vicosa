@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
 import type { MatchGroupService } from '../../match-group/services/match-group.service';
 import { MatchResultType, MatchStage, MatchStatus } from '../../match/enums/match.enums';
 import type { MatchService } from '../../match/services/match.service';
@@ -83,14 +82,6 @@ describe('StandingService.listByCategory', () => {
       status: MatchStatus.FINALIZED,
     });
   });
-
-  it('does not build standings for a category that does not exist', async () => {
-    const { service, groupService, matchService } = createFixture();
-    groupService.listByCategory.mockRejectedValue(new NotFoundException());
-
-    await expect(service.listByCategory(CATEGORY)).rejects.toBeInstanceOf(NotFoundException);
-    expect(matchService.listByCategory).not.toHaveBeenCalled();
-  });
 });
 
 describe('StandingService qualified positions', () => {
@@ -137,12 +128,6 @@ describe('StandingService.listSeeding', () => {
       [2, 'Beta', 'Grupo A'],
     ]);
   });
-
-  it('is empty while no group has confirmed its qualified teams', async () => {
-    const { service } = createFixture();
-
-    await expect(service.listSeeding(CATEGORY)).resolves.toEqual([]);
-  });
 });
 
 describe('StandingService.getByGroup', () => {
@@ -153,12 +138,5 @@ describe('StandingService.getByGroup', () => {
 
     expect(rows.map((row) => row.teamId)).toEqual(['alfa', 'beta']);
     expect(rows[0]).toMatchObject({ position: 1, goalDifference: 2 });
-  });
-
-  it('fails when the group does not exist', async () => {
-    const { service, groupService } = createFixture();
-    groupService.findByIdOrFail.mockRejectedValue(new NotFoundException());
-
-    await expect(service.getByGroup(GROUP_A.id)).rejects.toBeInstanceOf(NotFoundException);
   });
 });

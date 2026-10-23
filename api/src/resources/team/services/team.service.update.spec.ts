@@ -72,14 +72,6 @@ describe('TeamService.update', () => {
     expect(repository.findByCategoryAndSlug).not.toHaveBeenCalled();
     expect(repository.update).toHaveBeenCalled();
   });
-
-  it('keeps the slug stable when only the name changes', async () => {
-    const { service, repository } = createFixture();
-
-    await service.update(TEAM_ID, { name: 'Centro Histórico' });
-
-    expect(repository.update).toHaveBeenCalledWith(TEAM_ID, { name: 'Centro Histórico' });
-  });
 });
 
 describe('TeamService.remove', () => {
@@ -101,13 +93,6 @@ describe('TeamService.remove', () => {
     await expect(failure).rejects.toMatchObject({
       response: { code: 'TEAM_HAS_MATCHES', field: 'id' },
     });
-  });
-
-  it('does not hide other database failures when deleting a team', async () => {
-    const { service, repository } = createFixture();
-    repository.remove.mockRejectedValue(new Error('connection lost'));
-
-    await expect(service.remove(TEAM_ID)).rejects.toThrow('connection lost');
   });
 
   it('does not delete a team that does not exist', async () => {

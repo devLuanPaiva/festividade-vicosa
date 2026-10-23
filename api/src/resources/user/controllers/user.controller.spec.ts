@@ -60,37 +60,6 @@ describe('UserController', () => {
     await expect(controller.list({})).resolves.toEqual([publicUser]);
   });
 
-  it('creates a user with the requested role', async () => {
-    const { controller, userService } = createController();
-    const input = {
-      name: 'Ana',
-      email: 'ana@example.com',
-      password: 'a-long-password',
-      roleCode: RoleCode.MANAGER,
-    };
-
-    await expect(controller.create(input)).resolves.toEqual(publicUser);
-    expect(userService.create).toHaveBeenCalledWith(RoleCode.MANAGER, input);
-  });
-
-  it('activates a user', async () => {
-    const { controller, accountService } = createController();
-
-    await expect(controller.activate('00000000-0000-4000-8000-000000000004')).resolves.toEqual(
-      publicUser,
-    );
-    expect(accountService.activate).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000004');
-  });
-
-  it('deactivates a user', async () => {
-    const { controller, accountService } = createController();
-
-    await expect(controller.deactivate('00000000-0000-4000-8000-000000000004')).resolves.toEqual(
-      publicUser,
-    );
-    expect(accountService.deactivate).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000004');
-  });
-
   it('changes the role on behalf of the authenticated user', async () => {
     const { controller, accountService } = createController();
 

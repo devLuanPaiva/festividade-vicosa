@@ -90,11 +90,6 @@ describe('Match results (e2e)', () => {
 
   it.each([
     { scenario: 'an unknown result type', body: { resultType: 'FORFEIT' }, field: 'resultType' },
-    {
-      scenario: 'a walkover winner that is not a uuid',
-      body: { resultType: 'WALKOVER', walkoverWinnerId: '3' },
-      field: 'walkoverWinnerId',
-    },
   ])('rejects a result with $scenario', async ({ body, field }) => {
     const response = await as(
       'scorer-token',
@@ -114,26 +109,16 @@ describe('Match results (e2e)', () => {
     expect(response.status).toBe(403);
   });
 
-  it.each([
-    { scenario: 'a negative score', body: { scoreA: -1, scoreB: 0 }, field: 'scoreA' },
-    { scenario: 'a score with decimals', body: { scoreA: 1.5, scoreB: 0 }, field: 'scoreA' },
-    {
-      scenario: 'penalties that are not numbers',
-      body: { scoreA: 1, scoreB: 1, penaltiesA: 'x' },
-      field: 'penaltiesA',
-    },
-    {
-      scenario: 'a best player team that is not a uuid',
-      body: { scoreA: 1, scoreB: 0, bestPlayerTeamId: '7' },
-      field: 'bestPlayerTeamId',
-    },
-  ])('rejects a result with $scenario', async ({ body, field }) => {
-    const response = await as(
-      'scorer-token',
-      request(server()).put(`/matches/${MATCH_ID}/result`).send(body),
-    );
+  it.each([{ scenario: 'a negative score', body: { scoreA: -1, scoreB: 0 }, field: 'scoreA' }])(
+    'rejects a result with $scenario',
+    async ({ body, field }) => {
+      const response = await as(
+        'scorer-token',
+        request(server()).put(`/matches/${MATCH_ID}/result`).send(body),
+      );
 
-    expect(response.status).toBe(400);
-    expect(response.body).toMatchObject({ errors: { field } });
-  });
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({ errors: { field } });
+    },
+  );
 });

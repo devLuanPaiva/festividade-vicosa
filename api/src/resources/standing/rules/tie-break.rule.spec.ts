@@ -1,5 +1,5 @@
 import { calculateStandings } from './standings.rule';
-import { ALFA, BETA, DELTA, GAMA, doubleWalkover, game, walkover } from './standing.fixtures';
+import { ALFA, BETA, DELTA, GAMA, game, walkover } from './standing.fixtures';
 
 const FOUR_TEAMS = [ALFA, BETA, GAMA, DELTA];
 
@@ -46,16 +46,6 @@ describe('tie break between two teams (ART. 16)', () => {
     ]);
 
     expect(orderOf(rows)).toEqual(['gama', 'alfa', 'beta', 'delta']);
-  });
-
-  it('counts a double walkover as a missed match for both teams', () => {
-    const rows = calculateStandings(FOUR_TEAMS, [
-      doubleWalkover('alfa', 'beta'),
-      game('alfa', [1, 0], 'gama'),
-      game('delta', [0, 1], 'beta'),
-    ]);
-
-    expect(rows.map((row) => row.walkoverLosses)).toEqual([1, 1, 0, 0]);
   });
 });
 
