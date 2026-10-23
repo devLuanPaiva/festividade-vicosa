@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
+  In,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -73,10 +74,13 @@ function directFilters(filters: MatchFilters): FindOptionsWhere<Match> {
   return Object.fromEntries(present.map((key) => [key, filters[key]]));
 }
 
-function buildWhere(categoryId: string, filters: MatchFilters): FindOptionsWhere<Match>[] {
+function buildWhere(
+  scope: FindOptionsWhere<Match>,
+  filters: MatchFilters,
+): FindOptionsWhere<Match>[] {
   const scheduledAt = scheduledAtRange(filters.scheduledFrom, filters.scheduledTo);
   const base: FindOptionsWhere<Match> = {
-    categoryId,
+    ...scope,
     ...directFilters(filters),
     ...(scheduledAt && { scheduledAt }),
   };
@@ -94,7 +98,18 @@ export class MatchRepository {
 
   public findByCategory(categoryId: string, filters: MatchFilters): Promise<Match[]> {
     return this.repository.find({
-      where: buildWhere(categoryId, filters),
+      where: buildWhere({ categoryId }, filters),
+      order: { scheduledAt: 'ASC', id: 'ASC' },
+    });
+  }
+
+  public findInCategories(
+    categoryIds: string[] | undefined,
+    filters: MatchFilters,
+  ): Promise<Match[]> {
+    const scope = categoryIds ? { categoryId: In(categoryIds) } : {};
+    return this.repository.find({
+      where: buildWhere(scope, filters),
       order: { scheduledAt: 'ASC', id: 'ASC' },
     });
   }
