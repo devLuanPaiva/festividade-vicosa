@@ -26,6 +26,10 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
       CORS_ORIGIN: ${CORS_ORIGIN:?set CORS_ORIGIN}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-12h}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-}
     depends_on:
       db:
         condition: service_healthy
