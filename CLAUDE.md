@@ -60,6 +60,7 @@ Baseado na skill `nestjs-best-practices`:
 
 ## Testes
 
+- **Exceção:** `api/src/database/demo/` (seed de demonstração) é ferramenta só do localhost, sem testes e fora da cobertura.
 - **Toda feature entra com testes unitários** no mesmo PR: `*.spec.ts` na API (Jest), `*.test.ts(x)` no client (Vitest + Testing Library).
 - Teste comportamento, não implementação. Cubra caso feliz, bordas e erros das regras `RN-xx` envolvidas.
 - Cobertura mínima de 80% (linhas, funções, branches).
@@ -90,7 +91,7 @@ Nunca commitar segredos (`.env`, chaves AWS, senhas). Use `.env.example` com val
 ## Comandos
 
 Na raiz: `npm run lint`, `npm run typecheck`, `npm test`, `npm run duplication`, `npm run verify`.
-API (`cd api`): `npm run start:dev`, `npm test`, `npm run test:e2e`, `npm run lint:fix`, `npm run migration:generate -- src/database/migrations/<Name>`, `npm run migration:run`.
+API (`cd api`): `npm run start:dev`, `npm test`, `npm run test:e2e`, `npm run lint:fix`, `npm run migration:generate -- src/database/migrations/<Name>`, `npm run migration:run`, `npm run seed:demo` (dados fictícios; `-- --reset` apaga e recria as partidas, times e grupos da edição).
 Banco e API locais: copie `.env.example` para `.env` e rode `docker compose up -d db` (o override expõe o Postgres em `127.0.0.1:5432`). Produção (EC2): `docker compose -f docker-compose.yml up -d --build`, que também sobe o Caddy com HTTPS.
 Client (`cd client`): `npm run dev`, `npm test`, `npm run lint:fix`.
 
