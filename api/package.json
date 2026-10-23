@@ -88,6 +88,10 @@
       "!**/*.module.ts",
       "!**/*.entity.ts",
       "!**/*.enum.ts",
+      "!**/controllers/**",
+      "!**/repository/**",
+      "!**/mappers/**",
+      "!**/decorators/**",
       "!database/data-source.ts",
       "!database/demo/**",
       "!database/migrations/**"
