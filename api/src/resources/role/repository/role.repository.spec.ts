@@ -3,20 +3,34 @@ import type { Role } from '../entities/role.entity';
 import { RoleCode } from '../enums/role-code.enum';
 import { RoleRepository } from './role.repository';
 
+function createRepository(typeorm: object): RoleRepository {
+  return new RoleRepository(typeorm as unknown as Repository<Role>);
+}
+
 describe('RoleRepository', () => {
+  it('lists the roles ordered by id', async () => {
+    const find = jest.fn().mockResolvedValue([]);
+
+    await createRepository({ find }).findAll();
+
+    expect(find).toHaveBeenCalledWith({ order: { id: 'ASC' } });
+  });
+
   it('finds a role by its code', async () => {
     const role = { id: 3, code: RoleCode.MANAGER, name: 'Manager' };
     const findOneByOrFail = jest.fn().mockResolvedValue(role);
-    const repository = new RoleRepository({ findOneByOrFail } as unknown as Repository<Role>);
 
-    await expect(repository.findByCodeOrFail(RoleCode.MANAGER)).resolves.toBe(role);
+    await expect(
+      createRepository({ findOneByOrFail }).findByCodeOrFail(RoleCode.MANAGER),
+    ).resolves.toBe(role);
     expect(findOneByOrFail).toHaveBeenCalledWith({ code: RoleCode.MANAGER });
   });
 
   it('propagates the failure when the role does not exist', async () => {
     const findOneByOrFail = jest.fn().mockRejectedValue(new Error('not found'));
-    const repository = new RoleRepository({ findOneByOrFail } as unknown as Repository<Role>);
 
-    await expect(repository.findByCodeOrFail(RoleCode.ADMIN)).rejects.toThrow('not found');
+    await expect(
+      createRepository({ findOneByOrFail }).findByCodeOrFail(RoleCode.ADMIN),
+    ).rejects.toThrow('not found');
   });
 });
