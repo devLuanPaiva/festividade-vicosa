@@ -18,20 +18,31 @@ function createFixture(
   return { service, findForRole, findForUser };
 }
 
+const overrides: PermissionOverride[] = [
+  { permission: Permission.PHOTO_UPLOAD, effect: PermissionEffect.REVOKED },
+  { permission: Permission.PHOTO_DELETE, effect: PermissionEffect.GRANTED },
+];
+
 describe('AccessControlService', () => {
   it('combines the role permissions with the user overrides', async () => {
     const { service } = createFixture(
       [Permission.MATCH_RECORD_SCORE, Permission.PHOTO_UPLOAD],
-      [
-        { permission: Permission.PHOTO_UPLOAD, effect: PermissionEffect.REVOKED },
-        { permission: Permission.PHOTO_DELETE, effect: PermissionEffect.GRANTED },
-      ],
+      overrides,
     );
 
     await expect(service.getEffectivePermissions({ id: 7, roleId: 3 })).resolves.toEqual([
       Permission.MATCH_RECORD_SCORE,
       Permission.PHOTO_DELETE,
     ]);
+  });
+
+  it('describes the access with the effective permissions and the raw overrides', async () => {
+    const { service } = createFixture([Permission.PHOTO_UPLOAD], overrides);
+
+    await expect(service.describeAccess({ id: 7, roleId: 3 })).resolves.toEqual({
+      permissions: [Permission.PHOTO_DELETE],
+      overrides,
+    });
   });
 
   it('loads permissions by the role and the user of the subject', async () => {

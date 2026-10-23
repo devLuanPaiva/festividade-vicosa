@@ -10,6 +10,10 @@ export class RolePermissionRepository {
     @InjectRepository(RolePermission) private readonly repository: Repository<RolePermission>,
   ) {}
 
+  public findAll(): Promise<RolePermission[]> {
+    return this.repository.find();
+  }
+
   public async findPermissionsByRoleId(roleId: number): Promise<Permission[]> {
     const rolePermissions = await this.repository.findBy({ roleId });
     return rolePermissions.map((rolePermission) => rolePermission.permissionCode);
