@@ -1,4 +1,5 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 import type { CategoryService } from '../../category/services/category.service';
 import type { MatchGroupRepository } from '../repository/match-group.repository';
 import { MatchGroupService } from './match-group.service';
@@ -138,6 +139,27 @@ describe('MatchGroupService.remove', () => {
     await service.remove('00000000-0000-4000-8000-000000000001');
 
     expect(repository.remove).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
+  });
+
+  it('explains that a group with matches cannot be deleted', async () => {
+    const { service, repository } = createFixture();
+    repository.remove.mockRejectedValue(
+      new QueryFailedError('DELETE', [], Object.assign(new Error('fk'), { code: '23503' })),
+    );
+
+    const failure = service.remove('00000000-0000-4000-8000-000000000001');
+
+    await expect(failure).rejects.toBeInstanceOf(ConflictException);
+    await expect(failure).rejects.toMatchObject({ response: { code: 'GROUP_HAS_MATCHES' } });
+  });
+
+  it('does not hide other database failures when deleting a group', async () => {
+    const { service, repository } = createFixture();
+    repository.remove.mockRejectedValue(new Error('connection lost'));
+
+    await expect(service.remove('00000000-0000-4000-8000-000000000001')).rejects.toThrow(
+      'connection lost',
+    );
   });
 
   it('does not delete a group that does not exist', async () => {

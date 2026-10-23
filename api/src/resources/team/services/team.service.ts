@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { apiError } from '../../../common/errors/api-error';
+import { runUnlessReferenced } from '../../../common/database/foreign-key-violation';
 import { CategoryService } from '../../category/services/category.service';
 import { MatchGroupService } from '../../match-group/services/match-group.service';
 import type { CreateTeamDto } from '../dto/create-team.dto';
@@ -62,7 +63,21 @@ export class TeamService {
 
   public async remove(id: string): Promise<void> {
     await this.findByIdOrFail(id);
-    await this.teamRepository.remove(id);
+    await this.removeUnlessReferenced(id);
+  }
+
+  private removeUnlessReferenced(id: string): Promise<void> {
+    return runUnlessReferenced(
+      () => this.teamRepository.remove(id),
+      () =>
+        new ConflictException(
+          apiError(
+            'TEAM_HAS_MATCHES',
+            'Este time tem partidas. Exclua as partidas antes de excluir o time.',
+            'id',
+          ),
+        ),
+    );
   }
 
   private async assertUniqueFieldsAvailable(current: Team, changes: UpdateTeamDto): Promise<void> {
