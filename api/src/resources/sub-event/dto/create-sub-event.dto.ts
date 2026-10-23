@@ -1,8 +1,11 @@
-import { IsEnum, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
-import { OptionalDescription, RequiredName } from '../../../common/validation/field-decorators';
+import { IsEnum, Matches } from 'class-validator';
+import {
+  OptionalDescription,
+  OptionalLocation,
+  RequiredName,
+} from '../../../common/validation/field-decorators';
 import {
   ISO_DATE_PATTERN,
-  MAX_LOCATION_LENGTH,
   VALIDATION_MESSAGES,
 } from '../../../common/validation/validation-messages';
 import { SubEventType } from '../enums/sub-event-type.enum';
@@ -23,8 +26,6 @@ export class CreateSubEventDto {
   @Matches(ISO_DATE_PATTERN, { message: VALIDATION_MESSAGES.date })
   public endDate!: string;
 
-  @IsOptional()
-  @IsString({ message: VALIDATION_MESSAGES.location })
-  @MaxLength(MAX_LOCATION_LENGTH, { message: VALIDATION_MESSAGES.location })
+  @OptionalLocation()
   public location?: string;
 }

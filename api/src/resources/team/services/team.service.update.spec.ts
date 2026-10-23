@@ -1,4 +1,5 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 import {
   GROUP_ID,
   OTHER_CATEGORY_ID,
@@ -6,6 +7,10 @@ import {
   createFixture,
   stored,
 } from './team.service.fixture';
+
+function foreignKeyFailure(): QueryFailedError {
+  return new QueryFailedError('DELETE', [], Object.assign(new Error('fk'), { code: '23503' }));
+}
 
 describe('TeamService.update', () => {
   it('moves the team to another group of the category', async () => {
@@ -84,6 +89,25 @@ describe('TeamService.remove', () => {
     await service.remove(TEAM_ID);
 
     expect(repository.remove).toHaveBeenCalledWith(TEAM_ID);
+  });
+
+  it('explains that a team with matches cannot be deleted (RN-33)', async () => {
+    const { service, repository } = createFixture();
+    repository.remove.mockRejectedValue(foreignKeyFailure());
+
+    const failure = service.remove(TEAM_ID);
+
+    await expect(failure).rejects.toBeInstanceOf(ConflictException);
+    await expect(failure).rejects.toMatchObject({
+      response: { code: 'TEAM_HAS_MATCHES', field: 'id' },
+    });
+  });
+
+  it('does not hide other database failures when deleting a team', async () => {
+    const { service, repository } = createFixture();
+    repository.remove.mockRejectedValue(new Error('connection lost'));
+
+    await expect(service.remove(TEAM_ID)).rejects.toThrow('connection lost');
   });
 
   it('does not delete a team that does not exist', async () => {

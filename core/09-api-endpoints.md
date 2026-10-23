@@ -57,6 +57,7 @@ Toda resposta segue o padrão definido por `ResponseInterceptor` e `HttpExceptio
 | `GET /categories/:categoryId/groups` | `search` |
 | `GET /categories/:categoryId/teams` | `groupId`, `city` (parcial), `search` |
 | `GET /users` | `active` (`true`/`false`), `roleCode`, `search` |
+| `GET /categories/:categoryId/matches` | `stage`, `groupId`, `round`, `status`, `teamId` (time de qualquer lado), `scheduledFrom`, `scheduledTo` (data e hora ISO 8601) |
 
 Exemplo: `GET /categories/<id>/teams?city=viçosa&search=cen&limit=20`.
 
@@ -118,6 +119,25 @@ A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festiv
 | DELETE | `/teams/:id` | `team:manage` | Exclui o time. 204 |
 
 As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave do arquivo da foto (`photoKey`); o upload entra com o resource de fotos; o bloqueio de excluir time com partidas (RN-33) entra junto com o resource de partidas.
+
+## Partidas e resultados (RF-04, RF-05, RF-23)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/categories/:categoryId/matches` | pública | Partidas da categoria, por data |
+| GET | `/matches/:id` | pública | Uma partida, com placar, pênaltis, vencedor e melhor jogador quando finalizada |
+| POST | `/categories/:categoryId/matches` | `match:create` | Cria (sempre `SCHEDULED`): `stage` (`GROUP`/`KNOCKOUT`), `scheduledAt`, `teamAId`, `teamBId`, `location?`, `groupId` (fase de grupos) ou `round` (mata-mata) |
+| PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
+| PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado e finaliza a partida; chamar de novo **corrige o placar** (RN-23) |
+| DELETE | `/matches/:id` | `match:create` | Exclui a partida. 204 |
+
+**Criação (RN-15):** os dois times são diferentes (`SAME_TEAM`) e da categoria da partida (`TEAM_NOT_IN_CATEGORY`). Na fase de grupos exige `groupId` e proíbe `round` (`GROUP_REQUIRED`, `ROUND_NOT_ALLOWED`) e os dois times têm de ser do grupo (`TEAM_NOT_IN_GROUP`). No mata-mata exige `round` e proíbe `groupId` (`ROUND_REQUIRED`, `GROUP_NOT_ALLOWED`). Rodadas: `ROUND_OF_16`, `QUARTER_FINAL`, `SEMI_FINAL`, `THIRD_PLACE`, `FINAL`.
+
+**Resultado:** `scoreA` e `scoreB` (0 a 999) obrigatórios; a resposta traz `winnerId` calculado (nulo no empate da fase de grupos, que vale 1 ponto, RN-20).
+- **Pênaltis (RN-22, RN-24):** `penaltiesA` e `penaltiesB` só no mata-mata e só quando o jogo empata; neles são obrigatórios e precisam definir um vencedor (`PENALTIES_REQUIRED`, `PENALTIES_TIED`, `PENALTIES_NOT_ALLOWED`, `PENALTIES_INCOMPLETE`). O placar do jogo não muda.
+- **Melhor jogador (RN-18), opcional:** `bestPlayerName`, `bestPlayerTeamId` (um dos dois times da partida, `BEST_PLAYER_TEAM_INVALID`) e `bestPlayerPhotoKey?`. Sem nome, os outros dois também não podem vir (`BEST_PLAYER_NAME_REQUIRED`). Um novo `PUT` substitui tudo o que foi lançado antes.
+- Quem finalizou e quando fica gravado (RN-47); a API pública só devolve `finalizedAt`.
+
+**Exclusões bloqueadas (RN-33):** excluir um time ou um grupo que tenha partidas devolve 409 (`TEAM_HAS_MATCHES`, `GROUP_HAS_MATCHES`); apague as partidas antes. A classificação do grupo (RN-19) ainda não está exposta.
 
 ## Papéis
 | Método | Rota | Permissão | Descrição |

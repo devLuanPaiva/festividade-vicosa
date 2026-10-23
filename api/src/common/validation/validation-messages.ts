@@ -26,6 +26,14 @@ export const VALIDATION_MESSAGES = {
   offset: 'O offset deve ser um número inteiro maior ou igual a 0.',
   limit: 'O limit deve ser um número inteiro maior ou igual a 1.',
   active: 'Informe true ou false para filtrar por usuários ativos.',
+  stage: 'Selecione a fase da partida: grupos (GROUP) ou mata-mata (KNOCKOUT).',
+  round: 'Selecione uma rodada válida do mata-mata.',
+  matchStatus: 'Selecione um status de partida válido.',
+  dateTime: 'Informe uma data e hora válidas, como 2026-12-09T19:00:00-03:00.',
+  teamId: 'Informe o identificador de um time válido.',
+  score: 'O placar deve ser um número inteiro entre 0 e 999.',
+  penalties: 'Os pênaltis devem ser um número inteiro entre 0 e 999.',
+  bestPlayerName: 'O nome do melhor jogador deve ter no máximo 120 caracteres.',
 } as const;
 
 export const MIN_PASSWORD_LENGTH = 6;
@@ -41,3 +49,4 @@ export const MAX_ABBREVIATION_LENGTH = 10;
 export const MAX_PHOTO_KEY_LENGTH = 255;
 export const MAX_SEARCH_LENGTH = 120;
 export const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const MAX_SCORE = 999;

@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { apiError } from '../../../common/errors/api-error';
+import { runUnlessReferenced } from '../../../common/database/foreign-key-violation';
 import { CategoryService } from '../../category/services/category.service';
 import type { CreateMatchGroupDto } from '../dto/create-match-group.dto';
 import type { UpdateMatchGroupDto } from '../dto/update-match-group.dto';
@@ -46,7 +47,21 @@ export class MatchGroupService {
 
   public async remove(id: string): Promise<void> {
     await this.findByIdOrFail(id);
-    await this.matchGroupRepository.remove(id);
+    await this.removeUnlessReferenced(id);
+  }
+
+  private removeUnlessReferenced(id: string): Promise<void> {
+    return runUnlessReferenced(
+      () => this.matchGroupRepository.remove(id),
+      () =>
+        new ConflictException(
+          apiError(
+            'GROUP_HAS_MATCHES',
+            'Este grupo tem partidas. Exclua as partidas antes de excluir o grupo.',
+            'id',
+          ),
+        ),
+    );
   }
 
   private async assertNameAvailable(categoryId: string, name: string): Promise<void> {
