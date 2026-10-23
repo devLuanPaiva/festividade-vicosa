@@ -33,6 +33,8 @@ export const VALIDATION_MESSAGES = {
   matchStatus: 'Selecione um status de partida válido.',
   dateTime: 'Informe uma data e hora válidas, como 2026-12-09T19:00:00-03:00.',
   teamId: 'Informe o identificador de um time válido.',
+  categoryId: 'Informe o identificador de uma categoria válida.',
+  subEventId: 'Informe o identificador de um sub-evento válido.',
   qualifiedTeamIds:
     'Informe os identificadores dos times classificados, do primeiro ao último colocado.',
   bracketTeamIds:
