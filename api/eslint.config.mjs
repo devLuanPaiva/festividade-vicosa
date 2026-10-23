@@ -67,6 +67,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/resources/auth/decorators/decorators.ts'],
+    rules: {
+      '@typescript-eslint/naming-convention': 'off',
+    },
+  },
+  {
     files: ['src/database/migrations/**/*.ts'],
     rules: {
       'max-lines-per-function': 'off',

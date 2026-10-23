@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "lint:files": "eslint --no-warn-ignored --fix"
   },
   "dependencies": {
     "next": "16.4.2",

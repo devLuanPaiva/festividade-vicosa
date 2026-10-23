@@ -22,11 +22,31 @@ Antes de implementar algo, leia o doc correspondente em `core/` (regras `RN-xx`,
 
 Tudo isso é verificado por ESLint (`eslint-plugin-sonarjs`, `eslint-plugin-no-comments`, regras de tamanho e complexidade), `tsc` e `jscpd`. Não desligue regra com `eslint-disable`; corrija o código.
 
+## Estrutura da API (resources)
+
+Cada entidade de negócio é um **resource** em `api/src/resources/<nome>/`, com esta organização:
+
+```
+resources/user/
+  controllers/   rotas HTTP (só recebem, validam e delegam)
+  services/      regras de negócio
+  repository/    acesso a dados (encapsula o repositório do TypeORM)
+  dto/           contratos de entrada e saída
+  entities/      entidades TypeORM
+  <nome>.module.ts
+```
+
+- **Obrigatórios em todo resource com API:** `controllers/`, `services/`, `repository/`, `dto/` e o `*.module.ts`, **todos com testes** (`*.spec.ts` ao lado do arquivo).
+- O resto entra **só quando necessário**: `guards/`, `validators/`, `decorators/`, `enums/`, `rules/` (funções puras de regra), `mappers/` etc. Não crie pasta vazia.
+- Resource sem persistência própria (ex.: `auth`, `health`) dispensa `repository/` e `entities/`.
+- Services dependem de repositories, nunca do `Repository` do TypeORM diretamente.
+- Infraestrutura compartilhada fica fora de `resources/`: `config/` (variáveis de ambiente) e `database/` (conexão e migrations).
+
 ## Padrões da API (NestJS)
 
 Baseado na skill `nestjs-best-practices`:
 
-- **Módulos por feature** (`match/`, `team/`, `photo/`...), nunca por camada técnica. Sem dependência circular entre módulos.
+- **Módulos por resource** (`match`, `team`, `photo`...), nunca por camada técnica global. Sem dependência circular entre módulos.
 - Controller só recebe, valida e delega; **serviço** concentra a regra; acesso a dados por repositório do TypeORM injetado no construtor.
 - **DTOs com `class-validator`** em toda entrada, `ValidationPipe` global com `whitelist` e `forbidNonWhitelisted`. Nunca devolva a entidade crua: use DTO de resposta.
 - Erros com exceções HTTP do Nest e um filtro global; sem `try/catch` silencioso.

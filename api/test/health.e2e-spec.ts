@@ -4,8 +4,8 @@ import request from 'supertest';
 import type { App } from 'supertest/types';
 import { DataSource } from 'typeorm';
 import { configureApp } from '../src/app.setup';
-import { HealthController } from '../src/health/health.controller';
-import { HealthService } from '../src/health/health.service';
+import { HealthController } from '../src/resources/health/controllers/health.controller';
+import { HealthService } from '../src/resources/health/services/health.service';
 
 async function createApp(query: jest.Mock): Promise<INestApplication> {
   const moduleFixture = await Test.createTestingModule({

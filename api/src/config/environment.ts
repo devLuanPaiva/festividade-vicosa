@@ -1,5 +1,16 @@
 import { plainToInstance, Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNotEmpty, IsString, Max, Min, validateSync } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+  validateSync,
+} from 'class-validator';
 
 export enum NodeEnvironment {
   DEVELOPMENT = 'development',
@@ -8,6 +19,8 @@ export enum NodeEnvironment {
 }
 
 const MAX_TCP_PORT = 65535;
+const MIN_JWT_SECRET_LENGTH = 32;
+const MIN_ADMIN_PASSWORD_LENGTH = 12;
 
 export class EnvironmentVariables {
   @IsEnum(NodeEnvironment)
@@ -43,6 +56,23 @@ export class EnvironmentVariables {
 
   @IsString()
   public CORS_ORIGIN = 'http://localhost:3001';
+
+  @IsString()
+  @MinLength(MIN_JWT_SECRET_LENGTH)
+  public JWT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public JWT_EXPIRES_IN = '12h';
+
+  @IsOptional()
+  @IsEmail()
+  public ADMIN_EMAIL?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(MIN_ADMIN_PASSWORD_LENGTH)
+  public ADMIN_INITIAL_PASSWORD?: string;
 }
 
 export function validateEnvironment(config: Record<string, unknown>): EnvironmentVariables {
