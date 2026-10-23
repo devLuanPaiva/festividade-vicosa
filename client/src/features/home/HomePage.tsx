@@ -1,22 +1,28 @@
-import type { ReactElement } from 'react';
-import { PublicLayout } from '@/features/layout/PublicLayout';
-import type { SubEvent } from '@/features/schedule/schedule-types';
-import { HeroSection } from './components/HeroSection';
-import { JocevSection } from './components/JocevSection';
-import { ProgramSection } from './components/ProgramSection';
-import { TrajectorySection } from './components/TrajectorySection';
+import type { ReactElement, ReactNode } from 'react';
+import { ClosingSection } from './components/closing/ClosingSection';
+import { HeroSection } from './components/hero/HeroSection';
+import { MarqueeBand } from './components/MarqueeBand';
+import { ModalitiesSection } from './components/modalities/ModalitiesSection';
+import { ProgramSection } from './components/program/ProgramSection';
+import { StatsSection } from './components/stats/StatsSection';
+import { TrajectorySection } from './components/trajectory/TrajectorySection';
+import { marqueeBottomItems, marqueeTopItems } from './data/home-content';
 
 export interface HomePageProps {
-  subEvents: SubEvent[];
+  programContent: ReactNode;
 }
 
-export function HomePage({ subEvents }: HomePageProps): ReactElement {
+export function HomePage({ programContent }: HomePageProps): ReactElement {
   return (
-    <PublicLayout>
+    <>
       <HeroSection />
+      <StatsSection />
       <TrajectorySection />
-      <JocevSection />
-      <ProgramSection subEvents={subEvents} />
-    </PublicLayout>
+      <MarqueeBand items={marqueeTopItems} />
+      <ModalitiesSection />
+      <ProgramSection>{programContent}</ProgramSection>
+      <MarqueeBand items={marqueeBottomItems} reverse tilt="right" />
+      <ClosingSection />
+    </>
   );
 }
