@@ -20,16 +20,21 @@ import { UserService } from '../src/resources/user/services/user.service';
 
 const users: Record<string, AuthenticatedUser> = {
   'admin-token': {
-    id: 1,
+    id: '00000000-0000-4000-8000-000000000001',
     name: 'Admin',
     email: 'admin@example.com',
     permissions: [Permission.USER_MANAGE, Permission.USER_MANAGE_PERMISSIONS],
   },
-  'assistant-token': { id: 2, name: 'Assistant', email: 'assistant@example.com', permissions: [] },
+  'assistant-token': {
+    id: '00000000-0000-4000-8000-000000000002',
+    name: 'Assistant',
+    email: 'assistant@example.com',
+    permissions: [],
+  },
 };
 
 const storedUser = {
-  id: 9,
+  id: '00000000-0000-4000-8000-000000000009',
   name: 'Ana',
   email: 'ana@example.com',
   passwordHash: 'secret-hash',
@@ -185,7 +190,9 @@ describe('User management (e2e)', () => {
 
   it('rejects an unknown permission on an override', async () => {
     const response = await asAdmin(
-      request(server()).put('/users/9/permissions/not-a-permission').send({ effect: 'GRANTED' }),
+      request(server())
+        .put('/users/00000000-0000-4000-8000-000000000009/permissions/not-a-permission')
+        .send({ effect: 'GRANTED' }),
     );
 
     expect(response.status).toBe(400);
@@ -202,14 +209,19 @@ describe('User management (e2e)', () => {
     permissionService.setOverride.mockResolvedValue(undefined);
 
     const response = await asAdmin(
-      request(server()).put('/users/9/permissions/photo:delete').send({ effect: 'GRANTED' }),
+      request(server())
+        .put('/users/00000000-0000-4000-8000-000000000009/permissions/photo:delete')
+        .send({ effect: 'GRANTED' }),
     );
 
     expect(response.status).toBe(204);
-    expect(permissionService.setOverride).toHaveBeenCalledWith(1, {
-      userId: 9,
-      permission: Permission.PHOTO_DELETE,
-      effect: 'GRANTED',
-    });
+    expect(permissionService.setOverride).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      {
+        userId: '00000000-0000-4000-8000-000000000009',
+        permission: Permission.PHOTO_DELETE,
+        effect: 'GRANTED',
+      },
+    );
   });
 });

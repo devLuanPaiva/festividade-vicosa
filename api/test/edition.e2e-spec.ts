@@ -17,18 +17,28 @@ import { SubEventService } from '../src/resources/sub-event/services/sub-event.s
 
 const users: Record<string, AuthenticatedUser> = {
   'manager-token': {
-    id: 1,
+    id: '00000000-0000-4000-8000-000000000001',
     name: 'Manager',
     email: 'manager@example.com',
     permissions: [Permission.SCHEDULE_MANAGE],
   },
-  'assistant-token': { id: 2, name: 'Assistant', email: 'assistant@example.com', permissions: [] },
+  'assistant-token': {
+    id: '00000000-0000-4000-8000-000000000002',
+    name: 'Assistant',
+    email: 'assistant@example.com',
+    permissions: [],
+  },
 };
 
-const edition = { id: 1, year: 2026, name: 'Festividade 2026', description: null };
+const edition = {
+  id: '00000000-0000-4000-8000-000000000001',
+  year: 2026,
+  name: 'Festividade 2026',
+  description: null,
+};
 const subEvent = {
-  id: 4,
-  editionId: 1,
+  id: '00000000-0000-4000-8000-000000000004',
+  editionId: '00000000-0000-4000-8000-000000000001',
   type: SubEventType.ECOPEDAL,
   name: 'Ecopedal',
   description: null,
@@ -109,14 +119,18 @@ describe('Editions and sub-events (e2e)', () => {
   });
 
   it('lets a visitor list the sub-events of an edition', async () => {
-    const response = await request(server()).get('/editions/1/sub-events');
+    const response = await request(server()).get(
+      '/editions/00000000-0000-4000-8000-000000000001/sub-events',
+    );
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({ results: [subEvent] });
   });
 
   it('lets a visitor read one sub-event', async () => {
-    const response = await request(server()).get('/sub-events/4');
+    const response = await request(server()).get(
+      '/sub-events/00000000-0000-4000-8000-000000000004',
+    );
 
     expect(response.body).toEqual({ status: 'success', result: subEvent });
   });
@@ -163,7 +177,11 @@ describe('Editions and sub-events (e2e)', () => {
     },
     { scenario: 'the type is unknown', body: { ...validSubEvent, type: 'PARADE' }, field: 'type' },
   ])('rejects a sub-event when $scenario', async ({ body, field }) => {
-    const response = await asManager(request(server()).post('/editions/1/sub-events').send(body));
+    const response = await asManager(
+      request(server())
+        .post('/editions/00000000-0000-4000-8000-000000000001/sub-events')
+        .send(body),
+    );
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({ errors: { field } });
@@ -171,16 +189,23 @@ describe('Editions and sub-events (e2e)', () => {
 
   it('creates a sub-event inside the edition of the url', async () => {
     const response = await asManager(
-      request(server()).post('/editions/1/sub-events').send(validSubEvent),
+      request(server())
+        .post('/editions/00000000-0000-4000-8000-000000000001/sub-events')
+        .send(validSubEvent),
     );
 
     expect(response.status).toBe(201);
-    expect(subEventService.create).toHaveBeenCalledWith(1, validSubEvent);
+    expect(subEventService.create).toHaveBeenCalledWith(
+      '00000000-0000-4000-8000-000000000001',
+      validSubEvent,
+    );
   });
 
   it('does not allow changing the type of a sub-event', async () => {
     const response = await asManager(
-      request(server()).patch('/sub-events/4').send({ type: SubEventType.JOCEV_FUTSAL }),
+      request(server())
+        .patch('/sub-events/00000000-0000-4000-8000-000000000004')
+        .send({ type: SubEventType.JOCEV_FUTSAL }),
     );
 
     expect(response.status).toBe(400);
