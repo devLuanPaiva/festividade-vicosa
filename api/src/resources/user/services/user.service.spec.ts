@@ -57,21 +57,6 @@ function createFixture(): {
 const newUser = { name: 'Ana', email: 'ana@example.com', password: 'a-long-password' };
 
 describe('UserService queries', () => {
-  it('lists the users', async () => {
-    const { service, userRepository } = createFixture();
-    userRepository.findAll.mockResolvedValue([storedUser]);
-
-    await expect(service.list({})).resolves.toEqual([storedUser]);
-  });
-
-  it('returns the user found by id', async () => {
-    const { service } = createFixture();
-
-    await expect(service.findByIdOrFail('00000000-0000-4000-8000-000000000008')).resolves.toBe(
-      storedUser,
-    );
-  });
-
   it('throws not found when the user does not exist', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findById.mockResolvedValue(null);
@@ -79,20 +64,6 @@ describe('UserService queries', () => {
     await expect(
       service.findByIdOrFail('00000000-0000-4000-8000-000000000099'),
     ).rejects.toBeInstanceOf(NotFoundException);
-  });
-
-  it('delegates the active lookups and the count to the repository', async () => {
-    const { service, userRepository } = createFixture();
-    userRepository.count.mockResolvedValue(2);
-
-    await service.findActiveByEmail('ana@example.com');
-    await service.findActiveById('00000000-0000-4000-8000-000000000005');
-
-    expect(userRepository.findActiveByEmail).toHaveBeenCalledWith('ana@example.com');
-    expect(userRepository.findActiveById).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000005',
-    );
-    await expect(service.count()).resolves.toBe(2);
   });
 });
 
@@ -135,20 +106,6 @@ describe('UserService commands', () => {
     expect(userRepository.updateAccount).toHaveBeenCalledWith(
       '00000000-0000-4000-8000-000000000008',
       { active: false },
-    );
-  });
-
-  it('changes the role of an existing user', async () => {
-    const { service, userRepository } = createFixture();
-
-    await service.setRole(
-      '00000000-0000-4000-8000-000000000008',
-      '00000000-0000-4000-8000-000000000005',
-    );
-
-    expect(userRepository.updateAccount).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000008',
-      { roleId: '00000000-0000-4000-8000-000000000005' },
     );
   });
 

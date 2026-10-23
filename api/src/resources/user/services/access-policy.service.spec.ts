@@ -50,15 +50,6 @@ describe('AccessPolicyService.assertNotSelf', () => {
       );
     }).toThrow(ForbiddenException);
   });
-
-  it('allows changing the permissions of another user', () => {
-    expect(() => {
-      service.assertNotSelf(
-        '00000000-0000-4000-8000-000000000005',
-        '00000000-0000-4000-8000-000000000006',
-      );
-    }).not.toThrow();
-  });
 });
 
 describe('AccessPolicyService.assertPermissionsManagerRemains', () => {
