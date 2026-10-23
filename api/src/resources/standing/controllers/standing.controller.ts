@@ -3,6 +3,7 @@ import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import { Public } from '../../auth/decorators/decorators';
 import type {
   GroupStandingsResponseDto,
+  SeededTeamResponseDto,
   StandingRowResponseDto,
 } from '../dto/standing-response.dto';
 import { StandingService } from '../services/standing.service';
@@ -17,6 +18,14 @@ export class StandingController {
     @Param('categoryId', ParseIdPipe) categoryId: string,
   ): Promise<GroupStandingsResponseDto[]> {
     return this.standingService.listByCategory(categoryId);
+  }
+
+  @Public()
+  @Get('categories/:categoryId/seeding')
+  public listSeeding(
+    @Param('categoryId', ParseIdPipe) categoryId: string,
+  ): Promise<SeededTeamResponseDto[]> {
+    return this.standingService.listSeeding(categoryId);
   }
 
   @Public()

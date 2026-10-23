@@ -22,7 +22,11 @@ const row = {
   points: 3,
 };
 
-const standingService = { listByCategory: jest.fn(), getByGroup: jest.fn() };
+const standingService = {
+  listByCategory: jest.fn(),
+  getByGroup: jest.fn(),
+  listSeeding: jest.fn(),
+};
 
 describe('Standings (e2e)', () => {
   let app: INestApplication;
@@ -46,6 +50,17 @@ describe('Standings (e2e)', () => {
       { groupId: GROUP_ID, groupName: 'Grupo A', rows: [row] },
     ]);
     standingService.getByGroup.mockResolvedValue([row]);
+    standingService.listSeeding.mockResolvedValue([
+      { seed: 1, teamId: row.teamId, teamName: 'Alfa', groupId: GROUP_ID, groupName: 'Grupo A' },
+    ]);
+  });
+
+  it('lets a visitor read the seeding built from the confirmed qualified teams', async () => {
+    const response = await request(server()).get(`/categories/${CATEGORY_ID}/seeding`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({ count: 1, results: [{ seed: 1, teamName: 'Alfa' }] });
+    expect(standingService.listSeeding).toHaveBeenCalledWith(CATEGORY_ID);
   });
 
   it('lets a visitor read the standings of every group of a category', async () => {
