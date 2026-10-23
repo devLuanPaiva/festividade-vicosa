@@ -127,17 +127,25 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 | GET | `/matches/:id` | pública | Uma partida, com placar, pênaltis, vencedor e melhor jogador quando finalizada |
 | POST | `/categories/:categoryId/matches` | `match:create` | Cria (sempre `SCHEDULED`): `stage` (`GROUP`/`KNOCKOUT`), `scheduledAt`, `teamAId`, `teamBId`, `location?`, `groupId` (fase de grupos) ou `round` (mata-mata) |
 | PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
-| PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado e finaliza a partida; chamar de novo **corrige o placar** (RN-23) |
+| PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado (jogado, W.O. ou W.O. dos dois times) e finaliza a partida; chamar de novo **corrige o resultado** (RN-23) |
 | DELETE | `/matches/:id` | `match:create` | Exclui a partida. 204 |
 
 **Criação (RN-15):** os dois times são diferentes (`SAME_TEAM`) e da categoria da partida (`TEAM_NOT_IN_CATEGORY`). Na fase de grupos exige `groupId` e proíbe `round` (`GROUP_REQUIRED`, `ROUND_NOT_ALLOWED`) e os dois times têm de ser do grupo (`TEAM_NOT_IN_GROUP`). No mata-mata exige `round` e proíbe `groupId` (`ROUND_REQUIRED`, `GROUP_NOT_ALLOWED`). Rodadas: `ROUND_OF_16`, `QUARTER_FINAL`, `SEMI_FINAL`, `THIRD_PLACE`, `FINAL`.
 
-**Resultado:** `scoreA` e `scoreB` (0 a 999) obrigatórios; a resposta traz `winnerId` calculado (nulo no empate da fase de grupos, que vale 1 ponto, RN-20).
+**Resultado:** `resultType` (`PLAYED`, padrão; `WALKOVER`; `DOUBLE_WALKOVER`). Jogado: `scoreA` e `scoreB` (0 a 999) obrigatórios (`SCORE_REQUIRED`); a resposta traz `winnerId` calculado (nulo no empate da fase de grupos, que vale 1 ponto, RN-20).
 - **Pênaltis (RN-22, RN-24):** `penaltiesA` e `penaltiesB` só no mata-mata e só quando o jogo empata; neles são obrigatórios e precisam definir um vencedor (`PENALTIES_REQUIRED`, `PENALTIES_TIED`, `PENALTIES_NOT_ALLOWED`, `PENALTIES_INCOMPLETE`). O placar do jogo não muda.
 - **Melhor jogador (RN-18), opcional:** `bestPlayerName`, `bestPlayerTeamId` (um dos dois times da partida, `BEST_PLAYER_TEAM_INVALID`) e `bestPlayerPhotoKey?`. Sem nome, os outros dois também não podem vir (`BEST_PLAYER_NAME_REQUIRED`). Um novo `PUT` substitui tudo o que foi lançado antes.
+- **W.O. (RN-25, RN-26):** `resultType: WALKOVER` com `walkoverWinnerId` (o time que compareceu, um dos dois da partida; `WALKOVER_WINNER_REQUIRED`, `WALKOVER_WINNER_INVALID`). `DOUBLE_WALKOVER` não tem vencedor (`DOUBLE_WALKOVER_WITH_WINNER`) e não existe no mata-mata (`DOUBLE_WALKOVER_IN_KNOCKOUT`). Em ambos o placar, os pênaltis e o melhor jogador são recusados (`WALKOVER_HAS_NO_PLAY`) e a resposta traz `scoreA`/`scoreB` nulos.
 - Quem finalizou e quando fica gravado (RN-47); a API pública só devolve `finalizedAt`.
 
-**Exclusões bloqueadas (RN-33):** excluir um time ou um grupo que tenha partidas devolve 409 (`TEAM_HAS_MATCHES`, `GROUP_HAS_MATCHES`); apague as partidas antes. A classificação do grupo (RN-19) ainda não está exposta.
+**Exclusões bloqueadas (RN-33):** excluir um time ou um grupo que tenha partidas devolve 409 (`TEAM_HAS_MATCHES`, `GROUP_HAS_MATCHES`); apague as partidas antes. 
+## Classificação (RF-06)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/categories/:categoryId/standings` | pública | Tabela de cada grupo da categoria: `[{ groupId, groupName, rows }]` |
+| GET | `/groups/:id/standings` | pública | Tabela de um grupo |
+
+A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference` e `points`. Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória sem gols (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Desempate provisório (RN-21): pontos, saldo, gols pró e nome. Quantos times classificam por grupo ainda não está definido, então a tabela não marca classificados.
 
 ## Papéis
 | Método | Rota | Permissão | Descrição |
