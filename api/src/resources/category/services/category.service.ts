@@ -25,6 +25,10 @@ export class CategoryService {
     return this.categoryRepository.findBySubEvent(subEventId, filters);
   }
 
+  public listByIds(ids: string[]): Promise<Category[]> {
+    return this.categoryRepository.findByIds(ids);
+  }
+
   public async findByIdOrFail(id: string): Promise<Category> {
     const category = await this.categoryRepository.findById(id);
     if (!category) {

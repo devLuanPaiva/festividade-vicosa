@@ -27,6 +27,10 @@ export class TeamService {
     return this.teamRepository.findByCategory(categoryId, filters);
   }
 
+  public listByIds(ids: string[]): Promise<Team[]> {
+    return this.teamRepository.findByIds(ids);
+  }
+
   public async findByIdOrFail(id: string): Promise<Team> {
     const team = await this.teamRepository.findById(id);
     if (!team) {

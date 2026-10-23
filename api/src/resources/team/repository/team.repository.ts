@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, type FindOptionsWhere } from 'typeorm';
+import { In, Repository, type FindOptionsWhere } from 'typeorm';
 import { containsText } from '../../../common/database/text-search';
 import { Team } from '../entities/team.entity';
 
@@ -44,6 +44,10 @@ export class TeamRepository {
 
   public findById(id: string): Promise<Team | null> {
     return this.repository.findOneBy({ id });
+  }
+
+  public findByIds(ids: string[]): Promise<Team[]> {
+    return this.repository.findBy({ id: In(ids) });
   }
 
   public findByCategoryAndName(categoryId: string, name: string): Promise<Team | null> {
