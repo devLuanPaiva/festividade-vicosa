@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
     agentFeedback: true,
   },
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'thumb.wikimedia.org' },
+      { protocol: 'https', hostname: 'api.dicebear.com' },
+    ],
+  },
   turbopack: {
     rules: {
       '*.css': {
