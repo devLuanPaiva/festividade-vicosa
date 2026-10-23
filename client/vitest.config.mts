@@ -3,7 +3,19 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'stub-static-images',
+      enforce: 'pre',
+      load(id: string) {
+        if (/\.(png|jpe?g|webp|svg)$/.test(id)) {
+          return "export default { src: '/stub-image.png', width: 100, height: 100 };";
+        }
+        return null;
+      },
+    },
+  ],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
