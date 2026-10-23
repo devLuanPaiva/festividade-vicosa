@@ -8,5 +8,5 @@ import {
 
 export function calculateStandings(teams: StandingTeam[], matches: StandingMatch[]): StandingRow[] {
   const rows = tallyStandings(teams, matches);
-  return rankStandingRows(rows).map((row, index) => ({ ...row, position: index + 1 }));
+  return rankStandingRows(rows, matches).map((row, index) => ({ ...row, position: index + 1 }));
 }
