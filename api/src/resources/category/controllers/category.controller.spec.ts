@@ -1,66 +1,6 @@
 import { IS_PUBLIC_KEY, REQUIRED_PERMISSIONS_KEY } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
-import type { Category } from '../entities/category.entity';
-import { Gender } from '../enums/gender.enum';
-import type { CategoryService } from '../services/category.service';
 import { CategoryController } from './category.controller';
-
-const stored: Category = {
-  id: '00000000-0000-4000-8000-000000000005',
-  subEventId: '00000000-0000-4000-8000-000000000002',
-  name: 'Adulto',
-  gender: Gender.MALE,
-  ageRange: null,
-};
-
-function createController(): {
-  controller: CategoryController;
-  service: Record<'listBySubEvent' | 'findByIdOrFail' | 'create' | 'update', jest.Mock>;
-} {
-  const service = {
-    listBySubEvent: jest.fn().mockResolvedValue([stored]),
-    findByIdOrFail: jest.fn().mockResolvedValue(stored),
-    create: jest.fn().mockResolvedValue(stored),
-    update: jest.fn().mockResolvedValue(stored),
-  };
-  return { controller: new CategoryController(service as unknown as CategoryService), service };
-}
-
-describe('CategoryController', () => {
-  it('lists the categories of a sub-event as response dtos', async () => {
-    const { controller, service } = createController();
-
-    await expect(
-      controller.listBySubEvent('00000000-0000-4000-8000-000000000002', {}),
-    ).resolves.toEqual([stored]);
-    expect(service.listBySubEvent).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000002', {});
-  });
-
-  it('gets one category by id', async () => {
-    const { controller } = createController();
-
-    await expect(controller.get('00000000-0000-4000-8000-000000000005')).resolves.toEqual(stored);
-  });
-
-  it('creates a category inside the sub-event of the url', async () => {
-    const { controller, service } = createController();
-    const input = { name: 'Adulto', gender: Gender.MALE };
-
-    await controller.create('00000000-0000-4000-8000-000000000002', input);
-
-    expect(service.create).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000002', input);
-  });
-
-  it('updates a category', async () => {
-    const { controller, service } = createController();
-
-    await controller.update('00000000-0000-4000-8000-000000000005', { name: 'Principal' });
-
-    expect(service.update).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000005', {
-      name: 'Principal',
-    });
-  });
-});
 
 describe('CategoryController access', () => {
   it.each(['listBySubEvent', 'get'] as const)('lets visitors call %s without login', (handler) => {

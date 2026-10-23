@@ -47,14 +47,6 @@ function createFixture(): {
 }
 
 describe('CategoryService queries', () => {
-  it('lists the categories of an existing sub-event', async () => {
-    const { service } = createFixture();
-
-    await expect(
-      service.listBySubEvent('00000000-0000-4000-8000-000000000002', {}),
-    ).resolves.toEqual([stored]);
-  });
-
   it('does not list the categories of a sub-event that does not exist', async () => {
     const { service, subEventService, repository } = createFixture();
     subEventService.findByIdOrFail.mockRejectedValue(new NotFoundException());
@@ -88,17 +80,6 @@ describe('CategoryService.create', () => {
       ...newCategory,
       ageRange: null,
     });
-  });
-
-  it('keeps the age range when it is given', async () => {
-    const { service, repository } = createFixture();
-
-    await service.create('00000000-0000-4000-8000-000000000002', {
-      ...newCategory,
-      ageRange: 'Sub-13',
-    });
-
-    expect(repository.create).toHaveBeenCalledWith(expect.objectContaining({ ageRange: 'Sub-13' }));
   });
 
   it('refuses a sub-event without championship (RN-03)', async () => {

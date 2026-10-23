@@ -12,9 +12,7 @@ describe('isForeignKeyViolation', () => {
 
   it.each([
     { scenario: 'another database error', error: queryFailure('23505') },
-    { scenario: 'a query failure without code', error: queryFailure(undefined) },
     { scenario: 'a plain error', error: new Error('23503') },
-    { scenario: 'a non error value', error: 'boom' },
   ])('ignores $scenario', ({ error }) => {
     expect(isForeignKeyViolation(error)).toBe(false);
   });

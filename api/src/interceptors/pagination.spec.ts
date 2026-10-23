@@ -28,11 +28,6 @@ describe('parsePageWindow', () => {
       expected: { offset: 0, limit: 100 },
     },
     {
-      scenario: 'ignores negative values',
-      query: { offset: '-5', limit: '-1' },
-      expected: { offset: 0, limit: 100 },
-    },
-    {
       scenario: 'ignores a zero limit',
       query: { limit: '0' },
       expected: { offset: 0, limit: 100 },

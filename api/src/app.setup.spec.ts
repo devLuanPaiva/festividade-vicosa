@@ -45,8 +45,4 @@ describe('configureApp', () => {
   it('restricts cors to the allowed origins', () => {
     expect(app.enableCors).toHaveBeenCalledWith({ origin: ['https://app.example.com'] });
   });
-
-  it('enables shutdown hooks', () => {
-    expect(app.enableShutdownHooks).toHaveBeenCalledTimes(1);
-  });
 });

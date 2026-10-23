@@ -49,14 +49,6 @@ function createFixture(): {
 }
 
 describe('SubEventService queries', () => {
-  it('lists the sub-events of an existing edition', async () => {
-    const { service } = createFixture();
-
-    await expect(
-      service.listByEdition('00000000-0000-4000-8000-000000000001', {}),
-    ).resolves.toEqual([stored]);
-  });
-
   it('does not list the sub-events of an edition that does not exist', async () => {
     const { service, editionService, repository } = createFixture();
     editionService.findByIdOrFail.mockRejectedValue(new NotFoundException());

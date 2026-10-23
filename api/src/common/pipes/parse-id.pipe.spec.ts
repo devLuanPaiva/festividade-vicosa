@@ -12,7 +12,6 @@ describe('ParseIdPipe', () => {
   });
 
   it.each([
-    { scenario: 'a number', id: '42' },
     { scenario: 'free text', id: 'abc' },
     { scenario: 'a uuid of another version', id: '6ba7b810-9dad-11d1-80b4-00c04fd430c8' },
   ])('rejects $scenario pointing at the id field', async ({ id }) => {

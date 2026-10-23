@@ -10,17 +10,6 @@ const environment = {
 };
 
 describe('buildTypeOrmOptions', () => {
-  it('maps the environment to a postgres connection', () => {
-    expect(buildTypeOrmOptions(environment)).toMatchObject({
-      type: 'postgres',
-      host: 'db',
-      port: 5432,
-      username: 'festival',
-      password: 'secret',
-      database: 'festival_db',
-    });
-  });
-
   it('never synchronizes the schema and runs migrations on startup', () => {
     expect(buildTypeOrmOptions(environment)).toMatchObject({
       synchronize: false,

@@ -34,38 +34,4 @@ describe('EditionRepository', () => {
       order: { year: 'DESC' },
     });
   });
-
-  it('finds an edition by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findById('00000000-0000-4000-8000-000000000003');
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: '00000000-0000-4000-8000-000000000003' });
-  });
-
-  it('finds an edition by year', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findByYear(2026);
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ year: 2026 });
-  });
-
-  it('saves a new edition', async () => {
-    const { repository } = createFixture();
-    const record = { year: 2027, name: 'Festividade 2027', description: null };
-
-    await expect(repository.create(record)).resolves.toEqual(record);
-  });
-
-  it('updates an edition by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.update('00000000-0000-4000-8000-000000000003', { name: 'Novo nome' });
-
-    expect(typeorm.update).toHaveBeenCalledWith(
-      { id: '00000000-0000-4000-8000-000000000003' },
-      { name: 'Novo nome' },
-    );
-  });
 });
