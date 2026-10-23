@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
+    "seed:demo": "ts-node src/database/demo/run-demo-seed.ts",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:generate": "npm run typeorm -- migration:generate",
@@ -88,6 +89,7 @@
       "!**/*.entity.ts",
       "!**/*.enum.ts",
       "!database/data-source.ts",
+      "!database/demo/**",
       "!database/migrations/**"
     ],
     "coverageDirectory": "../coverage",
