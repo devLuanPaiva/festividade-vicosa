@@ -103,8 +103,11 @@ flowchart LR
 ## Estrutura de pastas sugerida
 ```
 api/src/
-  edicao/ programacao/ campeonato/ (modalidade, categoria, grupo, time, partida)
-  midia/ (album, foto, s3) historia/ usuarios/ (usuario, papel, permissao) auth/
+  config/ database/          # variáveis de ambiente, conexão e migrations
+  resources/                 # um resource por entidade (ver CLAUDE.md)
+    edition/ sub-event/ category/ team/ match/ album/ photo/ history-item/
+    user/ role/ auth/ health/
+    <resource>/{controllers,services,repository,dto,entities,...}/ e <resource>.module.ts
 client/src/
   pages/            # público (/, /jogos, /times/[id], /galeria, /historia) e /admin/*
   features/         # jogos, galeria, historia, admin
