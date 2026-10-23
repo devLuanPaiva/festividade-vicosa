@@ -127,7 +127,7 @@ Restrições da `match`:
 Com algumas centenas de partidas, nada disso é gargalo; os índices existem por serem baratos.
 
 ## Classificação (consulta, não tabela)
-Para um grupo, considerando só partidas `FINALIZED` da fase `GROUP`: cada partida gera duas linhas (uma por time) com pontos (V=3, E=1, D=0, RN-20), gols pró e contra; soma-se por time e ordena por pontos, saldo, gols pró. **Os critérios de desempate reais são pergunta aberta (RN-21)**: ficam isolados numa função, fácil de trocar. Pênaltis não entram (RN-24). Resultado cacheado pelo ISR (ADR-05).
+Para um grupo, considerando só partidas `FINALIZED` da fase `GROUP`: cada partida gera duas linhas (uma por time) com pontos (V=3, E=1, D=0, RN-20), gols pró e contra (W.O. vale 2x0, RN-25) e W.O. sofridos; soma-se por time e ordena por pontos e pelos critérios do edital (RN-21), isolados em `tie-break.rule.ts`. Pênaltis não entram (RN-24). Resultado cacheado pelo ISR (ADR-05).
 
 ## Migrations e seeds
 - `synchronize: false`. Uma migration inicial cria o esquema; cada mudança depois é uma migration nova (`typeorm migration:generate`).

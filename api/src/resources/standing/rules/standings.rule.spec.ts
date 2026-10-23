@@ -1,65 +1,14 @@
-import { MatchResultType } from '../../match/enums/match.enums';
-import { calculateStandings, type StandingMatch, type StandingTeam } from './standings.rule';
-
-const ALFA: StandingTeam = { id: 'alfa', name: 'Alfa' };
-const BETA: StandingTeam = { id: 'beta', name: 'Beta' };
-const GAMA: StandingTeam = { id: 'gama', name: 'Gama' };
-const TEAMS = [ALFA, BETA, GAMA];
-
-interface PlayedScore {
-  teamAId: string;
-  scoreA: number;
-  scoreB: number;
-  teamBId: string;
-}
-
-function winnerOf({ teamAId, scoreA, scoreB, teamBId }: PlayedScore): string | null {
-  if (scoreA === scoreB) {
-    return null;
-  }
-  return scoreA > scoreB ? teamAId : teamBId;
-}
-
-function played(score: PlayedScore): StandingMatch {
-  return {
-    teamAId: score.teamAId,
-    teamBId: score.teamBId,
-    resultType: MatchResultType.PLAYED,
-    scoreA: score.scoreA,
-    scoreB: score.scoreB,
-    winnerId: winnerOf(score),
-  };
-}
-
-function game(teamAId: string, [scoreA, scoreB]: [number, number], teamBId: string): StandingMatch {
-  return played({ teamAId, scoreA, scoreB, teamBId });
-}
-
-function walkover(teamAId: string, teamBId: string, winnerId: string): StandingMatch {
-  return {
-    teamAId,
-    teamBId,
-    resultType: MatchResultType.WALKOVER,
-    scoreA: null,
-    scoreB: null,
-    winnerId,
-  };
-}
-
-function doubleWalkover(teamAId: string, teamBId: string): StandingMatch {
-  return {
-    teamAId,
-    teamBId,
-    resultType: MatchResultType.DOUBLE_WALKOVER,
-    scoreA: null,
-    scoreB: null,
-    winnerId: null,
-  };
-}
-
-function rowOf(rows: ReturnType<typeof calculateStandings>, teamId: string): object {
-  return rows.find((row) => row.teamId === teamId) ?? {};
-}
+import { calculateStandings } from './standings.rule';
+import {
+  ALFA,
+  BETA,
+  GAMA,
+  TEAMS,
+  doubleWalkover,
+  game,
+  rowOf,
+  walkover,
+} from './standing.fixtures';
 
 describe('calculateStandings points and results (RN-19, RN-20)', () => {
   it('lists every team with zeros before any match is finalized', () => {
@@ -120,26 +69,47 @@ describe('calculateStandings points and results (RN-19, RN-20)', () => {
   });
 });
 
-describe('calculateStandings walkovers', () => {
-  it('gives the win to the team that showed up, without goals', () => {
+describe('calculateStandings walkovers (edital: W.O. counts 2x0)', () => {
+  it('gives the win and a 2x0 score to the team that showed up', () => {
     const rows = calculateStandings(TEAMS, [walkover('alfa', 'beta', 'beta')]);
 
     expect(rowOf(rows, 'beta')).toMatchObject({
       played: 1,
       wins: 1,
       points: 3,
-      goalsFor: 0,
+      goalsFor: 2,
       goalsAgainst: 0,
-      goalDifference: 0,
+      goalDifference: 2,
+      walkoverLosses: 0,
     });
-    expect(rowOf(rows, 'alfa')).toMatchObject({ played: 1, losses: 1, points: 0, goalsAgainst: 0 });
+    expect(rowOf(rows, 'alfa')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      goalsFor: 0,
+      goalsAgainst: 2,
+      goalDifference: -2,
+      walkoverLosses: 1,
+    });
   });
 
-  it('counts a loss and no points for both teams on a double walkover', () => {
+  it('counts a loss, no points and no goals for both teams on a double walkover', () => {
     const rows = calculateStandings(TEAMS, [doubleWalkover('alfa', 'beta')]);
 
-    expect(rowOf(rows, 'alfa')).toMatchObject({ played: 1, losses: 1, points: 0 });
-    expect(rowOf(rows, 'beta')).toMatchObject({ played: 1, losses: 1, points: 0 });
+    expect(rowOf(rows, 'alfa')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
+      walkoverLosses: 1,
+    });
+    expect(rowOf(rows, 'beta')).toMatchObject({
+      played: 1,
+      losses: 1,
+      points: 0,
+      walkoverLosses: 1,
+    });
   });
 });
 
@@ -152,24 +122,6 @@ describe('calculateStandings ordering', () => {
 
     expect(rows.map((row) => row.teamId)).toEqual(['gama', 'alfa', 'beta']);
     expect(rows.map((row) => row.position)).toEqual([1, 2, 3]);
-  });
-
-  it('breaks a points tie by goal difference', () => {
-    const rows = calculateStandings(TEAMS, [
-      game('alfa', [5, 0], 'gama'),
-      game('beta', [1, 0], 'gama'),
-    ]);
-
-    expect(rows.map((row) => row.teamId)).toEqual(['alfa', 'beta', 'gama']);
-  });
-
-  it('breaks a goal difference tie by goals scored', () => {
-    const rows = calculateStandings(TEAMS, [
-      game('alfa', [3, 2], 'gama'),
-      game('beta', [1, 0], 'gama'),
-    ]);
-
-    expect(rows.map((row) => row.teamId)).toEqual(['alfa', 'beta', 'gama']);
   });
 
   it('falls back to the team name when everything else is equal', () => {

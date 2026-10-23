@@ -23,12 +23,12 @@ Itens **(a confirmar)** dependem de resposta do cliente (ver [99-perguntas-abert
 - **RN-18** Cada partida pode ter **um melhor jogador, de forma opcional** (há partidas sem). Ele é informado por nome + foto e **vinculado a um dos dois times da partida**. Não existe cadastro de elenco. A partida também pode ter um **mural de fotos**.
 - **RN-19** A classificação do grupo é **derivada** dos resultados (nunca digitada): pontos, jogos, V/E/D, pontos pró/contra, saldo.
 - **RN-20** Pontuação na fase de grupos: **vitória = 3, empate = 1, derrota = 0** (futsal e handebol).
-- **RN-21** Quantos times classificam por grupo: **a definir** (grupos ainda não formados; depende de número de equipes por categoria). Critérios de desempate: **(a confirmar)**; provisoriamente pontos, saldo de gols, gols pró e nome do time, isolados em `tie-break.rule.ts` para trocar quando a organização definir.
+- **RN-21** Quantos times classificam por grupo: **a definir** (grupos ainda não formados). Desempate pelo edital (ART. 16), sempre depois dos pontos e isolado em `tie-break.rule.ts`. **ART. 15:** em empate de pontos, quem faltou a algum jogo (W.O. sofrido ou W.O. dos dois) fica atrás de quem cumpriu todos. **Entre 2 times:** menos gols sofridos, mais gols feitos, confronto direto, sorteio (o saldo vem depois, mas é redundante com os dois primeiros). **Entre 3 ou mais:** menos gols sofridos, maior saldo só nos jogos entre os empatados, mais gols feitos, sorteio. Se o empate cai para 2 times no meio do desempate, recomeça pela regra de 2 times (interpretação nossa; o edital é omisso). **Sorteio** ainda não é registrado: enquanto isso, desempata por nome do time. **Melhores segundos** e **critério técnico** do edital ainda não estão implementados.
 - **RN-22** No mata-mata não há empate: se o placar empata, **o placar dos pênaltis é registrado** e define o vencedor. Pênaltis só valem no mata-mata; na fase de grupos o empate vale 1 ponto.
 - **RN-24** Os pênaltis não alteram o placar do jogo (ex.: 2x2, pênaltis 4x3), e não entram nos pontos pró/contra da classificação.
 - **RN-23** Corrigir placar de partida finalizada é permitido e recalcula a classificação.
-- **RN-25** Uma partida pode terminar em **W.O.**: vitória do time que compareceu (3 pontos), **sem gols** (não entra em gols pró/contra nem no saldo) e sem melhor jogador. Conta como jogo para os dois times.
-- **RN-26** **W.O. dos dois times** (nenhum compareceu): sem vencedor, derrota e 0 ponto para os dois, sem gols. Só existe na fase de grupos; no mata-mata alguém precisa avançar.
+- **RN-25** Uma partida pode terminar em **W.O.**: vitória do time que compareceu (3 pontos) e sem melhor jogador. Na classificação o W.O. vale **2x0** (futsal): 2 gols pró para quem compareceu e 2 contra para o ausente, que entram no saldo. O placar da partida fica nulo. Conta como jogo para os dois times.
+- **RN-26** **W.O. dos dois times** (nenhum compareceu): sem vencedor, derrota e 0 ponto para os dois, sem gols (o edital é omisso). Só existe na fase de grupos; no mata-mata alguém precisa avançar.
 
 ## Conteúdo e acesso
 - **RN-30** Todo o portal público é de acesso livre, sem login.
