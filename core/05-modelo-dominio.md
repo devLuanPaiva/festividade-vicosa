@@ -175,7 +175,7 @@ classDiagram
 8. **Classificação não é entidade**: é calculada a partir das partidas finalizadas (RN-19). Sem risco de ficar desatualizada ou divergente.
 9. **`Team` pertence a uma `Category`** (RN-13).
 10. **`Modality` não vira tabela** no banco: é 1:1 com o sub-evento, então `Category` aponta direto para `SubEvent` (ver [07-modelo-dados.md](07-modelo-dados.md)).
-11. **Chaveamento do mata-mata**: por ora cada partida é cadastrada à mão (RF-23). Se o cliente quiser avanço automático (RF-29), `Match` ganha referência à partida de origem de cada lado.
+11. **Chaveamento do mata-mata**: a primeira rodada é gerada a partir dos times classificados (RN-27) e as rodadas seguintes nascem sozinhas (RN-28, RF-29). `Match` guarda só `bracket_position`; a partida de destino é calculada pela posição, sem referência de origem por lado.
 
 ## Permissões
 

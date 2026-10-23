@@ -129,6 +129,9 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 | PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
 | PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado (jogado, W.O. ou W.O. dos dois times) e finaliza a partida; chamar de novo **corrige o resultado** (RN-23) |
 | DELETE | `/matches/:id` | `match:create` | Exclui a partida. 204 |
+| POST | `/categories/:categoryId/bracket` | `match:create` | Gera a primeira rodada do mata-mata (RN-27): `teamIds` (2, 4, 8 ou 16 times, do melhor para o pior cabeça de chave), `scheduledAt` (data da primeira rodada), `location?`. Devolve as partidas criadas, com `bracketPosition` |
+
+**Chaveamento (RN-27, RN-28):** `BRACKET_SIZE_INVALID` e `BRACKET_TEAMS_DUPLICATED` (campo `teamIds`), 409 `BRACKET_ALREADY_EXISTS` se a categoria já tem chaveamento, e os mesmos erros de time fora da categoria da criação de partida. Ao finalizar uma partida do chaveamento, a próxima é criada ou atualizada na mesma chamada do `PUT /matches/:id/result`; refazer o `PUT` repete o avanço, então ele também conserta um avanço interrompido. 409 `NEXT_ROUND_ALREADY_PLAYED` se a correção trocaria o vencedor de uma partida cuja próxima já foi finalizada.
 
 **Criação (RN-15):** os dois times são diferentes (`SAME_TEAM`) e da categoria da partida (`TEAM_NOT_IN_CATEGORY`). Na fase de grupos exige `groupId` e proíbe `round` (`GROUP_REQUIRED`, `ROUND_NOT_ALLOWED`) e os dois times têm de ser do grupo (`TEAM_NOT_IN_GROUP`). No mata-mata exige `round` e proíbe `groupId` (`ROUND_REQUIRED`, `GROUP_NOT_ALLOWED`). Rodadas: `ROUND_OF_16`, `QUARTER_FINAL`, `SEMI_FINAL`, `THIRD_PLACE`, `FINAL`.
 

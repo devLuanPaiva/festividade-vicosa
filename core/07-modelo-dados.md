@@ -68,6 +68,7 @@ erDiagram
 | `stage` | varchar | `GROUP` ou `KNOCKOUT` |
 | `group_id` | int, nulo | só na fase de grupos |
 | `round` | varchar, nulo | só no mata-mata: `ROUND_OF_16`, `QUARTER_FINAL`, `SEMI_FINAL`, `THIRD_PLACE`, `FINAL` |
+| `bracket_position` | smallint, nulo | só no mata-mata gerado (RN-27): posição da partida na rodada, de 0 em diante; as posições `2n` e `2n+1` alimentam a posição `n` da rodada seguinte. `UNIQUE(category_id, round, bracket_position)` quando preenchido |
 | `scheduled_at`, `location` | timestamptz, varchar | |
 | `status` | varchar | `SCHEDULED` ou `FINALIZED` (`POSTPONED`/`CANCELED` só se o cliente confirmar, RN-16) |
 | `team_a_id`, `team_b_id` | int | |
