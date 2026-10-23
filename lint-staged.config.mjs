@@ -13,11 +13,11 @@ const prettierCommand = (files) => {
 
 export default {
   'api/**/*.ts': (files) => [
-    `npm --prefix api exec -- eslint --config api/eslint.config.mjs --no-warn-ignored --fix ${quote(files)}`,
+    `npm --prefix api run lint:files -- ${quote(files)}`,
     prettierCommand(files),
   ],
   'client/**/*.{ts,tsx,mts}': (files) => [
-    `npm --prefix client exec -- eslint --config client/eslint.config.mjs --no-warn-ignored --fix ${quote(files)}`,
+    `npm --prefix client run lint:files -- ${quote(files)}`,
     prettierCommand(files),
   ],
   '*.{json,md,yml,yaml,mjs}': prettierCommand,
