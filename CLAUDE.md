@@ -40,7 +40,7 @@ resources/user/
 - O resto entra **só quando necessário**: `guards/`, `validators/`, `decorators/`, `enums/`, `rules/` (funções puras de regra), `mappers/` etc. Não crie pasta vazia.
 - Resource sem persistência própria (ex.: `auth`, `health`) dispensa `repository/` e `entities/`.
 - Services dependem de repositories, nunca do `Repository` do TypeORM diretamente.
-- Infraestrutura compartilhada fica fora de `resources/`: `config/` (variáveis de ambiente) e `database/` (conexão e migrations).
+- Infraestrutura compartilhada fica fora de `resources/`: `config/` (variáveis de ambiente), `database/` (conexão e migrations), `common/` (erros, validação e pipes reutilizáveis), `filters/` e `interceptors/` (formato global das respostas).
 
 ## Padrões da API (NestJS)
 
@@ -49,7 +49,10 @@ Baseado na skill `nestjs-best-practices`:
 - **Módulos por resource** (`match`, `team`, `photo`...), nunca por camada técnica global. Sem dependência circular entre módulos.
 - Controller só recebe, valida e delega; **serviço** concentra a regra; acesso a dados por repositório do TypeORM injetado no construtor.
 - **DTOs com `class-validator`** em toda entrada, `ValidationPipe` global com `whitelist` e `forbidNonWhitelisted`. Nunca devolva a entidade crua: use DTO de resposta.
-- Erros com exceções HTTP do Nest e um filtro global; sem `try/catch` silencioso.
+- **Respostas e erros seguem o padrão global** (`ResponseInterceptor` e `HttpExceptionFilter`, registrados em `app.setup.ts`; formato em `core/09-api-endpoints.md`). Nunca monte a resposta de sucesso à mão: o controller devolve o dado e o interceptor embrulha (`status`, `result`, ou lista paginada).
+- **Todo erro lançado leva `code`, `detail` e, quando vem de um campo, `field`:** `throw new ConflictException(apiError('EMAIL_ALREADY_EXISTS', 'Já existe um usuário com este e-mail.', 'email'))`. O `detail` é **uma frase em pt-BR pronta para o usuário**; o client mostra no campo indicado por `field`. Sem `try/catch` silencioso.
+- Mensagens de validação dos DTOs ficam em `common/validation/validation-messages.ts` (pt-BR) e todo `@Param('id')` usa o `ParseIdPipe`.
+- Erros inesperados (500) nunca expõem a mensagem interna ao cliente; o filtro só registra no log.
 - Autorização por _guard_ e permissão (`@RequirePermission('match:record-score')`), nunca por `if` de papel.
 - Configuração só via `@nestjs/config` com variáveis validadas na subida. Sem `process.env` espalhado.
 - Banco: migrations versionadas (`synchronize: false`), transações em operações com mais de uma escrita, sem N+1.
@@ -96,4 +99,5 @@ Client (`cd client`): `npm run dev`, `npm test`, `npm run lint:fix`.
 - O Next.js do `client/` tem mudanças incompatíveis com o que se conhece; siga `client/AGENTS.md` e leia `node_modules/next/dist/docs/` antes de usar uma API do Next.
 - Skills de NestJS instaladas em `api/.claude/skills/`.
 - Skill de performance React/Next instalada em `client/.claude/skills/vercel-react-best-practices/`: siga-a ao escrever componentes, páginas e busca de dados (sem barrel files, `Promise.all` para chamadas independentes, `next/dynamic` para componentes pesados).
+- No client, o contrato das respostas da API (`ApiResult`, `ApiPage`, `ApiError`) está em `src/lib/api/api-response.ts`: exiba `error.details.detail` e use `messageForField` para mostrar a mensagem junto ao campo.
 - No client, `src/pages/` só contém rotas finas; a lógica e os componentes ficam em `src/features/<feature>/` (arquivos de teste dentro de `pages/` virariam rotas).

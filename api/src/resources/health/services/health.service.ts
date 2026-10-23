@@ -1,6 +1,7 @@
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { HealthStatusDto } from '../dto/health-status.dto';
+import { apiError } from '../../../common/errors/api-error';
 
 @Injectable()
 export class HealthService {
@@ -18,7 +19,9 @@ export class HealthService {
       await this.dataSource.query('SELECT 1');
     } catch (error) {
       this.logger.error('Database health check failed', error);
-      throw new ServiceUnavailableException({ status: 'error', database: 'down' });
+      throw new ServiceUnavailableException(
+        apiError('DATABASE_UNAVAILABLE', 'Não foi possível conectar ao banco de dados.'),
+      );
     }
   }
 }

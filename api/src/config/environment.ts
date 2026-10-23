@@ -20,7 +20,7 @@ export enum NodeEnvironment {
 
 const MAX_TCP_PORT = 65535;
 const MIN_JWT_SECRET_LENGTH = 32;
-const MIN_ADMIN_PASSWORD_LENGTH = 12;
+const MIN_ADMIN_PASSWORD_LENGTH = 6;
 
 export class EnvironmentVariables {
   @IsEnum(NodeEnvironment)

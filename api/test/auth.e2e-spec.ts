@@ -80,6 +80,10 @@ describe('Authentication and authorization (e2e)', () => {
     const response = await get('/protected/scores');
 
     expect(response.status).toBe(401);
+    expect(response.body).toMatchObject({
+      status: 'error',
+      errors: { code: 'MISSING_TOKEN', detail: 'Informe o token de acesso para continuar.' },
+    });
   });
 
   it('rejects a protected route with an invalid token', async () => {
@@ -98,19 +102,28 @@ describe('Authentication and authorization (e2e)', () => {
     const response = await get('/protected/users', ASSISTANT_TOKEN);
 
     expect(response.status).toBe(403);
+    expect(response.body).toMatchObject({
+      errors: {
+        code: 'MISSING_PERMISSION',
+        detail: 'Você não tem permissão para realizar esta ação.',
+      },
+    });
   });
 
   it('returns the current user with the permissions on /auth/me', async () => {
     const response = await get('/auth/me', ASSISTANT_TOKEN);
 
-    expect(response.body).toEqual(assistant);
+    expect(response.body).toEqual({ status: 'success', result: assistant });
   });
 
   it('rejects a login with an invalid body before reaching the service', async () => {
     const response = await request(app.getHttpServer() as App)
       .post('/auth/login')
-      .send({ email: 'not-an-email' });
+      .send({ email: 'not-an-email', password: 'secret' });
 
     expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      errors: { code: 'VALIDATION_ERROR', field: 'email', detail: 'Informe um e-mail válido.' },
+    });
   });
 });

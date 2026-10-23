@@ -36,6 +36,8 @@ describe('AuthService', () => {
   it('rejects an unknown or inactive user with the same error as a wrong password', async () => {
     const service = createFixture(null, false);
 
-    await expect(service.login(credentials)).rejects.toThrow('Invalid credentials');
+    await expect(service.login(credentials)).rejects.toMatchObject({
+      response: { code: 'INVALID_CREDENTIALS' },
+    });
   });
 });

@@ -24,21 +24,28 @@ describe('GET /health (e2e)', () => {
     await app.close();
   });
 
-  it('answers 200 when the database is reachable', async () => {
+  it('answers 200 with the standard success body when the database is reachable', async () => {
     app = await createApp(jest.fn().mockResolvedValue([]));
 
-    await request(app.getHttpServer() as App)
-      .get('/health')
-      .expect(200)
-      .expect({ status: 'ok', database: 'up' });
+    const response = await request(app.getHttpServer() as App).get('/health');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      status: 'success',
+      result: { status: 'ok', database: 'up' },
+    });
   });
 
-  it('answers 503 when the database is unreachable', async () => {
+  it('answers 503 with the standard error body when the database is unreachable', async () => {
     app = await createApp(jest.fn().mockRejectedValue(new Error('down')));
 
-    await request(app.getHttpServer() as App)
-      .get('/health')
-      .expect(503)
-      .expect({ status: 'error', database: 'down' });
+    const response = await request(app.getHttpServer() as App).get('/health');
+
+    expect(response.status).toBe(503);
+    expect(response.body).toMatchObject({
+      status: 'error',
+      data: null,
+      errors: { code: 'DATABASE_UNAVAILABLE', field: '' },
+    });
   });
 });

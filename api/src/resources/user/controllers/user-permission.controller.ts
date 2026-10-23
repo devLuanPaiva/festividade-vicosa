@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common';
+import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import { CurrentUser, RequirePermission } from '../../auth/decorators/decorators';
 import type { AuthenticatedUser } from '../../auth/dto/authenticated-user.dto';
 import { Permission } from '../../role/enums/permission.enum';
@@ -17,7 +18,7 @@ export class UserPermissionController {
 
   @Get()
   @RequirePermission(Permission.USER_MANAGE)
-  public get(@Param('id', ParseIntPipe) id: number): Promise<UserPermissionsResponseDto> {
+  public get(@Param('id', ParseIdPipe) id: number): Promise<UserPermissionsResponseDto> {
     return this.queryService.getPermissions(id);
   }
 

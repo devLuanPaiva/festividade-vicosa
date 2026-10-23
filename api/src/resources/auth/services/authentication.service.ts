@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AccessControlService } from '../../role/services/access-control.service';
 import { UserService } from '../../user/services/user.service';
 import type { AuthenticatedUser } from '../dto/authenticated-user.dto';
+import { apiError } from '../../../common/errors/api-error';
 
 interface AccessTokenPayload {
   sub: number;
@@ -21,7 +22,9 @@ export class AuthenticationService {
     const user = await this.usersService.findActiveById(sub);
 
     if (!user) {
-      throw new UnauthorizedException('User is inactive or no longer exists');
+      throw new UnauthorizedException(
+        apiError('USER_INACTIVE', 'Este usuário está inativo ou não existe mais.'),
+      );
     }
 
     const permissions = await this.accessControlService.getEffectivePermissions(user);
@@ -32,7 +35,9 @@ export class AuthenticationService {
     try {
       return await this.jwtService.verifyAsync<AccessTokenPayload>(token);
     } catch {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException(
+        apiError('INVALID_TOKEN', 'Sua sessão expirou. Entre novamente.'),
+      );
     }
   }
 }

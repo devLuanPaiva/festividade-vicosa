@@ -55,6 +55,8 @@ describe('AuthenticationService', () => {
       foundUser: null,
     });
 
-    await expect(service.authenticate('valid.token')).rejects.toThrow('inactive');
+    await expect(service.authenticate('valid.token')).rejects.toMatchObject({
+      response: { code: 'USER_INACTIVE' },
+    });
   });
 });
