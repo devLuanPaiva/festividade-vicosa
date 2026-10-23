@@ -33,8 +33,8 @@ Marque `[x]` quando resolvida e mova a decisão para o doc correspondente.
 - [ ] Futsal 9–19: jogos todos os dias ou há dias sem jogo? Vôlei e corrida no dia 13 coincidem com jogos de futsal?
 
 ## JOCEV (regras do campeonato)
-- [ ] **Sorteio, melhores segundos e critério técnico** (RN-21): o edital os cita, mas faltam quantos classificam, quantos segundos entram e onde vale o critério técnico. Também: placar do W.O. nas outras modalidades (o edital só diz futsal 2x0) e o W.O. dos dois times.
-- [ ] **Quantos classificam por grupo**: aguardando a formação dos grupos pela organização.
+- [x] Sorteio, melhores segundos, critério técnico e quantos classificam (RN-21, RN-29): decidido que a equipe técnica confirma os classificados de cada grupo, com número flexível; o sistema não sorteia.
+- [x] Placar do W.O. no handebol: igual ao futsal, 2x0 (RN-25). W.O. dos dois times segue sem gols (o edital é omisso).
 - [ ] Mata-mata empatado: há prorrogação antes dos pênaltis? (só afeta o texto da regra, não o sistema)
 - [ ] Quantas equipes e quantos grupos por categoria? As equipes são de bairros, comunidades, escolas?
 - [ ] Partidas adiadas ou canceladas precisam aparecer como tal?
