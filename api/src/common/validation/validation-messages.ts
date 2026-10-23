@@ -10,6 +10,9 @@ export const VALIDATION_MESSAGES = {
   year: 'Informe um ano válido entre 2000 e 2100.',
   date: 'Informe uma data válida no formato AAAA-MM-DD.',
   subEventType: 'Selecione um tipo de sub-evento válido.',
+  gender: 'Selecione o gênero: masculino (MALE) ou feminino (FEMALE).',
+  ageRange: 'A faixa etária deve ser um texto de até 60 caracteres.',
+  groupId: 'Informe um grupo válido ou deixe vazio para tirar o time do grupo.',
   roleCode: 'Selecione um papel válido.',
   permissionEffect: 'Informe se a permissão é concedida (GRANTED) ou revogada (REVOKED).',
   permission: 'A permissão informada não existe.',
@@ -21,4 +24,5 @@ export const MAX_PASSWORD_LENGTH = 128;
 export const MAX_NAME_LENGTH = 120;
 export const MAX_DESCRIPTION_LENGTH = 2000;
 export const MAX_LOCATION_LENGTH = 200;
+export const MAX_AGE_RANGE_LENGTH = 60;
 export const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
