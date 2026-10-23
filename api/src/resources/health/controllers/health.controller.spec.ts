@@ -1,5 +1,5 @@
 import { HealthController } from './health.controller';
-import type { HealthService } from './health.service';
+import type { HealthService } from '../services/health.service';
 
 describe('HealthController', () => {
   it('returns the status reported by the health service', async () => {

@@ -1,10 +1,6 @@
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-
-export interface HealthStatus {
-  status: 'ok' | 'error';
-  database: 'up' | 'down';
-}
+import type { HealthStatusDto } from '../dto/health-status.dto';
 
 @Injectable()
 export class HealthService {
@@ -12,7 +8,7 @@ export class HealthService {
 
   public constructor(private readonly dataSource: DataSource) {}
 
-  public async check(): Promise<HealthStatus> {
+  public async check(): Promise<HealthStatusDto> {
     await this.assertDatabaseIsReachable();
     return { status: 'ok', database: 'up' };
   }
