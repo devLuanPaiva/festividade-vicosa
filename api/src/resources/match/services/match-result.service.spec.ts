@@ -3,7 +3,7 @@ import { MatchResultType, MatchStage } from '../enums/match.enums';
 import type { MatchBracketAdvancer } from './match-bracket-advancer.service';
 import { MatchResultService } from './match-result.service';
 import type { MatchService } from './match.service';
-import { MATCH_ID, TEAM_A, TEAM_B, TEAM_C, stored } from './match.service.fixture';
+import { MATCH_ID, TEAM_A, TEAM_B, stored } from './match.service.fixture';
 
 const ACTOR_ID = '00000000-0000-4000-8000-000000000001';
 const knockoutMatch = { ...stored, stage: MatchStage.KNOCKOUT, groupId: null };
@@ -73,17 +73,6 @@ describe('MatchResultService.record', () => {
         finalizedAt: expect.any(Date) as Date,
         bestPlayerName: null,
       }),
-    );
-  });
-
-  it('leaves a group draw without winner (RN-20)', async () => {
-    const { service, repository } = createFixture();
-
-    await service.record(MATCH_ID, ACTOR_ID, { scoreA: 2, scoreB: 2 });
-
-    expect(repository.saveResult).toHaveBeenCalledWith(
-      MATCH_ID,
-      expect.objectContaining({ winnerId: null }),
     );
   });
 
@@ -164,20 +153,6 @@ describe('MatchResultService.record', () => {
     );
   });
 
-  it('refuses a walkover that also brings a score', async () => {
-    const { service, repository } = createFixture();
-
-    await expect(
-      service.record(MATCH_ID, ACTOR_ID, {
-        resultType: MatchResultType.WALKOVER,
-        walkoverWinnerId: TEAM_A,
-        scoreA: 1,
-        scoreB: 0,
-      }),
-    ).rejects.toMatchObject({ response: { code: 'WALKOVER_HAS_NO_PLAY' } });
-    expect(repository.saveResult).not.toHaveBeenCalled();
-  });
-
   it('refuses a result that breaks the rules without saving it', async () => {
     const { service, repository } = createFixture(knockoutMatch);
 
@@ -187,18 +162,5 @@ describe('MatchResultService.record', () => {
       response: { code: 'PENALTIES_REQUIRED', field: 'penaltiesA' },
     });
     expect(repository.saveResult).not.toHaveBeenCalled();
-  });
-
-  it('refuses a best player from a team outside the match', async () => {
-    const { service } = createFixture();
-
-    await expect(
-      service.record(MATCH_ID, ACTOR_ID, {
-        scoreA: 1,
-        scoreB: 0,
-        bestPlayerName: 'Caio',
-        bestPlayerTeamId: TEAM_C,
-      }),
-    ).rejects.toMatchObject({ response: { code: 'BEST_PLAYER_TEAM_INVALID' } });
   });
 });

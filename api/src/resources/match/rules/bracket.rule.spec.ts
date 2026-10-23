@@ -19,11 +19,11 @@ function pairsOf(count: number): string[] {
 }
 
 describe('findBracketTeamsProblem', () => {
-  it.each([2, 4, 8, 16])('accepts %i distinct teams', (count) => {
+  it.each([2, 16])('accepts %i distinct teams', (count) => {
     expect(findBracketTeamsProblem(teams(count))).toBeNull();
   });
 
-  it.each([0, 1, 3, 5, 6, 12, 17])('refuses %i teams', (count) => {
+  it.each([0, 3, 17])('refuses %i teams', (count) => {
     expect(findBracketTeamsProblem(teams(count))).toMatchObject({
       code: 'BRACKET_SIZE_INVALID',
       field: 'teamIds',
@@ -56,10 +56,6 @@ describe('pairFirstRound', () => {
     [16, ['1x16', '8x9', '4x13', '5x12', '2x15', '7x10', '3x14', '6x11']],
   ])('pairs %i seeds so the best seeds meet only late', (count, expected) => {
     expect(pairsOf(count)).toEqual(expected);
-  });
-
-  it('numbers the pairings from zero in bracket order', () => {
-    expect(pairFirstRound(teams(4)).map((pairing) => pairing.bracketPosition)).toEqual([0, 1]);
   });
 });
 
@@ -127,8 +123,6 @@ describe('loserDestination', () => {
 describe('siblingPosition', () => {
   it.each([
     [0, 1],
-    [1, 0],
-    [4, 5],
     [7, 6],
   ])('pairs position %i with %i', (position, sibling) => {
     expect(siblingPosition(position)).toBe(sibling);

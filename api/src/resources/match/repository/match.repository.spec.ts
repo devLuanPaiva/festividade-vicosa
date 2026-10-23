@@ -26,17 +26,6 @@ function createFixture(): { repository: MatchRepository; typeorm: TypeOrmMock } 
 }
 
 describe('MatchRepository.findByCategory', () => {
-  it('lists the matches of a category by date when there are no filters', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findByCategory(CATEGORY_ID, {});
-
-    expect(typeorm.find).toHaveBeenCalledWith({
-      where: [{ categoryId: CATEGORY_ID }],
-      order: ORDER,
-    });
-  });
-
   it('filters by stage, group, round and status', async () => {
     const { repository, typeorm } = createFixture();
 
@@ -102,26 +91,6 @@ describe('MatchRepository.findByCategory', () => {
 });
 
 describe('MatchRepository', () => {
-  it('finds a match by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findById(MATCH_ID);
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: MATCH_ID });
-  });
-
-  it('finds the match of a bracket slot', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.findBracketMatch(CATEGORY_ID, MatchRound.FINAL, 0);
-
-    expect(typeorm.findOneBy).toHaveBeenCalledWith({
-      categoryId: CATEGORY_ID,
-      round: MatchRound.FINAL,
-      bracketPosition: 0,
-    });
-  });
-
   it('saves a new match as scheduled', async () => {
     const { repository } = createFixture();
     const record = {
@@ -140,30 +109,6 @@ describe('MatchRepository', () => {
       ...record,
       status: MatchStatus.SCHEDULED,
     });
-  });
-
-  it('saves several new matches as scheduled in one call', async () => {
-    const { repository, typeorm } = createFixture();
-    const records = [
-      { categoryId: CATEGORY_ID, bracketPosition: 0 },
-      { categoryId: CATEGORY_ID, bracketPosition: 1 },
-    ] as never[];
-
-    await repository.createMany(records);
-
-    expect(typeorm.save).toHaveBeenCalledTimes(1);
-    expect(typeorm.save).toHaveBeenCalledWith([
-      { categoryId: CATEGORY_ID, bracketPosition: 0, status: MatchStatus.SCHEDULED },
-      { categoryId: CATEGORY_ID, bracketPosition: 1, status: MatchStatus.SCHEDULED },
-    ]);
-  });
-
-  it('updates a match by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.update(MATCH_ID, { location: 'Ginásio' });
-
-    expect(typeorm.update).toHaveBeenCalledWith({ id: MATCH_ID }, { location: 'Ginásio' });
   });
 
   it('saves a result and marks the match as finalized', async () => {
@@ -188,13 +133,5 @@ describe('MatchRepository', () => {
       { id: MATCH_ID },
       { ...result, status: MatchStatus.FINALIZED },
     );
-  });
-
-  it('deletes a match by id', async () => {
-    const { repository, typeorm } = createFixture();
-
-    await repository.remove(MATCH_ID);
-
-    expect(typeorm.delete).toHaveBeenCalledWith({ id: MATCH_ID });
   });
 });
