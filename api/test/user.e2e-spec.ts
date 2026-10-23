@@ -4,6 +4,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { configureApp } from '../src/app.setup';
+import { apiError } from '../src/common/errors/api-error';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
 import { JwtAuthGuard } from '../src/resources/auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../src/resources/auth/guards/permissions.guard';
@@ -102,10 +103,9 @@ describe('User management (e2e)', () => {
   it('lists users without the password hash', async () => {
     const response = await asAdmin(request(server()).get('/users'));
 
-    expect(response.body).toEqual([
-      expect.not.objectContaining({ passwordHash: expect.anything() as unknown }),
-    ]);
     expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({ status: 'success', count: 1, currentPage: 1 });
+    expect(JSON.stringify(response.body)).not.toContain('passwordHash');
   });
 
   it('creates a user with a valid body and answers 201', async () => {
@@ -115,28 +115,72 @@ describe('User management (e2e)', () => {
   });
 
   it.each([
-    { scenario: 'the password is too short', body: { ...validNewUser, password: 'short' } },
-    { scenario: 'the role code is unknown', body: { ...validNewUser, roleCode: 'OWNER' } },
-    { scenario: 'there is an unexpected field', body: { ...validNewUser, active: false } },
-  ])('rejects a new user when $scenario', async ({ body }) => {
+    {
+      scenario: 'the password is too short',
+      body: { ...validNewUser, password: 'short' },
+      field: 'password',
+      detail: 'A senha deve ter pelo menos 6 caracteres.',
+    },
+    {
+      scenario: 'the role code is unknown',
+      body: { ...validNewUser, roleCode: 'OWNER' },
+      field: 'roleCode',
+      detail: 'Selecione um papel válido.',
+    },
+    {
+      scenario: 'there is an unexpected field',
+      body: { ...validNewUser, active: false },
+      field: 'active',
+      detail: 'O campo "active" não é permitido.',
+    },
+  ])('rejects a new user when $scenario', async ({ body, field, detail }) => {
     const response = await asAdmin(request(server()).post('/users').send(body));
 
     expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: 'error',
+      message: 'Requisição inválida',
+      data: null,
+      errors: { code: 'VALIDATION_ERROR', field, detail },
+    });
     expect(userService.create).not.toHaveBeenCalled();
   });
 
+  it('accepts a password with exactly 6 characters', async () => {
+    const response = await asAdmin(
+      request(server())
+        .post('/users')
+        .send({ ...validNewUser, password: '123456' }),
+    );
+
+    expect(response.status).toBe(201);
+  });
+
   it('answers 409 when the service reports a conflict', async () => {
-    userService.create.mockRejectedValue(new ConflictException('already exists'));
+    userService.create.mockRejectedValue(
+      new ConflictException(
+        apiError('EMAIL_ALREADY_EXISTS', 'Já existe um usuário com este e-mail.', 'email'),
+      ),
+    );
 
     const response = await asAdmin(request(server()).post('/users').send(validNewUser));
 
     expect(response.status).toBe(409);
+    expect(response.body).toMatchObject({
+      message: 'Conflito de dados',
+      errors: {
+        code: 'EMAIL_ALREADY_EXISTS',
+        field: 'email',
+        detail: 'Já existe um usuário com este e-mail.',
+      },
+    });
   });
 
   it('rejects a non numeric user id', async () => {
     const response = await asAdmin(request(server()).patch('/users/abc/deactivate'));
 
     expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ errors: { code: 'INVALID_ID', field: 'id' } });
   });
 
   it('rejects an unknown permission on an override', async () => {
@@ -145,6 +189,13 @@ describe('User management (e2e)', () => {
     );
 
     expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      errors: {
+        code: 'VALIDATION_ERROR',
+        field: 'permission',
+        detail: 'A permissão informada não existe.',
+      },
+    });
   });
 
   it('sets an override and answers 204', async () => {
