@@ -1,0 +1,76 @@
+import { REQUIRED_PERMISSIONS_KEY } from '../../auth/decorators/decorators';
+import type { AuthenticatedUser } from '../../auth/dto/authenticated-user.dto';
+import { PermissionEffect } from '../../role/enums/permission-effect.enum';
+import { Permission } from '../../role/enums/permission.enum';
+import type { UserPermissionQueryService } from '../services/user-permission-query.service';
+import type { UserPermissionService } from '../services/user-permission.service';
+import { UserPermissionController } from './user-permission.controller';
+
+const actor: AuthenticatedUser = {
+  id: 1,
+  name: 'Admin',
+  email: 'admin@example.com',
+  permissions: [],
+};
+
+function createController(): {
+  controller: UserPermissionController;
+  queryService: Record<'getPermissions', jest.Mock>;
+  permissionService: Record<'setOverride' | 'removeOverride', jest.Mock>;
+} {
+  const queryService = {
+    getPermissions: jest.fn().mockResolvedValue({ permissions: [], overrides: [] }),
+  };
+  const permissionService = {
+    setOverride: jest.fn().mockResolvedValue(undefined),
+    removeOverride: jest.fn().mockResolvedValue(undefined),
+  };
+  const controller = new UserPermissionController(
+    queryService as unknown as UserPermissionQueryService,
+    permissionService as unknown as UserPermissionService,
+  );
+  return { controller, queryService, permissionService };
+}
+
+describe('UserPermissionController', () => {
+  it('returns the permissions of a user', async () => {
+    const { controller, queryService } = createController();
+
+    await expect(controller.get(7)).resolves.toEqual({ permissions: [], overrides: [] });
+    expect(queryService.getPermissions).toHaveBeenCalledWith(7);
+  });
+
+  it('sets an override on behalf of the authenticated user', async () => {
+    const { controller, permissionService } = createController();
+
+    await controller.set(
+      actor,
+      { id: 7, permission: Permission.PHOTO_DELETE },
+      { effect: PermissionEffect.GRANTED },
+    );
+
+    expect(permissionService.setOverride).toHaveBeenCalledWith(1, {
+      userId: 7,
+      permission: Permission.PHOTO_DELETE,
+      effect: PermissionEffect.GRANTED,
+    });
+  });
+
+  it('removes an override on behalf of the authenticated user', async () => {
+    const { controller, permissionService } = createController();
+
+    await controller.remove(actor, { id: 7, permission: Permission.PHOTO_DELETE });
+
+    expect(permissionService.removeOverride).toHaveBeenCalledWith(1, 7, Permission.PHOTO_DELETE);
+  });
+
+  it.each([
+    { handler: 'get', permission: Permission.USER_MANAGE },
+    { handler: 'set', permission: Permission.USER_MANAGE_PERMISSIONS },
+    { handler: 'remove', permission: Permission.USER_MANAGE_PERMISSIONS },
+  ] as const)('requires $permission to call $handler', ({ handler, permission }) => {
+    expect(
+      Reflect.getMetadata(REQUIRED_PERMISSIONS_KEY, UserPermissionController.prototype[handler]),
+    ).toEqual([permission]);
+  });
+});
