@@ -110,6 +110,18 @@ describe('MatchRepository', () => {
     expect(typeorm.findOneBy).toHaveBeenCalledWith({ id: MATCH_ID });
   });
 
+  it('finds the match of a bracket slot', async () => {
+    const { repository, typeorm } = createFixture();
+
+    await repository.findBracketMatch(CATEGORY_ID, MatchRound.FINAL, 0);
+
+    expect(typeorm.findOneBy).toHaveBeenCalledWith({
+      categoryId: CATEGORY_ID,
+      round: MatchRound.FINAL,
+      bracketPosition: 0,
+    });
+  });
+
   it('saves a new match as scheduled', async () => {
     const { repository } = createFixture();
     const record = {

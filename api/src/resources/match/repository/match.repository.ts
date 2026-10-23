@@ -103,6 +103,14 @@ export class MatchRepository {
     return this.repository.findOneBy({ id });
   }
 
+  public findBracketMatch(
+    categoryId: string,
+    round: MatchRound,
+    bracketPosition: number,
+  ): Promise<Match | null> {
+    return this.repository.findOneBy({ categoryId, round, bracketPosition });
+  }
+
   public create(record: MatchRecord): Promise<Match> {
     return this.repository.save(
       this.repository.create({ ...record, status: MatchStatus.SCHEDULED }),

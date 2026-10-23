@@ -7,6 +7,7 @@ import { MatchBracketController } from './controllers/match-bracket.controller';
 import { MatchController } from './controllers/match.controller';
 import { Match } from './entities/match.entity';
 import { MatchRepository } from './repository/match.repository';
+import { MatchBracketAdvancer } from './services/match-bracket-advancer.service';
 import { MatchBracketGenerator } from './services/match-bracket-generator.service';
 import { MatchFixtureValidator } from './services/match-fixture-validator.service';
 import { MatchResultService } from './services/match-result.service';
@@ -18,6 +19,7 @@ import { MatchService } from './services/match.service';
   providers: [
     MatchService,
     MatchResultService,
+    MatchBracketAdvancer,
     MatchBracketGenerator,
     MatchFixtureValidator,
     MatchRepository,
