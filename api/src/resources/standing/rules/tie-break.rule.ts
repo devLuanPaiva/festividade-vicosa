@@ -71,7 +71,7 @@ function resolveTie(tied: StandingRow[], matches: StandingMatch[]): StandingRow[
       return groups.flatMap((group) => resolveTie(group, matches));
     }
   }
-  return sortByName(tied);
+  return sortByName(tied).map((row) => ({ ...row, tied: true }));
 }
 
 export function rankStandingRows(rows: StandingRow[], matches: StandingMatch[]): StandingRow[] {

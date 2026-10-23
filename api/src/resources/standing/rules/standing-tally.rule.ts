@@ -32,6 +32,7 @@ export interface StandingRow {
   goalDifference: number;
   points: number;
   walkoverLosses: number;
+  tied: boolean;
 }
 
 type Outcome = 'WIN' | 'DRAW' | 'LOSS';
@@ -74,6 +75,7 @@ function emptyRow(team: StandingTeam): StandingRow {
     goalDifference: 0,
     points: 0,
     walkoverLosses: 0,
+    tied: false,
   };
 }
 
