@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './resources/auth/auth.module';
 import { validateEnvironment } from './config/environment';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './resources/auth/auth.module';
+import { EditionModule } from './resources/edition/edition.module';
 import { HealthModule } from './resources/health/health.module';
+import { SubEventModule } from './resources/sub-event/sub-event.module';
 
 @Module({
   imports: [
@@ -11,6 +13,8 @@ import { HealthModule } from './resources/health/health.module';
     DatabaseModule,
     AuthModule,
     HealthModule,
+    EditionModule,
+    SubEventModule,
   ],
 })
 export class AppModule {}

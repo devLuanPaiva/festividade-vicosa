@@ -1,6 +1,6 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import { RequiredName } from '../../../common/validation/field-decorators';
 import {
-  MAX_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
   MIN_PASSWORD_LENGTH,
   VALIDATION_MESSAGES,
@@ -8,9 +8,7 @@ import {
 import { RoleCode } from '../../role/enums/role-code.enum';
 
 export class CreateUserDto {
-  @IsString({ message: VALIDATION_MESSAGES.nameRequired })
-  @IsNotEmpty({ message: VALIDATION_MESSAGES.nameRequired })
-  @MaxLength(MAX_NAME_LENGTH, { message: VALIDATION_MESSAGES.nameTooLong })
+  @RequiredName()
   public name!: string;
 
   @IsEmail({}, { message: VALIDATION_MESSAGES.email })

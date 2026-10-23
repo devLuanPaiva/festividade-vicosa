@@ -69,6 +69,20 @@ Toda resposta segue o padrão definido por `ResponseInterceptor` e `HttpExceptio
 
 `:permission` é um dos códigos do catálogo (ex.: `photo:delete`). Regras: ninguém altera as **próprias** permissões (RN-45, 403) e a mudança nunca pode deixar o sistema sem um usuário ativo com `user:manage-permissions` (RN-46, 409).
 
+## Edições e sub-eventos (RF-21)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/editions` | pública | Lista as edições (ano mais recente primeiro) |
+| GET | `/editions/:id` | pública | Uma edição |
+| POST | `/editions` | `schedule:manage` | Cria edição: `year` (2000–2100), `name`, `description?`. 409 se o ano já existe |
+| PATCH | `/editions/:id` | `schedule:manage` | Altera os campos informados |
+| GET | `/editions/:editionId/sub-events` | pública | Sub-eventos da edição, por data de início |
+| GET | `/sub-events/:id` | pública | Um sub-evento |
+| POST | `/editions/:editionId/sub-events` | `schedule:manage` | Cria: `type`, `name`, `startDate`, `endDate` (`AAAA-MM-DD`), `description?`, `location?`. 409 se a edição já tem o tipo; 400 se `endDate` < `startDate` |
+| PATCH | `/sub-events/:id` | `schedule:manage` | Altera nome, descrição, datas e local (o `type` não muda) |
+
+A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festival cultural 8/12, futsal 9–19/12, vôlei de areia e corrida 13/12, ecopedal 20/12, festa 27–28/12) vêm do seed da migration.
+
 ## Papéis
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
