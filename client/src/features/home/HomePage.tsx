@@ -1,9 +1,22 @@
 import type { ReactElement } from 'react';
+import { PublicLayout } from '@/features/layout/PublicLayout';
+import type { SubEvent } from '@/features/schedule/schedule-types';
+import { HeroSection } from './components/HeroSection';
+import { JocevSection } from './components/JocevSection';
+import { ProgramSection } from './components/ProgramSection';
+import { TrajectorySection } from './components/TrajectorySection';
 
-export function HomePage(): ReactElement {
+export interface HomePageProps {
+  subEvents: SubEvent[];
+}
+
+export function HomePage({ subEvents }: HomePageProps): ReactElement {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      <h1 className="text-3xl font-semibold text-black dark:text-zinc-50">Festividade de Viçosa</h1>
-    </main>
+    <PublicLayout>
+      <HeroSection />
+      <TrajectorySection />
+      <JocevSection />
+      <ProgramSection subEvents={subEvents} />
+    </PublicLayout>
   );
 }
