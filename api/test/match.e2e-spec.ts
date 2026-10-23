@@ -41,6 +41,7 @@ const match = {
   status: MatchStatus.SCHEDULED,
   teamAId: TEAM_A,
   teamBId: TEAM_B,
+  resultType: 'PLAYED',
   scoreA: null,
   scoreB: null,
   penaltiesA: null,
