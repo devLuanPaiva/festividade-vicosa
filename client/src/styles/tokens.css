@@ -1,0 +1,33 @@
+@theme {
+  --color-brand-500: #1263eb;
+  --color-brand-600: #2c5ad6;
+  --color-brand-700: #192aa5;
+  --color-brand-900: #073b86;
+  --color-cyan-brand: #28cefd;
+  --color-sun: #fad90e;
+  --color-grass: #7bd337;
+  --color-grass-deep: #5eab28;
+  --color-paper: #f3f7ff;
+  --color-ink: #0b1b3d;
+  --color-ink-soft: #4a5a7d;
+
+  --color-admin-canvas: #f5f6f8;
+  --color-admin-surface: #ffffff;
+  --color-admin-line: #e2e5eb;
+  --color-admin-ink: #1b2130;
+  --color-admin-muted: #667085;
+  --color-danger: #c62828;
+  --color-success: #1f8a2d;
+
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  --font-display: var(--font-bebas), 'Arial Narrow', sans-serif;
+  --font-signature: var(--font-quinsy), var(--font-poppins), sans-serif;
+
+  --width-content: 1200px;
+  --width-content-narrow: 760px;
+}
+
+:root {
+  --bg-sky-desktop: url('/brand/bg-desktop.webp');
+  --bg-sky-mobile: url('/brand/bg-mobile.webp');
+}
