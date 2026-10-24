@@ -1,7 +1,7 @@
-import { categoryPath } from '@/features/admin-teams/lib/admin-team-paths';
+import { categoryPath, categoryTabPath } from '@/features/admin-teams/lib/admin-team-paths';
 
 export function categoryMatchesPath(categoryId: string): string {
-  return `${categoryPath(categoryId)}?aba=partidas`;
+  return categoryTabPath(categoryId, 'partidas');
 }
 
 export function newMatchPath(categoryId: string): string {

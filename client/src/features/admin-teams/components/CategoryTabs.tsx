@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import { categoryPath } from '../lib/admin-team-paths';
+import { categoryTabPath } from '../lib/admin-team-paths';
 import type { CategoryTab } from '../lib/category-tabs';
 
 interface CategoryTabsProps {
@@ -9,6 +9,13 @@ interface CategoryTabsProps {
   teamCount: number;
   groupCount: number;
   matchCount: number | null;
+}
+
+function matchTabs(matchCount: number): { tab: CategoryTab; label: string }[] {
+  return [
+    { tab: 'partidas', label: `Partidas (${matchCount})` },
+    { tab: 'chaveamento', label: 'Chaveamento' },
+  ];
 }
 
 export function CategoryTabs({
@@ -22,9 +29,7 @@ export function CategoryTabs({
     { tab: 'times', label: `Times (${teamCount})` },
     { tab: 'grupos', label: `Grupos (${groupCount})` },
     { tab: 'classificados', label: 'Classificados' },
-    ...(matchCount === null
-      ? []
-      : [{ tab: 'partidas' as const, label: `Partidas (${matchCount})` }]),
+    ...(matchCount === null ? [] : matchTabs(matchCount)),
   ];
   return (
     <nav
@@ -34,7 +39,7 @@ export function CategoryTabs({
       {tabs.map(({ tab, label }) => (
         <Link
           key={tab}
-          href={`${categoryPath(categoryId)}?aba=${tab}`}
+          href={categoryTabPath(categoryId, tab)}
           replace
           aria-current={tab === active ? 'page' : undefined}
           className={`-mb-px inline-flex min-h-12 shrink-0 items-center whitespace-nowrap border-b-2 px-4 text-sm font-semibold ${

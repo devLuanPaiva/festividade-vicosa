@@ -4,6 +4,10 @@ export function categoryPath(categoryId: string): string {
   return `${ADMIN_CATEGORIES_PATH}/${categoryId}`;
 }
 
+export function categoryTabPath(categoryId: string, tab: string): string {
+  return `${categoryPath(categoryId)}?aba=${tab}`;
+}
+
 export function newTeamPath(categoryId: string): string {
   return `${categoryPath(categoryId)}/times/novo`;
 }

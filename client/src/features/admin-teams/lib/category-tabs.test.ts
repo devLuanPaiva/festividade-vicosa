@@ -14,8 +14,10 @@ describe('parseCategoryTab', () => {
     expect(parseCategoryTab('classificados', false)).toBe('classificados');
   });
 
-  it('opens the matches tab only for who can manage matches', () => {
+  it('opens the matches and bracket tabs only for who can manage matches', () => {
     expect(parseCategoryTab('partidas', true)).toBe('partidas');
+    expect(parseCategoryTab('chaveamento', true)).toBe('chaveamento');
     expect(parseCategoryTab('partidas', false)).toBe('times');
+    expect(parseCategoryTab('chaveamento', false)).toBe('times');
   });
 });
