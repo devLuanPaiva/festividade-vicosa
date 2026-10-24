@@ -5,7 +5,10 @@
 |----------|------|----------|
 | `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_NAME` | `.env` na raiz | Credenciais do Postgres; o compose repassa para o container `db` e para a API |
 | `JWT_SECRET` | `.env` na raiz | Segredo para assinar os tokens de login (mínimo de 32 caracteres, gerado aleatoriamente) |
-| `JWT_EXPIRES_IN` | `.env` na raiz | Validade do token (padrão `12h`) |
+| `JWT_EXPIRES_IN` | `.env` na raiz | Validade do token de acesso (padrão `15m`) |
+| `REFRESH_TOKEN_EXPIRES_IN_DAYS` | `.env` na raiz | Validade do token de renovação, em dias (padrão `7`, máximo `90`) |
+| `GOOGLE_CLIENT_ID` | `.env` na raiz e `client/.env` | ID do cliente OAuth do Google (opcional; sem ele o login com Google fica indisponível) |
+| `GOOGLE_CLIENT_SECRET`, `SITE_URL` | `client/.env` | Segredo do cliente OAuth (só o client usa) e endereço público do site, usado na URL de retorno `SITE_URL/admin/login/google/callback` |
 | `ADMIN_EMAIL`, `ADMIN_INITIAL_PASSWORD` | `.env` na raiz | Criam o primeiro Admin quando não há nenhum usuário (senha com pelo menos 6 caracteres; troque após o primeiro login) |
 | `CORS_ORIGIN` | `.env` na raiz | Origens permitidas, separadas por vírgula (ex.: `https://app.dominio`) |
 | `API_DOMAIN` | `.env` na raiz | Domínio público da API (Caddy emite o certificado) |

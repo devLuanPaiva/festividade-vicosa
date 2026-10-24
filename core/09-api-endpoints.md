@@ -65,7 +65,10 @@ Exemplo: `GET /categories/<id>/teams?city=viçosa&search=cen&limit=20`.
 ## Autenticação
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
-| POST | `/auth/login` | pública | Recebe `email` e `password`; devolve `{ accessToken }`. Limite de 5 tentativas por minuto (429 depois disso) |
+| POST | `/auth/login` | pública | Recebe `email` e `password`; devolve `{ accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt }`. Limite de 5 tentativas por minuto (429 depois disso) |
+| POST | `/auth/google` | pública | Recebe `idToken` e `nonce` do login com Google; devolve os mesmos tokens do login. 403 `GOOGLE_EMAIL_NOT_AUTHORIZED` se o e-mail não tem usuário ativo; 401 `GOOGLE_TOKEN_INVALID`, `GOOGLE_NONCE_MISMATCH` ou `GOOGLE_EMAIL_UNVERIFIED`; 503 `GOOGLE_LOGIN_UNAVAILABLE` sem `GOOGLE_CLIENT_ID`. Mesmo limite do login |
+| POST | `/auth/refresh` | pública | Recebe `refreshToken`; devolve um novo par de tokens e invalida o recebido (tolerância de 10 s para requisições paralelas). 401 `INVALID_REFRESH_TOKEN` se desconhecido, expirado ou já reutilizado (reuso encerra a sessão inteira); 401 `USER_INACTIVE` se o usuário foi desativado |
+| POST | `/auth/logout` | pública | Recebe `refreshToken` e encerra a sessão dele. 204, mesmo se o token já não existir |
 | GET | `/auth/me` | qualquer usuário logado | Usuário atual com as permissões efetivas (o client usa para esconder botões; a API é quem barra) |
 | GET | `/health` | pública | Estado da API e do banco (200 ou 503) |
 

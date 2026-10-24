@@ -21,6 +21,7 @@ export enum NodeEnvironment {
 const MAX_TCP_PORT = 65535;
 const MIN_JWT_SECRET_LENGTH = 32;
 const MIN_ADMIN_PASSWORD_LENGTH = 6;
+const MAX_REFRESH_TOKEN_DAYS = 90;
 
 export class EnvironmentVariables {
   @IsEnum(NodeEnvironment)
@@ -63,7 +64,17 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  public JWT_EXPIRES_IN = '12h';
+  public JWT_EXPIRES_IN = '15m';
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(MAX_REFRESH_TOKEN_DAYS)
+  public REFRESH_TOKEN_EXPIRES_IN_DAYS = 7;
+
+  @IsOptional()
+  @IsString()
+  public GOOGLE_CLIENT_ID?: string;
 
   @IsOptional()
   @IsEmail()

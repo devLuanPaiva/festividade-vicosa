@@ -1,6 +1,30 @@
 const DEFAULT_API_BASE_URL = 'http://localhost:3000';
+const DEFAULT_SITE_URL = 'http://localhost:3001';
+const GOOGLE_CALLBACK_PATH = '/admin/login/google/callback';
+
+export interface GoogleOAuthConfig {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+}
+
+function withoutTrailingSlash(url: string): string {
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+}
 
 export function getApiBaseUrl(): string {
-  const baseUrl = process.env.API_BASE_URL ?? DEFAULT_API_BASE_URL;
-  return baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  return withoutTrailingSlash(process.env.API_BASE_URL ?? DEFAULT_API_BASE_URL);
+}
+
+export function getSiteUrl(): string {
+  return withoutTrailingSlash(process.env.SITE_URL ?? DEFAULT_SITE_URL);
+}
+
+export function getGoogleOAuthConfig(): GoogleOAuthConfig | null {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    return null;
+  }
+  return { clientId, clientSecret, redirectUri: `${getSiteUrl()}${GOOGLE_CALLBACK_PATH}` };
 }

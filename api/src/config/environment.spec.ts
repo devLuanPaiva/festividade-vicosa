@@ -19,7 +19,8 @@ describe('validateEnvironment', () => {
     expect(environment.NODE_ENV).toBe(NodeEnvironment.DEVELOPMENT);
     expect(environment.PORT).toBe(3000);
     expect(environment.DATABASE_PORT).toBe(5432);
-    expect(environment.JWT_EXPIRES_IN).toBe('12h');
+    expect(environment.JWT_EXPIRES_IN).toBe('15m');
+    expect(environment.REFRESH_TOKEN_EXPIRES_IN_DAYS).toBe(7);
   });
 
   it('converts numeric strings to numbers', () => {
@@ -35,6 +36,12 @@ describe('validateEnvironment', () => {
 
   it.each(['DATABASE_HOST', 'JWT_SECRET'])('rejects a configuration without %s', (variable) => {
     expect(() => validateEnvironment(withoutVariable(variable))).toThrow(variable);
+  });
+
+  it.each(['0', '91', 'abc'])('rejects %s as the refresh token lifetime in days', (days) => {
+    expect(() =>
+      validateEnvironment({ ...validConfig, REFRESH_TOKEN_EXPIRES_IN_DAYS: days }),
+    ).toThrow('REFRESH_TOKEN_EXPIRES_IN_DAYS');
   });
 
   it('rejects a port outside the valid range', () => {

@@ -1,25 +1,32 @@
 import { cookies } from 'next/headers';
-
-const SESSION_COOKIE_NAME = 'festividade_session';
-const SESSION_MAX_AGE_IN_SECONDS = 12 * 60 * 60;
+import type { AuthTokens } from './auth-tokens';
+import {
+  ACCESS_COOKIE_NAME,
+  REFRESH_COOKIE_NAME,
+  expiredSessionCookieOptions,
+  sessionCookieOptions,
+} from './session-cookie-options';
 
 export async function readSessionToken(): Promise<string | null> {
   const cookieStore = await cookies();
-  return cookieStore.get(SESSION_COOKIE_NAME)?.value ?? null;
+  return cookieStore.get(ACCESS_COOKIE_NAME)?.value ?? null;
 }
 
-export async function storeSessionToken(token: string): Promise<void> {
+export async function readRefreshToken(): Promise<string | null> {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: SESSION_MAX_AGE_IN_SECONDS,
-  });
+  return cookieStore.get(REFRESH_COOKIE_NAME)?.value ?? null;
 }
 
-export async function clearSessionToken(): Promise<void> {
+export async function storeSession(tokens: AuthTokens): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete(SESSION_COOKIE_NAME);
+  const options = sessionCookieOptions(tokens.refreshTokenExpiresAt);
+  cookieStore.set(ACCESS_COOKIE_NAME, tokens.accessToken, options);
+  cookieStore.set(REFRESH_COOKIE_NAME, tokens.refreshToken, options);
+}
+
+export async function clearSession(): Promise<void> {
+  const cookieStore = await cookies();
+  const options = expiredSessionCookieOptions();
+  cookieStore.set(ACCESS_COOKIE_NAME, '', options);
+  cookieStore.set(REFRESH_COOKIE_NAME, '', options);
 }

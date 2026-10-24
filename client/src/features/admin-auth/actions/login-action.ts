@@ -3,15 +3,11 @@
 import { redirect } from 'next/navigation';
 import { ApiError } from '@/lib/api/api-response';
 import { sendApiRequest } from '@/lib/api/server-fetch';
-import { storeSessionToken } from '@/lib/auth/session-cookie';
+import { ADMIN_HOME_PATH } from '@/lib/auth/auth-paths';
+import type { AuthTokens } from '@/lib/auth/auth-tokens';
+import { storeSession } from '@/lib/auth/session-cookie';
 import { readText } from '@/lib/forms/form-data';
 import type { LoginFormState } from '../types';
-
-const ADMIN_HOME_PATH = '/admin';
-
-interface AccessToken {
-  accessToken: string;
-}
 
 function toFailureState(email: string, error: unknown): LoginFormState {
   if (!(error instanceof ApiError)) {
@@ -27,11 +23,11 @@ export async function loginAction(
   const email = readText(formData, 'email');
   const password = String(formData.get('password') ?? '');
   try {
-    const { accessToken } = await sendApiRequest<AccessToken>('/auth/login', {
+    const tokens = await sendApiRequest<AuthTokens>('/auth/login', {
       method: 'POST',
       body: { email, password },
     });
-    await storeSessionToken(accessToken);
+    await storeSession(tokens);
   } catch (error) {
     return toFailureState(email, error);
   }

@@ -117,6 +117,7 @@ Restrições da `match`:
 | `role` | `id`, `code`, `name` | `UNIQUE(code)`; seed: `ADMIN`, `MANAGER`, `ASSISTANT` |
 | `permission` | `code` (PK), `description` | catálogo fixo, criado por migration (RN-40) |
 | `role_permissions` | `role_id`, `permission_code` | PK composta |
+| `refresh_token` | `id`, `user_id`, `family_id`, `token_hash`, `expires_at`, `rotated_at`, `created_at` | `UNIQUE(token_hash)`; guarda só o hash; `family_id` agrupa os tokens de uma mesma sessão |
 | `user_permission_overrides` | `user_id`, `permission_code`, `effect` (`GRANTED`/`REVOKED`) | PK composta `(user_id, permission_code)`: no máximo um efeito por permissão |
 
 - Permissões efetivas = (papel + concedidas) − revogadas (RN-43), calculadas na API e **nunca gravadas**.
