@@ -21,13 +21,17 @@ export interface UpdateMatchPayload {
   teamBId?: string;
 }
 
+export function parseStage(value: string): MatchStage {
+  return value === 'KNOCKOUT' ? 'KNOCKOUT' : 'GROUP';
+}
+
 function parseRound(value: string): MatchRound | '' {
   return KNOCKOUT_ROUNDS.find((round) => round === value) ?? '';
 }
 
 export function parseMatchForm(formData: FormData): MatchFormValues {
   return {
-    stage: readText(formData, 'stage') === 'KNOCKOUT' ? 'KNOCKOUT' : 'GROUP',
+    stage: parseStage(readText(formData, 'stage')),
     groupId: readText(formData, 'groupId'),
     round: parseRound(readText(formData, 'round')),
     teamAId: readText(formData, 'teamAId'),
