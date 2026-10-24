@@ -3,6 +3,7 @@ import {
   DEFAULT_MATCH_LIST_QUERY,
   buildMatchListHref,
   parseMatchListQuery,
+  toFormFields,
 } from './match-list-query';
 
 describe('parseMatchListQuery', () => {
@@ -79,5 +80,22 @@ describe('buildMatchListHref', () => {
     const query = { ...DEFAULT_MATCH_LIST_QUERY, categoryId: 'abc' };
 
     expect(buildMatchListHref(query, { categoryId: '' })).toBe('/admin/partidas');
+  });
+});
+
+describe('toFormFields', () => {
+  it('carries the active filters into a form, leaving out defaults, the page and the omitted ones', () => {
+    const query = {
+      ...DEFAULT_MATCH_LIST_QUERY,
+      search: 'luzia',
+      status: 'hoje' as const,
+      view: 'cards' as const,
+      page: 3,
+    };
+
+    expect(toFormFields(query, ['search'])).toEqual([
+      { name: 'situacao', value: 'hoje' },
+      { name: 'visao', value: 'cards' },
+    ]);
   });
 });

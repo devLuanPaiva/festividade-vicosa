@@ -63,6 +63,11 @@ export function parseMatchListQuery(raw: RawSearchParams): MatchListQuery {
   };
 }
 
+export interface FormField {
+  name: string;
+  value: string;
+}
+
 const PARAM_NAMES: Record<keyof MatchListQuery, string> = {
   search: 'q',
   status: 'situacao',
@@ -87,4 +92,11 @@ export function buildMatchListHref(
   }
   const queryString = params.toString();
   return queryString ? `${ADMIN_MATCHES_PATH}?${queryString}` : ADMIN_MATCHES_PATH;
+}
+
+export function toFormFields(query: MatchListQuery, omit: (keyof MatchListQuery)[]): FormField[] {
+  return (Object.keys(PARAM_NAMES) as (keyof MatchListQuery)[])
+    .filter((key) => key !== 'page' && !omit.includes(key))
+    .filter((key) => query[key] !== DEFAULT_MATCH_LIST_QUERY[key])
+    .map((key) => ({ name: PARAM_NAMES[key], value: String(query[key]) }));
 }
