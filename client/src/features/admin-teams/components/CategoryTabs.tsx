@@ -21,6 +21,7 @@ export function CategoryTabs({
   const tabs: { tab: CategoryTab; label: string }[] = [
     { tab: 'times', label: `Times (${teamCount})` },
     { tab: 'grupos', label: `Grupos (${groupCount})` },
+    { tab: 'classificados', label: 'Classificados' },
     ...(matchCount === null
       ? []
       : [{ tab: 'partidas' as const, label: `Partidas (${matchCount})` }]),

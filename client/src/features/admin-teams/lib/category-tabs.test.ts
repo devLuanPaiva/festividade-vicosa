@@ -10,6 +10,10 @@ describe('parseCategoryTab', () => {
     expect(parseCategoryTab(['grupos', 'times'], true)).toBe('times');
   });
 
+  it('opens the qualified tab when asked', () => {
+    expect(parseCategoryTab('classificados', false)).toBe('classificados');
+  });
+
   it('opens the matches tab only for who can manage matches', () => {
     expect(parseCategoryTab('partidas', true)).toBe('partidas');
     expect(parseCategoryTab('partidas', false)).toBe('times');
