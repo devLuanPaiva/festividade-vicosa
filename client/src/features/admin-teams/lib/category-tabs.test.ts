@@ -3,10 +3,15 @@ import { parseCategoryTab } from './category-tabs';
 
 describe('parseCategoryTab', () => {
   it('opens the groups tab only when asked, and falls back to teams for anything else', () => {
-    expect(parseCategoryTab('grupos')).toBe('grupos');
-    expect(parseCategoryTab('times')).toBe('times');
-    expect(parseCategoryTab(undefined)).toBe('times');
-    expect(parseCategoryTab('qualquer-coisa')).toBe('times');
-    expect(parseCategoryTab(['grupos', 'times'])).toBe('times');
+    expect(parseCategoryTab('grupos', true)).toBe('grupos');
+    expect(parseCategoryTab('times', true)).toBe('times');
+    expect(parseCategoryTab(undefined, true)).toBe('times');
+    expect(parseCategoryTab('qualquer-coisa', true)).toBe('times');
+    expect(parseCategoryTab(['grupos', 'times'], true)).toBe('times');
+  });
+
+  it('opens the matches tab only for who can manage matches', () => {
+    expect(parseCategoryTab('partidas', true)).toBe('partidas');
+    expect(parseCategoryTab('partidas', false)).toBe('times');
   });
 });

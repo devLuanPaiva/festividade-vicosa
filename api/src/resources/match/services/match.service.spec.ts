@@ -74,6 +74,14 @@ describe('MatchService.update', () => {
     });
   });
 
+  it('clears the location when it is sent blank', async () => {
+    const { service, repository } = createFixture();
+
+    await service.update(MATCH_ID, { location: '   ' });
+
+    expect(repository.update).toHaveBeenCalledWith(MATCH_ID, { location: null });
+  });
+
   it('revalidates the whole fixture when a team changes', async () => {
     const { service, validator } = createFixture();
 

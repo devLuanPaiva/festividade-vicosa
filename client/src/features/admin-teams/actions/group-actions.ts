@@ -3,7 +3,7 @@
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
 import { readText } from '@/lib/forms/form-data';
-import { refreshTeamData } from '../lib/refresh-team-data';
+import { refreshChampionshipData } from '../lib/refresh-championship-data';
 import { INITIAL_GROUP_STATE, type GroupFormState } from '../types';
 
 export async function createGroupAction(
@@ -19,7 +19,7 @@ export async function createGroupAction(
   if (failure) {
     return { ...failure, name };
   }
-  refreshTeamData();
+  refreshChampionshipData();
   return INITIAL_GROUP_STATE;
 }
 
@@ -36,7 +36,7 @@ export async function renameGroupAction(
   if (failure) {
     return { ...failure, name };
   }
-  refreshTeamData();
+  refreshChampionshipData();
   return { ...INITIAL_GROUP_STATE, name };
 }
 
@@ -47,6 +47,6 @@ export async function deleteGroupAction(groupId: string): Promise<FormErrorState
   if (failure) {
     return failure;
   }
-  refreshTeamData();
+  refreshChampionshipData();
   return INITIAL_FORM_ERROR_STATE;
 }

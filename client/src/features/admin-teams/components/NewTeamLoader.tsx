@@ -9,7 +9,7 @@ import { categoryPath } from '../lib/admin-team-paths';
 import { getCategoryWithGroups } from '../services/get-team-form-data';
 import { EMPTY_TEAM_VALUES } from '../types';
 import { TeamForm } from './TeamForm';
-import { TeamPageHeader } from './TeamPageHeader';
+import { CategoryPageHeader } from './CategoryPageHeader';
 
 interface NewTeamLoaderProps {
   params: Promise<{ categoryId: string }>;
@@ -24,7 +24,7 @@ export async function NewTeamLoader({ params }: NewTeamLoaderProps): Promise<Rea
   const { category, groups } = await orNotFound(getCategoryWithGroups(categoryId));
   return (
     <>
-      <TeamPageHeader
+      <CategoryPageHeader
         categoryId={category.id}
         categoryTitle={categoryLabel(category)}
         title="Novo time"

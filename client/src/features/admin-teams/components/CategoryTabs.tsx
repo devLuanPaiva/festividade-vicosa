@@ -8,6 +8,7 @@ interface CategoryTabsProps {
   active: CategoryTab;
   teamCount: number;
   groupCount: number;
+  matchCount: number | null;
 }
 
 export function CategoryTabs({
@@ -15,10 +16,14 @@ export function CategoryTabs({
   active,
   teamCount,
   groupCount,
+  matchCount,
 }: CategoryTabsProps): ReactElement {
   const tabs: { tab: CategoryTab; label: string }[] = [
     { tab: 'times', label: `Times (${teamCount})` },
     { tab: 'grupos', label: `Grupos (${groupCount})` },
+    ...(matchCount === null
+      ? []
+      : [{ tab: 'partidas' as const, label: `Partidas (${matchCount})` }]),
   ];
   return (
     <nav aria-label="Seções da categoria" className="flex gap-2 border-b border-admin-line">

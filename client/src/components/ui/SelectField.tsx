@@ -14,7 +14,7 @@ interface SelectFieldProps {
   options: SelectOption[];
   errorMessage: string | null;
   isOptional?: boolean;
-  onInput: () => void;
+  onInput: (value: string) => void;
 }
 
 export function SelectField({
@@ -34,7 +34,7 @@ export function SelectField({
       <select
         {...controlProps(name, errorMessage)}
         defaultValue={defaultValue}
-        onChange={onInput}
+        onChange={(event) => onInput(event.target.value)}
         required={!isOptional}
       >
         {options.map((option) => (

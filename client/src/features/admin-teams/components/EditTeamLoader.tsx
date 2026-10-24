@@ -9,7 +9,7 @@ import { deleteTeamAction, updateTeamAction } from '../actions/team-actions';
 import { categoryPath } from '../lib/admin-team-paths';
 import { getTeamWithGroups } from '../services/get-team-form-data';
 import { TeamForm } from './TeamForm';
-import { TeamPageHeader } from './TeamPageHeader';
+import { CategoryPageHeader } from './CategoryPageHeader';
 
 interface EditTeamLoaderProps {
   params: Promise<{ teamId: string }>;
@@ -25,7 +25,7 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
   const target = { teamId: team.id, categoryId: category.id };
   return (
     <>
-      <TeamPageHeader
+      <CategoryPageHeader
         categoryId={category.id}
         categoryTitle={categoryLabel(category)}
         title={team.name}

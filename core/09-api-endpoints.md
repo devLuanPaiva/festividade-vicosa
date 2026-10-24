@@ -131,7 +131,7 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 | GET | `/matches` | pública | Partidas de **todas as categorias**, por data, já com `teamA`, `teamB` e `category` embutidos (sem chamadas extras para descobrir nomes). Filtros: os de `/categories/:categoryId/matches` mais `categoryId` e `subEventId` (a modalidade é o sub-evento: futsal ou handebol). `subEventId` e `categoryId` juntos só devolvem partidas se a categoria for do sub-evento. 404 se o sub-evento ou a categoria não existe |
 | GET | `/matches/:id` | pública | Uma partida, com placar, pênaltis, vencedor e melhor jogador quando finalizada |
 | POST | `/categories/:categoryId/matches` | `match:create` | Cria (sempre `SCHEDULED`): `stage` (`GROUP`/`KNOCKOUT`), `scheduledAt`, `teamAId`, `teamBId`, `location?`, `groupId` (fase de grupos) ou `round` (mata-mata) |
-| PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
+| PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. `location` em branco limpa o local. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
 | PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado (jogado, W.O. ou W.O. dos dois times) e finaliza a partida; chamar de novo **corrige o resultado** (RN-23) |
 | DELETE | `/matches/:id` | `match:create` | Exclui a partida. 204 |
 | POST | `/categories/:categoryId/bracket` | `match:create` | Gera a primeira rodada do mata-mata (RN-27): `teamIds` (2, 4, 8 ou 16 times, do melhor para o pior cabeça de chave), `scheduledAt` (data da primeira rodada), `location?`. Devolve as partidas criadas, com `bracketPosition` |
