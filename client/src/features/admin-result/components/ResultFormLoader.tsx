@@ -1,37 +1,15 @@
-import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { formatMatchTime } from '@/features/games/lib/match-dates';
 import { categoryLabel, stageLabel } from '@/features/games/lib/match-labels';
-import { fetchMatchDetail, type MatchDetail } from '@/features/games/services/get-match-detail';
-import { ApiError } from '@/lib/api/api-response';
+import { fetchMatchDetail } from '@/features/games/services/get-match-detail';
+import { orNotFound } from '@/lib/api/missing-resource';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
 import { ResultForm } from './ResultForm';
 
-const NOT_FOUND_STATUS = 404;
-const BAD_REQUEST_STATUS = 400;
-
 interface ResultFormLoaderProps {
   params: Promise<{ matchId: string }>;
-}
-
-function isMissingMatch(error: unknown): boolean {
-  return (
-    error instanceof ApiError &&
-    (error.statusCode === NOT_FOUND_STATUS || error.statusCode === BAD_REQUEST_STATUS)
-  );
-}
-
-async function loadMatchDetail(matchId: string): Promise<MatchDetail> {
-  try {
-    return await fetchMatchDetail(matchId);
-  } catch (error) {
-    if (isMissingMatch(error)) {
-      notFound();
-    }
-    throw error;
-  }
 }
 
 export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promise<ReactElement> {
@@ -40,7 +18,7 @@ export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promi
     return <NoPermission action="lançar placares" />;
   }
   const { matchId } = await params;
-  const detail = await loadMatchDetail(matchId);
+  const detail = await orNotFound(fetchMatchDetail(matchId));
   const { match, teamA, teamB, category, groupName } = detail;
   return (
     <>
