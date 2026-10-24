@@ -1,18 +1,11 @@
+import { normalizeSearch } from '@/lib/text/normalize-search';
 import type { ModalityCategories } from '../types';
-
-function normalize(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .trim();
-}
 
 export function filterCategories(
   modalities: ModalityCategories[],
   search: string,
 ): ModalityCategories[] {
-  const wanted = normalize(search);
+  const wanted = normalizeSearch(search);
   if (wanted === '') {
     return modalities;
   }
@@ -20,7 +13,7 @@ export function filterCategories(
     .map((modality) => ({
       ...modality,
       categories: modality.categories.filter((category) =>
-        normalize(`${modality.modalityLabel} ${category.label}`).includes(wanted),
+        normalizeSearch(`${modality.modalityLabel} ${category.label}`).includes(wanted),
       ),
     }))
     .filter((modality) => modality.categories.length > 0);
