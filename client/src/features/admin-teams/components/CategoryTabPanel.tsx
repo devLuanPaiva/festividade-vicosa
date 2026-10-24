@@ -1,4 +1,5 @@
 import { Suspense, type ReactElement } from 'react';
+import { BracketTab } from '@/features/admin-bracket/components/BracketTab';
 import { MatchesTab } from '@/features/admin-matches/components/MatchesTab';
 import { buildCategoryMatchDays } from '@/features/admin-matches/lib/category-match-days';
 import { QualifiedTab } from '@/features/admin-qualified/components/QualifiedTab';
@@ -12,21 +13,35 @@ interface CategoryTabPanelProps {
   detail: CategoryDetail;
 }
 
+function Loading({ text }: { text: string }): ReactElement {
+  return <p className="text-sm text-admin-muted">{text}</p>;
+}
+
+const PANELS: Record<CategoryTab, (detail: CategoryDetail) => ReactElement> = {
+  times: ({ category, groups, teams }) => (
+    <TeamsTab categoryId={category.id} groups={groups} teams={teams} />
+  ),
+  grupos: ({ category, groups, teams }) => (
+    <GroupsTab categoryId={category.id} groups={groups} teams={teams} />
+  ),
+  classificados: ({ category }) => (
+    <Suspense fallback={<Loading text="Carregando classificação…" />}>
+      <QualifiedTab categoryId={category.id} />
+    </Suspense>
+  ),
+  partidas: ({ category, groups, teams, matches }) => (
+    <MatchesTab
+      categoryId={category.id}
+      days={buildCategoryMatchDays(matches ?? [], teams, groups)}
+    />
+  ),
+  chaveamento: ({ category, matches }) => (
+    <Suspense fallback={<Loading text="Carregando classificados…" />}>
+      <BracketTab categoryId={category.id} matches={matches ?? []} />
+    </Suspense>
+  ),
+};
+
 export function CategoryTabPanel({ activeTab, detail }: CategoryTabPanelProps): ReactElement {
-  const { category, groups, teams, matches } = detail;
-  if (activeTab === 'grupos') {
-    return <GroupsTab categoryId={category.id} groups={groups} teams={teams} />;
-  }
-  if (activeTab === 'classificados') {
-    return (
-      <Suspense fallback={<p className="text-sm text-admin-muted">Carregando classificação…</p>}>
-        <QualifiedTab categoryId={category.id} />
-      </Suspense>
-    );
-  }
-  if (activeTab === 'partidas') {
-    const days = buildCategoryMatchDays(matches ?? [], teams, groups);
-    return <MatchesTab categoryId={category.id} days={days} />;
-  }
-  return <TeamsTab categoryId={category.id} groups={groups} teams={teams} />;
+  return PANELS[activeTab](detail);
 }
