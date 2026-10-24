@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from './api-response';
-import { fetchApiPage, fetchApiResult, sendApiRequest } from './server-fetch';
+import { fetchApiPage, fetchApiResult, sendApiCommand, sendApiRequest } from './server-fetch';
 
 function stubFetch(status: number, body: unknown): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn().mockResolvedValue({
@@ -77,6 +77,19 @@ describe('server fetch', () => {
     expect(request.method).toBe('PUT');
     expect(request.body).toBe('{"scoreA":2}');
     expect(request.headers.Authorization).toBe('Bearer secret-token');
+  });
+
+  it('accepts an answer without body, as a delete does', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 204,
+      json: () => Promise.reject(new Error('no content')),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      sendApiCommand('/teams/a', { method: 'DELETE', token: 'secret-token' }),
+    ).resolves.toBeUndefined();
   });
 
   it('does not send credentials on public requests', async () => {
