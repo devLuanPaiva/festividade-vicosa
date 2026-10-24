@@ -91,7 +91,10 @@ flowchart LR
 - **Volume estimado:** ~2.500 fotos × 3 variantes (miniatura ~20 KB, média ~150 KB, grande ~500 KB ≈ 0,7 MB por foto) ≈ **1,75 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.
 
 ### ADR-07 — Autenticação e autorização
-- Login por e-mail e senha (hash com argon2/bcrypt). Token de acesso de curta duração, enviado pelo client à API.
+- Login por e-mail e senha (hash com `scrypt`) ou por conta Google. O Google só autentica quem **já tem usuário ativo** com o mesmo e-mail (verificado pelo Google); o login não cria usuário.
+- **Token de acesso** JWT de curta duração (15 min), enviado pelo client à API. **Token de renovação** opaco (7 dias), guardado na API só como hash SHA-256. Cada renovação gira o token (o antigo deixa de valer, com tolerância de 10 s para requisições paralelas); reusar um token já girado encerra a sessão inteira.
+- O client guarda os dois em cookies `httpOnly`; o `proxy.ts` renova o acesso sozinho quando falta menos de 1 minuto para expirar. Usuário desativado perde o acesso na hora (a API confere o usuário a cada requisição).
+- Login com Google: o client conduz o fluxo (código de autorização com PKCE, `state` e `nonce`); a API valida o `id_token` com a biblioteca oficial do Google (assinatura, emissor, público e validade).
 - As **permissões efetivas** são resolvidas na API (papel + concessões − revogações) e verificadas por *guard* em cada rota (`@RequirePermission('match:record-score')`).
 - O client usa a lista de permissões só para **esconder botões**; quem barra é sempre a API (RF-32).
 
