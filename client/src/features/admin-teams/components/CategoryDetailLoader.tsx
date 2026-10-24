@@ -5,11 +5,10 @@ import { orNotFound } from '@/lib/api/missing-resource';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
 import { parseCategoryTab } from '../lib/category-tabs';
-import { getCategoryRoster } from '../services/get-category-roster';
+import { getCategoryDetail } from '../services/get-category-detail';
 import { CategoryHeader } from './CategoryHeader';
+import { CategoryTabPanel } from './CategoryTabPanel';
 import { CategoryTabs } from './CategoryTabs';
-import { GroupsTab } from './GroupsTab';
-import { TeamsTab } from './TeamsTab';
 
 interface CategoryDetailLoaderProps {
   params: Promise<{ categoryId: string }>;
@@ -25,8 +24,10 @@ export async function CategoryDetailLoader({
     return <NoPermission action="gerir categorias, grupos e times" />;
   }
   const { categoryId } = await params;
-  const activeTab = parseCategoryTab((await searchParams).aba);
-  const { category, subEvent, groups, teams } = await orNotFound(getCategoryRoster(categoryId));
+  const canManageMatches = hasPermission(user, 'match:create');
+  const activeTab = parseCategoryTab((await searchParams).aba, canManageMatches);
+  const detail = await orNotFound(getCategoryDetail(categoryId, canManageMatches));
+  const { category, subEvent, groups, teams, matches } = detail;
   const metadata = [subEvent.name, genderLabel(category.gender), `${teams.length} times`]
     .filter(Boolean)
     .join(' · ');
@@ -42,12 +43,9 @@ export async function CategoryDetailLoader({
         active={activeTab}
         teamCount={teams.length}
         groupCount={groups.length}
+        matchCount={matches ? matches.length : null}
       />
-      {activeTab === 'grupos' ? (
-        <GroupsTab categoryId={category.id} groups={groups} teams={teams} />
-      ) : (
-        <TeamsTab categoryId={category.id} groups={groups} teams={teams} />
-      )}
+      <CategoryTabPanel activeTab={activeTab} detail={detail} />
     </>
   );
 }
