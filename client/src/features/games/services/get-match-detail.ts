@@ -21,7 +21,7 @@ async function fetchGroupName(groupId: string | null): Promise<string | null> {
   return group.name;
 }
 
-async function fetchMatchDetail(matchId: string): Promise<MatchDetail> {
+export async function fetchMatchDetail(matchId: string): Promise<MatchDetail> {
   const match = await fetchApiResult<Match>(`/matches/${matchId}`);
   const [teamA, teamB, category, groupName] = await Promise.all([
     fetchApiResult<Team>(`/teams/${match.teamAId}`),
