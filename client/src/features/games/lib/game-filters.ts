@@ -63,6 +63,10 @@ export function statusOfScope(scope: MatchScope): MatchStatus {
   return scope === 'proximos' ? 'SCHEDULED' : 'FINALIZED';
 }
 
+export function modalitySlugOfType(type: SubEventType): ModalitySlug | undefined {
+  return MODALITIES.find((item) => item.type === type)?.slug;
+}
+
 export function scopeOfStatus(status: MatchStatus): MatchScope {
   return status === 'SCHEDULED' ? 'proximos' : 'finalizados';
 }
