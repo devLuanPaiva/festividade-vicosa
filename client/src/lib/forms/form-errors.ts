@@ -3,6 +3,11 @@ export interface FormErrorState {
   errorField: string | null;
 }
 
+export const INITIAL_FORM_ERROR_STATE: FormErrorState = {
+  errorMessage: null,
+  errorField: null,
+};
+
 export function errorForField(state: FormErrorState, field: string): string | null {
   return state.errorField === field ? state.errorMessage : null;
 }

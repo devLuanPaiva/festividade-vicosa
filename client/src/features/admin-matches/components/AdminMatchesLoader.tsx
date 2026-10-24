@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { requireCurrentUser, requireSessionToken } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
 import { splitAdminMatches } from '../lib/split-admin-matches';
@@ -8,7 +9,7 @@ import { AdminMatchSection } from './AdminMatchSection';
 export async function AdminMatchesLoader(): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:record-score')) {
-    return <p>Seu usuário não tem permissão para lançar placares.</p>;
+    return <NoPermission action="lançar placares" />;
   }
   const token = await requireSessionToken();
   const groups = splitAdminMatches(await getAdminMatches(token), new Date());

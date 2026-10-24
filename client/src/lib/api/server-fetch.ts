@@ -46,3 +46,7 @@ export async function sendApiRequest<T>(path: string, options: RequestOptions): 
   const body = (await requestJson(path, options)) as ApiResult<T>;
   return body.result;
 }
+
+export async function sendApiCommand(path: string, options: RequestOptions): Promise<void> {
+  await requestJson(path, options);
+}
