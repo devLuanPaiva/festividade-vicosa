@@ -6,6 +6,7 @@ import { AuthModule } from './resources/auth/auth.module';
 import { CategoryModule } from './resources/category/category.module';
 import { EditionModule } from './resources/edition/edition.module';
 import { HealthModule } from './resources/health/health.module';
+import { IndicatorModule } from './resources/indicator/indicator.module';
 import { MatchModule } from './resources/match/match.module';
 import { MatchGroupModule } from './resources/match-group/match-group.module';
 import { StandingModule } from './resources/standing/standing.module';
@@ -18,6 +19,7 @@ import { TeamModule } from './resources/team/team.module';
     DatabaseModule,
     AuthModule,
     HealthModule,
+    IndicatorModule,
     EditionModule,
     SubEventModule,
     CategoryModule,
