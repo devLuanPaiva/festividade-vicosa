@@ -2,13 +2,15 @@
 
 import { useActionState, type ReactElement } from 'react';
 import { loginAction } from '../actions/login-action';
-import { errorForField, generalError } from '../lib/login-errors';
+import { errorForField, generalError } from '@/lib/forms/form-errors';
 import { INITIAL_LOGIN_STATE } from '../types';
 import { LoginField } from './LoginField';
 
+const LOGIN_FIELDS = ['email', 'password'];
+
 export function LoginForm(): ReactElement {
   const [state, formAction, isPending] = useActionState(loginAction, INITIAL_LOGIN_STATE);
-  const unassignedError = generalError(state);
+  const unassignedError = generalError(state, LOGIN_FIELDS);
 
   return (
     <form action={formAction} className="flex flex-col gap-5" noValidate>
