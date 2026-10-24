@@ -1,6 +1,7 @@
-import type { ReactElement } from 'react';
+import { Suspense, type ReactElement } from 'react';
 import { MatchesTab } from '@/features/admin-matches/components/MatchesTab';
 import { buildCategoryMatchDays } from '@/features/admin-matches/lib/category-match-days';
+import { QualifiedTab } from '@/features/admin-qualified/components/QualifiedTab';
 import type { CategoryTab } from '../lib/category-tabs';
 import type { CategoryDetail } from '../services/get-category-detail';
 import { GroupsTab } from './GroupsTab';
@@ -15,6 +16,13 @@ export function CategoryTabPanel({ activeTab, detail }: CategoryTabPanelProps): 
   const { category, groups, teams, matches } = detail;
   if (activeTab === 'grupos') {
     return <GroupsTab categoryId={category.id} groups={groups} teams={teams} />;
+  }
+  if (activeTab === 'classificados') {
+    return (
+      <Suspense fallback={<p className="text-sm text-admin-muted">Carregando classificação…</p>}>
+        <QualifiedTab categoryId={category.id} />
+      </Suspense>
+    );
   }
   if (activeTab === 'partidas') {
     const days = buildCategoryMatchDays(matches ?? [], teams, groups);
