@@ -1,16 +1,18 @@
 import type { Metadata } from 'next';
 import { Suspense, type ReactElement } from 'react';
-import { AdminMatchesLoader } from '@/features/admin-matches/components/AdminMatchesLoader';
+import { MatchListLoader } from '@/features/admin-matches/components/list/MatchListLoader';
+import type { RawSearchParams } from '@/features/admin-matches/lib/match-list-query';
 
 export const metadata: Metadata = { title: 'Partidas' };
 
-export default function AdminHomePage(): ReactElement {
+interface AdminMatchesPageProps {
+  searchParams: Promise<RawSearchParams>;
+}
+
+export default function AdminMatchesPage({ searchParams }: AdminMatchesPageProps): ReactElement {
   return (
-    <>
-      <h1 className="text-2xl font-bold">Lançar placar</h1>
-      <Suspense fallback={<p className="text-sm text-admin-muted">Carregando jogos…</p>}>
-        <AdminMatchesLoader />
-      </Suspense>
-    </>
+    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando partidas…</p>}>
+      <MatchListLoader searchParams={searchParams} />
+    </Suspense>
   );
 }
