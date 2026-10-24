@@ -1,6 +1,9 @@
 export const VALIDATION_MESSAGES = {
   email: 'Informe um e-mail válido.',
   passwordRequired: 'Informe a senha.',
+  refreshTokenRequired: 'Informe o token de renovação da sessão.',
+  googleIdTokenRequired: 'Informe o token de identidade do Google.',
+  googleNonceRequired: 'Informe o nonce usado no login com Google.',
   passwordTooShort: 'A senha deve ter pelo menos 6 caracteres.',
   passwordTooLong: 'A senha deve ter no máximo 128 caracteres.',
   nameRequired: 'Informe o nome.',
@@ -47,6 +50,7 @@ export const VALIDATION_MESSAGES = {
 export const MIN_PASSWORD_LENGTH = 6;
 export const MAX_PASSWORD_LENGTH = 128;
 export const MAX_NAME_LENGTH = 120;
+export const MAX_TOKEN_LENGTH = 4096;
 export const MAX_DESCRIPTION_LENGTH = 2000;
 export const MAX_LOCATION_LENGTH = 200;
 export const MAX_AGE_RANGE_LENGTH = 60;
