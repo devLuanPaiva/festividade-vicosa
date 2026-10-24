@@ -65,4 +65,28 @@ export interface MatchFilters {
   subEventId?: string;
   categoryId?: string;
   status?: MatchStatus;
+  stage?: MatchStage;
+}
+
+export interface StandingRow {
+  position: number;
+  teamId: string;
+  teamName: string;
+  played: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  walkoverLosses: number;
+  tied: boolean;
+  qualifiedPosition: number | null;
+}
+
+export interface GroupStandings {
+  groupId: string;
+  groupName: string;
+  rows: StandingRow[];
 }

@@ -16,6 +16,9 @@ function buildMatchesPath(filters: MatchFilters): string {
   if (filters.status) {
     query.set('status', filters.status);
   }
+  if (filters.stage) {
+    query.set('stage', filters.stage);
+  }
   return `/matches?${query.toString()}`;
 }
 

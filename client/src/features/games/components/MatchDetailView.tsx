@@ -42,8 +42,12 @@ export function MatchDetailView({ detail }: MatchDetailViewProps): ReactElement 
           {match.bestPlayer ? (
             <BestPlayerCard player={match.bestPlayer} team={bestPlayerTeam} />
           ) : null}
-          <div>
-            <ButtonLink href={buildGamesHref({ scope: scopeOfStatus(match.status) })}>
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <ButtonLink href={`/categorias/${category.id}`}>Classificação da categoria</ButtonLink>
+            <ButtonLink
+              href={buildGamesHref({ scope: scopeOfStatus(match.status) })}
+              variant="brand"
+            >
               Ver outros jogos
             </ButtonLink>
           </div>
