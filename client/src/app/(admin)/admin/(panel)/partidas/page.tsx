@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense, type ReactElement } from 'react';
 import { AdminMatchesLoader } from '@/features/admin-matches/components/AdminMatchesLoader';
 
-export const metadata: Metadata = { title: 'Jogos' };
+export const metadata: Metadata = { title: 'Partidas' };
 
 export default function AdminHomePage(): ReactElement {
   return (
