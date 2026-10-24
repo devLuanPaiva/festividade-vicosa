@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import { logoutAction } from '@/features/admin-auth/actions/logout-action';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 
@@ -10,12 +11,9 @@ export async function AdminHeader(): Promise<ReactElement> {
         Olá, <span className="font-semibold text-admin-ink">{user.name}</span>
       </p>
       <form action={logoutAction}>
-        <button
-          type="submit"
-          className="min-h-11 rounded-xl border border-admin-line bg-admin-surface px-4 text-sm font-semibold hover:border-brand-500"
-        >
+        <SubmitButton variant="secondary" pendingLabel="Saindo…" className="min-h-11 px-4 text-sm">
           Sair
-        </button>
+        </SubmitButton>
       </form>
     </div>
   );
