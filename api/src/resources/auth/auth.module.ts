@@ -10,6 +10,8 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { AuthenticationService } from './services/authentication.service';
+import { GoogleAuthService } from './services/google-auth.service';
+import { GoogleIdentityVerifier } from './services/google-identity-verifier.service';
 import { SessionRenewalService } from './services/session-renewal.service';
 import { TokenIssuerService } from './services/token-issuer.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -38,6 +40,8 @@ function createJwtOptions(config: ConfigService<EnvironmentVariables, true>): Jw
   controllers: [AuthController],
   providers: [
     AuthService,
+    GoogleAuthService,
+    GoogleIdentityVerifier,
     SessionRenewalService,
     TokenIssuerService,
     AuthenticationService,

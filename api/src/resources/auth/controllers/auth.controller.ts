@@ -1,7 +1,9 @@
 import { Body, Controller, Get, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from '../services/auth.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 import { SessionRenewalService } from '../services/session-renewal.service';
+import { GoogleLoginDto } from '../dto/google-login.dto';
 import type { AuthTokensDto } from '../dto/auth-tokens.dto';
 import type { AuthenticatedUser } from '../dto/authenticated-user.dto';
 import { CurrentUser, Public } from '../decorators/decorators';
@@ -16,6 +18,7 @@ export class AuthController {
   public constructor(
     private readonly authService: AuthService,
     private readonly sessionRenewalService: SessionRenewalService,
+    private readonly googleAuthService: GoogleAuthService,
   ) {}
 
   @Public()
@@ -25,6 +28,15 @@ export class AuthController {
   @HttpCode(200)
   public login(@Body() credentials: LoginDto): Promise<AuthTokensDto> {
     return this.authService.login(credentials);
+  }
+
+  @Public()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: LOGIN_ATTEMPTS_PER_MINUTE, ttl: ONE_MINUTE_IN_MILLISECONDS } })
+  @Post('google')
+  @HttpCode(200)
+  public loginWithGoogle(@Body() identity: GoogleLoginDto): Promise<AuthTokensDto> {
+    return this.googleAuthService.login(identity);
   }
 
   @Public()

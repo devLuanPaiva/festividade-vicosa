@@ -10,6 +10,7 @@ import { AuthController } from '../src/resources/auth/controllers/auth.controlle
 import { AuthService } from '../src/resources/auth/services/auth.service';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
 import { AuthenticationService } from '../src/resources/auth/services/authentication.service';
+import { GoogleAuthService } from '../src/resources/auth/services/google-auth.service';
 import { SessionRenewalService } from '../src/resources/auth/services/session-renewal.service';
 import { RequirePermission } from '../src/resources/auth/decorators/decorators';
 import { JwtAuthGuard } from '../src/resources/auth/guards/jwt-auth.guard';
@@ -51,6 +52,7 @@ async function createApp(): Promise<INestApplication> {
     controllers: [AuthController, ProtectedController],
     providers: [
       { provide: AuthService, useValue: { login: jest.fn() } },
+      { provide: GoogleAuthService, useValue: { login: jest.fn() } },
       {
         provide: SessionRenewalService,
         useValue: { refresh: jest.fn(), logout: jest.fn().mockResolvedValue(undefined) },
@@ -130,6 +132,15 @@ describe('Authentication and authorization (e2e)', () => {
     expect(response.body).toMatchObject({
       errors: { field: 'refreshToken', detail: 'Informe o token de renovação da sessão.' },
     });
+  });
+
+  it('rejects a Google login without the identity token before reaching the service', async () => {
+    const response = await request(app.getHttpServer() as App)
+      .post('/auth/google')
+      .send({ nonce: 'nonce' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ errors: { field: 'idToken' } });
   });
 
   it('lets a visitor without access token refresh and log out with a refresh token', async () => {
