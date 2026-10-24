@@ -157,6 +157,16 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 
 A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference`, `points`, `walkoverLosses`, `tied` (os critérios não separaram o time de outro, RN-21) e `qualifiedPosition` (posição confirmada pela equipe técnica, ou nulo, RN-29). Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória e vale 2x0 no saldo (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Desempate pelo edital (RN-21). A tabela não calcula quem classifica: a equipe técnica confirma os classificados de cada grupo (RN-29).
 
+## Indicadores (painel)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/indicators/overview` | usuário logado | Totais para o início do painel: `categories`, `teams`, `matches` (`total`, `scheduled`, `finalized`, `today`, `overdue`, `walkovers`, `completionRate`) e `goals` (`total`, `perMatch`) |
+| GET | `/indicators/matches-by-day` | usuário logado | Partidas por dia (`date`, `scheduled`, `finalized`), em ordem de data |
+| GET | `/indicators/categories-progress` | usuário logado | Por categoria: `teams`, `matches`, `finalized`, `completionRate`, `goals`, `goalsPerMatch` e o nome do sub-evento |
+| GET | `/indicators/recent-results` | usuário logado | Últimos resultados lançados, com `finalizedByName` (no máximo 20; `limit` pagina como nas outras listas) |
+
+Os indicadores são calculados na hora a partir das partidas, sem gravar nada. O dia de "hoje" e o agrupamento por dia usam o horário de Fortaleza (UTC-3). `completionRate` é a porcentagem inteira de partidas finalizadas; `perMatch` e `goalsPerMatch` são a média de gols por partida **jogada** (W.O. não entra), com duas casas. `overdue` conta partidas ainda `SCHEDULED` cujo horário já passou.
+
 ## Papéis
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
