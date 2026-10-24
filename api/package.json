@@ -23,6 +23,8 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
     "seed:demo": "ts-node src/database/demo/run-demo-seed.ts",
+    "create:admin": "ts-node src/cli/create-admin/run-create-admin.ts",
+    "create:admin:prod": "node dist/cli/create-admin/run-create-admin.js",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:generate": "npm run typeorm -- migration:generate",
@@ -95,6 +97,8 @@
       "!**/decorators/**",
       "!database/data-source.ts",
       "!database/demo/**",
+      "!cli/**/run-*.ts",
+      "!cli/**/terminal-prompter.ts",
       "!database/migrations/**"
     ],
     "coverageDirectory": "../coverage",

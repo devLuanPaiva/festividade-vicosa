@@ -4,7 +4,7 @@ import type { User } from '../entities/user.entity';
 import { UserRepository } from './user.repository';
 
 type TypeOrmMock = Record<
-  'find' | 'findOne' | 'findOneBy' | 'count' | 'create' | 'save' | 'update',
+  'find' | 'findOne' | 'findOneBy' | 'create' | 'save' | 'update',
   jest.Mock
 >;
 
@@ -13,7 +13,6 @@ function createFixture(): { repository: UserRepository; typeorm: TypeOrmMock } {
     find: jest.fn(),
     findOne: jest.fn(),
     findOneBy: jest.fn(),
-    count: jest.fn(),
     create: jest.fn((entity: Partial<User>) => entity),
     save: jest.fn((entity: Partial<User>) => Promise.resolve(entity)),
     update: jest.fn(),

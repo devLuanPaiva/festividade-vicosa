@@ -30,7 +30,7 @@ async function findActorId(get: Getter): Promise<string> {
   const [actor] = await get(UserRepository).findAll({ active: true });
   if (!actor) {
     throw new Error(
-      'Nenhum usuário ativo encontrado. Suba a API uma vez para criar o administrador.',
+      'Nenhum usuário ativo encontrado. Crie o administrador com npm run create:admin.',
     );
   }
   return actor.id;

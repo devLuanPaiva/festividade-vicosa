@@ -35,10 +35,6 @@ export class UserService {
     return this.userRepository.findActiveById(id);
   }
 
-  public count(): Promise<number> {
-    return this.userRepository.count();
-  }
-
   public async create(roleCode: RoleCode, input: NewUserDto): Promise<User> {
     await this.assertEmailAvailable(input.email);
     const created = await this.createWithRole(roleCode, input);

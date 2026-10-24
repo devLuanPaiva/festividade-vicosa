@@ -122,7 +122,7 @@ Restrições da `match`:
 
 - Permissões efetivas = (papel + concedidas) − revogadas (RN-43), calculadas na API e **nunca gravadas**.
 - **RN-45** (ninguém altera as próprias permissões) e **RN-46** (sempre existe um gestor de permissões ativo) são regras do serviço, não do banco, porque dependem de quem está logado e do estado de outros registros.
-- **Primeiro Admin:** criado no primeiro boot a partir de variáveis de ambiente (`ADMIN_EMAIL`, `ADMIN_INITIAL_PASSWORD`) se não existir nenhum usuário. A senha nunca vai para o repositório; ela deve ser trocada no primeiro login.
+- **Primeiro Admin:** criado por um script interativo da API (`npm run create:admin`), que pergunta nome, e-mail e senha no terminal. Nenhuma senha passa por arquivo, variável de ambiente ou repositório. Detalhes em `08-ambiente-e-deploy.md`.
 
 ## Índices além das PKs/UNIQUEs
 | Índice | Para quê |

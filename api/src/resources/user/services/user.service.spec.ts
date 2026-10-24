@@ -11,7 +11,6 @@ type UserRepositoryMock = Record<
   | 'findByEmail'
   | 'findActiveByEmail'
   | 'findActiveById'
-  | 'count'
   | 'create'
   | 'updateAccount',
   jest.Mock
@@ -34,7 +33,6 @@ function createFixture(): {
     findByEmail: jest.fn().mockResolvedValue(null),
     findActiveByEmail: jest.fn(),
     findActiveById: jest.fn(),
-    count: jest.fn(),
     create: jest.fn((record: object) =>
       Promise.resolve({ id: '00000000-0000-4000-8000-000000000008', ...record }),
     ),

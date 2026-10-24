@@ -65,10 +65,6 @@ export class UserRepository {
     return this.repository.find({ select: { id: true, active: true, roleId: true } });
   }
 
-  public count(): Promise<number> {
-    return this.repository.count();
-  }
-
   public create(record: NewUserRecord): Promise<User> {
     return this.repository.save(
       this.repository.create({ ...record, email: record.email.toLowerCase() }),

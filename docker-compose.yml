@@ -30,8 +30,6 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       REFRESH_TOKEN_EXPIRES_IN_DAYS: ${REFRESH_TOKEN_EXPIRES_IN_DAYS:-7}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
-      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-}
     depends_on:
       db:
         condition: service_healthy
