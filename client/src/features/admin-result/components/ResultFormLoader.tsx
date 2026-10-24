@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
+import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { formatMatchTime } from '@/features/games/lib/match-dates';
 import { categoryLabel, stageLabel } from '@/features/games/lib/match-labels';
 import { fetchMatchDetail, type MatchDetail } from '@/features/games/services/get-match-detail';
@@ -36,7 +37,7 @@ async function loadMatchDetail(matchId: string): Promise<MatchDetail> {
 export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:record-score')) {
-    return <p>Seu usuário não tem permissão para lançar placares.</p>;
+    return <NoPermission action="lançar placares" />;
   }
   const { matchId } = await params;
   const detail = await loadMatchDetail(matchId);
