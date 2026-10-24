@@ -2,12 +2,12 @@ import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 
-interface TeamFormFooterProps {
+interface FormFooterProps {
   cancelHref: string;
   submitLabel: string;
 }
 
-export function TeamFormFooter({ cancelHref, submitLabel }: TeamFormFooterProps): ReactElement {
+export function FormFooter({ cancelHref, submitLabel }: FormFooterProps): ReactElement {
   return (
     <div className="sticky bottom-0 flex gap-3 border-t border-admin-line bg-admin-canvas py-3">
       <Link

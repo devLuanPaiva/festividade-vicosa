@@ -9,6 +9,7 @@ interface TextFieldProps {
   errorMessage: string | null;
   isOptional?: boolean;
   maxLength?: number;
+  type?: 'text' | 'date' | 'time';
   autoComplete?: string;
   onInput: () => void;
 }
@@ -20,6 +21,7 @@ export function TextField({
   errorMessage,
   isOptional = false,
   maxLength,
+  type = 'text',
   autoComplete = 'off',
   onInput,
 }: TextFieldProps): ReactElement {
@@ -30,6 +32,7 @@ export function TextField({
       </label>
       <input
         {...controlProps(name, errorMessage)}
+        type={type}
         defaultValue={defaultValue}
         onChange={onInput}
         maxLength={maxLength}

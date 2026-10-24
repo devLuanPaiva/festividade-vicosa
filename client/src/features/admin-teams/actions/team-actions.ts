@@ -5,7 +5,7 @@ import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
 import { categoryPath } from '../lib/admin-team-paths';
 import { parseTeamForm, toTeamPayload } from '../lib/parse-team-form';
-import { refreshTeamData } from '../lib/refresh-team-data';
+import { refreshChampionshipData } from '../lib/refresh-championship-data';
 import type { TeamFormState, TeamTarget } from '../types';
 
 export async function createTeamAction(
@@ -21,7 +21,7 @@ export async function createTeamAction(
   if (failure) {
     return { ...failure, values };
   }
-  refreshTeamData();
+  refreshChampionshipData();
   redirect(categoryPath(categoryId));
 }
 
@@ -38,7 +38,7 @@ export async function updateTeamAction(
   if (failure) {
     return { ...failure, values };
   }
-  refreshTeamData();
+  refreshChampionshipData();
   redirect(categoryPath(categoryId));
 }
 
@@ -52,6 +52,6 @@ export async function deleteTeamAction({
   if (failure) {
     return failure;
   }
-  refreshTeamData();
+  refreshChampionshipData();
   redirect(categoryPath(categoryId));
 }

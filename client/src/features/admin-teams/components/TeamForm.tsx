@@ -1,11 +1,11 @@
 'use client';
 
 import type { ReactElement } from 'react';
+import { FormFooter } from '@/components/ui/FormFooter';
 import { SelectField, type SelectOption } from '@/components/ui/SelectField';
 import { TextField } from '@/components/ui/TextField';
 import { useTeamForm } from '../hooks/use-team-form';
 import type { MatchGroup, TeamFormState, TeamFormValues } from '../types';
-import { TeamFormFooter } from './TeamFormFooter';
 
 const NO_GROUP_OPTION: SelectOption = { value: '', label: 'Sem grupo' };
 
@@ -72,7 +72,7 @@ export function TeamForm({
           {otherError}
         </p>
       ) : null}
-      <TeamFormFooter cancelHref={cancelHref} submitLabel={submitLabel} />
+      <FormFooter cancelHref={cancelHref} submitLabel={submitLabel} />
     </form>
   );
 }

@@ -3,17 +3,17 @@ import type { ReactElement } from 'react';
 import { ADMIN_CATEGORIES_PATH } from '@/features/admin-shell/lib/admin-sections';
 import { categoryPath } from '../lib/admin-team-paths';
 
-interface TeamPageHeaderProps {
+interface CategoryPageHeaderProps {
   categoryId: string;
   categoryTitle: string;
   title: string;
 }
 
-export function TeamPageHeader({
+export function CategoryPageHeader({
   categoryId,
   categoryTitle,
   title,
-}: TeamPageHeaderProps): ReactElement {
+}: CategoryPageHeaderProps): ReactElement {
   return (
     <header className="flex flex-col gap-2">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">
