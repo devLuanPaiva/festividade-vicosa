@@ -1,10 +1,9 @@
 import { redirect } from 'next/navigation';
 import { ApiError } from '@/lib/api/api-response';
 import { fetchApiResult } from '@/lib/api/server-fetch';
+import { ADMIN_LOGIN_PATH } from './auth-paths';
 import { readSessionToken } from './session-cookie';
 import type { AuthenticatedUser } from './permissions';
-
-export const ADMIN_LOGIN_PATH = '/admin/login';
 
 const UNAUTHORIZED_STATUS = 401;
 
