@@ -46,7 +46,7 @@ export function QualifiedGroupForm({ group }: QualifiedGroupFormProps): ReactEle
         id={`qualified-${group.groupId}`}
         className="border-b border-admin-line bg-admin-canvas px-4 py-2 text-xs font-bold uppercase tracking-wide text-admin-muted"
       >
-        {group.groupName} · posição entre os classificados
+        Grupo {group.groupName} · posição entre os classificados
       </h2>
       <ul className="divide-y divide-admin-line">
         {group.rows.map((row) => (

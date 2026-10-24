@@ -24,7 +24,7 @@ export function QualifiedTeamRow({
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="truncate font-semibold">{row.teamName}</span>
         <span className="text-sm text-admin-muted">{describeRow(row)}</span>
-        {row.tied ? (
+        {row.tied && row.played > 0 ? (
           <span className="text-sm font-semibold text-brand-700">
             Empatado nos critérios: a equipe técnica decide.
           </span>
