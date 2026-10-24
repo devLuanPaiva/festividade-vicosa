@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from './api-response';
-import { fetchApiPage, fetchApiResult } from './server-fetch';
+import { fetchApiPage, fetchApiResult, sendApiRequest } from './server-fetch';
 
 function stubFetch(status: number, body: unknown): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn().mockResolvedValue({
@@ -10,6 +10,16 @@ function stubFetch(status: number, body: unknown): ReturnType<typeof vi.fn> {
   });
   vi.stubGlobal('fetch', fetchMock);
   return fetchMock;
+}
+
+interface SentRequest {
+  method: string;
+  body?: string;
+  headers: Record<string, string>;
+}
+
+function sentRequest(fetchMock: ReturnType<typeof vi.fn>): SentRequest {
+  return fetchMock.mock.calls[0]?.[1] as SentRequest;
 }
 
 describe('server fetch', () => {
@@ -52,6 +62,29 @@ describe('server fetch', () => {
       details: { code: 'NOT_FOUND' },
     });
     await expect(fetchApiResult('/editions/x')).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it('sends the bearer token and the json body on authenticated requests', async () => {
+    const fetchMock = stubFetch(200, { status: 'success', result: { id: 'a' } });
+
+    await sendApiRequest('/matches/a/result', {
+      method: 'PUT',
+      body: { scoreA: 2 },
+      token: 'secret-token',
+    });
+
+    const request = sentRequest(fetchMock);
+    expect(request.method).toBe('PUT');
+    expect(request.body).toBe('{"scoreA":2}');
+    expect(request.headers.Authorization).toBe('Bearer secret-token');
+  });
+
+  it('does not send credentials on public requests', async () => {
+    const fetchMock = stubFetch(200, { status: 'success', result: null });
+
+    await fetchApiResult('/health');
+
+    expect(sentRequest(fetchMock).headers).not.toHaveProperty('Authorization');
   });
 
   it('throws an unexpected-error ApiError when the body is not json', async () => {
