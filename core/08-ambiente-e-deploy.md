@@ -9,7 +9,6 @@
 | `REFRESH_TOKEN_EXPIRES_IN_DAYS` | `.env` na raiz | Validade do token de renovação, em dias (padrão `7`, máximo `90`) |
 | `GOOGLE_CLIENT_ID` | `.env` na raiz e `client/.env` | ID do cliente OAuth do Google (opcional; sem ele o login com Google fica indisponível) |
 | `GOOGLE_CLIENT_SECRET`, `SITE_URL` | `client/.env` | Segredo do cliente OAuth (só o client usa) e endereço público do site, usado na URL de retorno `SITE_URL/admin/login/google/callback` |
-| `ADMIN_EMAIL`, `ADMIN_INITIAL_PASSWORD` | `.env` na raiz | Criam o primeiro Admin quando não há nenhum usuário (senha com pelo menos 6 caracteres; troque após o primeiro login) |
 | `CORS_ORIGIN` | `.env` na raiz | Origens permitidas, separadas por vírgula (ex.: `https://app.dominio`) |
 | `API_DOMAIN` | `.env` na raiz | Domínio público da API (Caddy emite o certificado) |
 | `DATABASE_HOST`, `DATABASE_PORT`, `PORT`, `NODE_ENV` | `api/.env` (fora do Docker) | Rodar a API direto com `npm run start:dev` |
@@ -30,6 +29,18 @@ A API valida tudo na subida (`api/src/config/environment.ts`) e **não sobe** co
 5. Conferir `https://api.<dominio>/health`.
 
 As migrations rodam sozinhas quando a API sobe (`migrationsRun`). Cada feature traz a sua migration e a sua entidade (arquivos `*.entity.ts`), então o esquema cresce junto com o código.
+
+## Criar um administrador
+A API não cria nenhum usuário sozinha. O primeiro administrador (e qualquer outro, depois) nasce de um script interativo, que pergunta no terminal e cria o usuário com o papel `ADMIN`:
+
+- **Local:** `cd api && npm run create:admin`.
+- **Produção (EC2):** `docker compose -f docker-compose.yml exec api node dist/cli/create-admin/run-create-admin.js` (ou `npm run create:admin:prod` dentro do container).
+
+O script pede **nome completo**, **e-mail**, **senha** e a **confirmação da senha** (a senha não aparece enquanto você digita), mostra um resumo e só cria depois que você responde `s`. Ele valida na hora, com as mesmas regras do `POST /users`: e-mail válido e ainda não usado (sem diferenciar maiúsculas) e senha de 6 a 128 caracteres; se algo estiver errado, pergunta de novo. `Ctrl+C` cancela sem criar nada.
+
+- Usa os serviços da própria API (sem HTTP, sem login), então precisa do banco acessível (no local, `docker compose up -d db` e o `api/.env`). Se o banco estiver vazio, as migrations rodam antes.
+- Pode ser executado quantas vezes for preciso, por exemplo para recuperar o acesso quando ninguém consegue entrar.
+- O login com Google só funciona para e-mails que já existem como usuário; crie o administrador com o e-mail da conta Google que ele vai usar.
 
 ## Dados de demonstração
 `cd api && npm run seed:demo` popula a edição 2026 com dados fictícios para ver o portal funcionando: 88 times (8 por categoria, em dois grupos), 142 partidas no calendário real (4 a 6/12 handebol, 9 a 19/12 futsal), resultados em parte das categorias, classificados confirmados e dois mata-matas completos (Handebol Adulto Masculino e Futsal Adulto, este com semifinal decidida nos pênaltis). As demais categorias ficam em estágios diferentes: só agendadas, jogos parciais (uma com W.O.), grupos encerrados e chaveamento gerado sem jogar.

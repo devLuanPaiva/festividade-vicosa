@@ -1,6 +1,5 @@
 import { plainToInstance, Type } from 'class-transformer';
 import {
-  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -20,7 +19,6 @@ export enum NodeEnvironment {
 
 const MAX_TCP_PORT = 65535;
 const MIN_JWT_SECRET_LENGTH = 32;
-const MIN_ADMIN_PASSWORD_LENGTH = 6;
 const MAX_REFRESH_TOKEN_DAYS = 90;
 
 export class EnvironmentVariables {
@@ -75,15 +73,6 @@ export class EnvironmentVariables {
   @IsOptional()
   @IsString()
   public GOOGLE_CLIENT_ID?: string;
-
-  @IsOptional()
-  @IsEmail()
-  public ADMIN_EMAIL?: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(MIN_ADMIN_PASSWORD_LENGTH)
-  public ADMIN_INITIAL_PASSWORD?: string;
 }
 
 export function validateEnvironment(config: Record<string, unknown>): EnvironmentVariables {

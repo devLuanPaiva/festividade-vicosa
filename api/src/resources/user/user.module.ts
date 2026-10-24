@@ -6,7 +6,6 @@ import { UserController } from './controllers/user.controller';
 import { User } from './entities/user.entity';
 import { UserRepository } from './repository/user.repository';
 import { AccessPolicyService } from './services/access-policy.service';
-import { AdminBootstrapService } from './services/admin-bootstrap.service';
 import { PasswordHasher } from './services/password-hasher';
 import { UserAccountService } from './services/user-account.service';
 import { UserPermissionQueryService } from './services/user-permission-query.service';
@@ -20,7 +19,6 @@ import { UserService } from './services/user.service';
     UserService,
     UserRepository,
     PasswordHasher,
-    AdminBootstrapService,
     AccessPolicyService,
     UserAccountService,
     UserPermissionService,

@@ -57,11 +57,4 @@ describe('validateEnvironment', () => {
       'JWT_SECRET',
     );
   });
-
-  it.each([
-    { variable: 'ADMIN_EMAIL', value: 'not-an-email' },
-    { variable: 'ADMIN_INITIAL_PASSWORD', value: 'short' },
-  ])('rejects an invalid $variable', ({ variable, value }) => {
-    expect(() => validateEnvironment({ ...validConfig, [variable]: value })).toThrow(variable);
-  });
 });
