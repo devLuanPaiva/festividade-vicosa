@@ -1,6 +1,7 @@
 import {
   UnauthorizedException,
   type INestApplication,
+  type ModuleMetadata,
   type Provider,
   type Type,
 } from '@nestjs/common';
@@ -21,12 +22,18 @@ export function createAuthenticator(
   };
 }
 
-export async function createE2eApp(
-  controllers: Type<unknown>[],
-  providers: Provider[],
+interface E2eDefinition {
+  controllers: Type<unknown>[];
+  providers: Provider[];
+  imports?: ModuleMetadata['imports'];
+}
+
+export async function createE2eModuleApp(
+  { controllers, providers, imports = [] }: E2eDefinition,
   users: Record<string, AuthenticatedUser>,
 ): Promise<INestApplication> {
   const moduleFixture = await Test.createTestingModule({
+    imports,
     controllers,
     providers: [
       ...providers,
@@ -38,4 +45,12 @@ export async function createE2eApp(
   const app = moduleFixture.createNestApplication();
   configureApp(app, 'http://localhost:3001');
   return app.init();
+}
+
+export function createE2eApp(
+  controllers: Type<unknown>[],
+  providers: Provider[],
+  users: Record<string, AuthenticatedUser>,
+): Promise<INestApplication> {
+  return createE2eModuleApp({ controllers, providers }, users);
 }
