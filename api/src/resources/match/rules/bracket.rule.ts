@@ -20,9 +20,11 @@ const FIRST_ROUND_BY_TEAM_COUNT: Record<number, MatchRound> = {
   4: MatchRound.SEMI_FINAL,
   8: MatchRound.QUARTER_FINAL,
   16: MatchRound.ROUND_OF_16,
+  32: MatchRound.ROUND_OF_32,
 };
 
 const WINNER_ROUND: Partial<Record<MatchRound, MatchRound>> = {
+  [MatchRound.ROUND_OF_32]: MatchRound.ROUND_OF_16,
   [MatchRound.ROUND_OF_16]: MatchRound.QUARTER_FINAL,
   [MatchRound.QUARTER_FINAL]: MatchRound.SEMI_FINAL,
   [MatchRound.SEMI_FINAL]: MatchRound.FINAL,
@@ -30,6 +32,15 @@ const WINNER_ROUND: Partial<Record<MatchRound, MatchRound>> = {
 
 const LOSER_ROUND: Partial<Record<MatchRound, MatchRound>> = {
   [MatchRound.SEMI_FINAL]: MatchRound.THIRD_PLACE,
+};
+
+const MAX_POSITION_BY_ROUND: Record<MatchRound, number> = {
+  [MatchRound.ROUND_OF_32]: 15,
+  [MatchRound.ROUND_OF_16]: 7,
+  [MatchRound.QUARTER_FINAL]: 3,
+  [MatchRound.SEMI_FINAL]: 1,
+  [MatchRound.THIRD_PLACE]: 0,
+  [MatchRound.FINAL]: 0,
 };
 
 export const SUPPORTED_TEAM_COUNTS = Object.keys(FIRST_ROUND_BY_TEAM_COUNT).map(Number);
@@ -100,4 +111,8 @@ export function loserDestination(
 
 export function siblingPosition(bracketPosition: number): number {
   return bracketPosition % 2 === 0 ? bracketPosition + 1 : bracketPosition - 1;
+}
+
+export function maxPositionOf(round: MatchRound): number {
+  return MAX_POSITION_BY_ROUND[round];
 }

@@ -4,7 +4,6 @@ import type { RecordResultDto } from '../dto/record-result.dto';
 import type { Match } from '../entities/match.entity';
 import { MatchRepository, type MatchResultRecord } from '../repository/match.repository';
 import { findResultProblem, resolveWinnerId } from '../rules/result.rule';
-import { MatchBracketAdvancer } from './match-bracket-advancer.service';
 import { MatchService } from './match.service';
 import { toBadRequest } from './match-fixture-validator.service';
 
@@ -48,7 +47,6 @@ export class MatchResultService {
   public constructor(
     private readonly matchRepository: MatchRepository,
     private readonly matchService: MatchService,
-    private readonly bracketAdvancer: MatchBracketAdvancer,
   ) {}
 
   public async record(id: string, actorId: string, input: RecordResultDto): Promise<Match> {
@@ -58,10 +56,7 @@ export class MatchResultService {
       throw toBadRequest(problem);
     }
     const record = toResultRecord(match, actorId, input);
-    await this.bracketAdvancer.assertCorrectionAllowed(match, record.winnerId);
     await this.matchRepository.saveResult(id, record);
-    const finalized = await this.matchService.findByIdOrFail(id);
-    await this.bracketAdvancer.advance(finalized);
-    return finalized;
+    return this.matchService.findByIdOrFail(id);
   }
 }

@@ -27,10 +27,38 @@ export async function confirmQualified(context: DemoContext, groups: GroupSetup[
 
 export async function generateBracket(context: DemoContext, plan: CategoryPlan): Promise<void> {
   const seeding = await context.services.standings.listSeeding(plan.categoryId);
-  await context.services.bracket.generate(plan.categoryId, {
-    teamIds: seeding.map((team) => team.teamId),
-    scheduledAt: toBrazilDateTime(knockoutDate(plan), '14:00:00'),
-    location: VENUES[plan.sport][0],
+  const suggested = await context.services.suggestions.suggestFirstRound(
+    plan.categoryId,
+    seeding.map((team) => team.teamId),
+  );
+  await context.services.batch.createMany(plan.categoryId, {
+    matches: suggested.map((match) => ({
+      stage: MatchStage.KNOCKOUT,
+      round: match.round,
+      bracketPosition: match.bracketPosition,
+      teamAId: match.teamAId,
+      teamBId: match.teamBId,
+      scheduledAt: toBrazilDateTime(knockoutDate(plan), '14:00:00'),
+      location: VENUES[plan.sport][0],
+    })),
+  });
+}
+
+async function confirmNextMatches(context: DemoContext, plan: CategoryPlan): Promise<void> {
+  const suggested = await context.services.suggestions.suggestNextMatches(plan.categoryId);
+  const missing = suggested.filter((match) => match.matchId === null);
+  if (missing.length === 0) {
+    return;
+  }
+  await context.services.batch.createMany(plan.categoryId, {
+    matches: missing.map((match) => ({
+      stage: MatchStage.KNOCKOUT,
+      round: match.round,
+      bracketPosition: match.bracketPosition,
+      teamAId: match.teamAId,
+      teamBId: match.teamBId,
+      scheduledAt: match.scheduledAt ?? toBrazilDateTime(knockoutDate(plan), '14:00:00'),
+    })),
   });
 }
 
@@ -83,6 +111,7 @@ export async function playKnockout(context: DemoContext, plan: CategoryPlan): Pr
   let played = 0;
   for (let pass = 0; pass < MAX_KNOCKOUT_PASSES; pass++) {
     const next = await playKnockoutPass(context, plan, played);
+    await confirmNextMatches(context, plan);
     if (next === played) {
       return;
     }

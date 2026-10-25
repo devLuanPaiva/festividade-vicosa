@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react';
-import { categoryMatchesPath } from '@/features/admin-matches/lib/admin-match-paths';
+import { NextMatchesSuggestion } from '@/features/admin-suggestions/components/NextMatchesSuggestion';
+import { toTeamSelectOptions } from '@/features/admin-suggestions/lib/team-options';
 import { categoryTabPath } from '@/features/admin-teams/lib/admin-team-paths';
-import type { Match } from '@/features/games/types';
+import type { Match, Team } from '@/features/games/types';
 import { hasGeneratedBracket } from '../lib/has-generated-bracket';
 import { getCategorySeeding } from '../services/get-category-seeding';
 import { BracketForm } from './BracketForm';
@@ -10,18 +11,17 @@ import { BracketNotice } from './BracketNotice';
 interface BracketTabProps {
   categoryId: string;
   matches: Match[];
+  teams: Team[];
 }
 
-export async function BracketTab({ categoryId, matches }: BracketTabProps): Promise<ReactElement> {
+export async function BracketTab({
+  categoryId,
+  matches,
+  teams,
+}: BracketTabProps): Promise<ReactElement> {
+  const teamOptions = toTeamSelectOptions(teams);
   if (hasGeneratedBracket(matches)) {
-    return (
-      <BracketNotice
-        title="O chaveamento já foi gerado"
-        text="Ajuste datas e locais na aba Partidas. Os vencedores avançam sozinhos quando os resultados são lançados."
-        href={categoryMatchesPath(categoryId)}
-        linkLabel="Ver partidas"
-      />
-    );
+    return <NextMatchesSuggestion categoryId={categoryId} teamOptions={teamOptions} />;
   }
   const seeding = await getCategorySeeding(categoryId);
   if (seeding.length === 0) {
@@ -38,7 +38,8 @@ export async function BracketTab({ categoryId, matches }: BracketTabProps): Prom
     <BracketForm
       categoryId={categoryId}
       seeding={seeding}
-      cancelHref={categoryMatchesPath(categoryId)}
+      teamOptions={teamOptions}
+      returnPath={categoryTabPath(categoryId, 'chaveamento')}
     />
   );
 }

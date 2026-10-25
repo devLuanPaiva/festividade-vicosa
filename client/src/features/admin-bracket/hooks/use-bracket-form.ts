@@ -2,7 +2,7 @@ import { useActionState, useState } from 'react';
 import { generalError } from '@/lib/forms/form-errors';
 import { useDismissibleErrors } from '@/lib/forms/use-dismissible-errors';
 import { useWarnOnDirty } from '@/lib/forms/use-warn-on-dirty';
-import { generateBracketAction } from '../actions/bracket-actions';
+import { suggestBracketAction } from '../actions/bracket-actions';
 import {
   BRACKET_ERROR_FIELD,
   initialBracketState,
@@ -10,7 +10,7 @@ import {
   type SeededTeam,
 } from '../types';
 
-const BRACKET_FIELDS = [BRACKET_ERROR_FIELD, 'scheduledAt', 'location'];
+const BRACKET_FIELDS = [BRACKET_ERROR_FIELD];
 
 export interface BracketFormControls {
   state: BracketFormState;
@@ -22,12 +22,12 @@ export interface BracketFormControls {
 
 export function useBracketForm(categoryId: string, seeding: SeededTeam[]): BracketFormControls {
   const [state, formAction] = useActionState(
-    generateBracketAction.bind(null, categoryId),
+    suggestBracketAction.bind(null, categoryId),
     initialBracketState(seeding),
   );
   const { errorFor, dismiss } = useDismissibleErrors(state);
   const [isDirty, setIsDirty] = useState(false);
-  useWarnOnDirty(isDirty);
+  useWarnOnDirty(isDirty && state.rows === null);
 
   const touch = (field: string) => (): void => {
     dismiss(field);

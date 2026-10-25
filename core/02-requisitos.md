@@ -11,7 +11,7 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-04 | Listar jogos de futsal e handebol, filtrando por modalidade, categoria, fase, grupo, status e data | P1 |
 | RF-05 | Exibir partida: times, placar, fase, horário/local, **melhor jogador (nome + foto)** e mural de fotos da partida | P1 |
 | RF-06 | Exibir classificação de cada grupo (calculada a partir dos resultados) | P1 |
-| RF-07 | Exibir chaveamento do mata-mata por categoria | P1 |
+| RF-07 | Exibir chaveamento do mata-mata por categoria, em formato de chave: lado A e lado B diminuindo até a final no centro | P1 |
 | RF-08 | Exibir página do time: nome, categoria, foto, grupo e partidas | P1 |
 | RF-09 | Destacar "próximos jogos" e "últimos resultados" na home | P1 |
 | RF-10 | Vôlei de areia, Corrida e Ecopedal: página de divulgação + galeria (sem inscrição, placar nem ranking) | P1 |
@@ -31,8 +31,8 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-25 | Definir melhor jogador da partida (nome + foto) | P1 |
 | RF-26 | Upload de fotos para sub-evento/data e para partida; remover/reordenar | P1 |
 | RF-27 | CRUD da história (itens da linha do tempo com fotos) | P1 |
-| RF-28 | Gerar partidas da fase de grupos automaticamente (todos contra todos) | P2 |
-| RF-29 | Avançar vencedores no mata-mata automaticamente para a próxima rodada | P2 |
+| RF-28 | Sugerir as partidas da fase de grupos (todos contra todos) para a organização revisar, ajustar e confirmar; nada é criado sem confirmação | P2 |
+| RF-29 | Sugerir o chaveamento (a partir dos 16 avos de final) e as partidas das rodadas seguintes para a organização revisar, ajustar e confirmar; nada é criado sem confirmação | P2 |
 | RF-30 | Gerir usuários (criar, desativar, definir papel: Admin, Gerente, Assistente) | P1 |
 | RF-31 | Gerir permissões: ajustar as permissões de um papel e conceder/revogar permissões para um usuário específico | P1 |
 | RF-32 | Toda ação do painel e toda tela respeitam as permissões efetivas do usuário (API e interface) | P1 |

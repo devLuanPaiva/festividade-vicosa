@@ -14,12 +14,14 @@ import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import type { AuthenticatedUser } from '../../auth/dto/authenticated-user.dto';
 import { CurrentUser, Public, RequirePermission } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
+import { CreateMatchBatchDto } from '../dto/create-match-batch.dto';
 import { CreateMatchDto } from '../dto/create-match.dto';
 import { ListMatchesQueryDto } from '../dto/list-matches-query.dto';
 import type { MatchResponseDto } from '../dto/match-response.dto';
 import { RecordResultDto } from '../dto/record-result.dto';
 import { UpdateMatchDto } from '../dto/update-match.dto';
 import { toMatchResponse } from '../mappers/match-response.mapper';
+import { MatchBatchService } from '../services/match-batch.service';
 import { MatchResultService } from '../services/match-result.service';
 import { MatchService } from '../services/match.service';
 
@@ -28,6 +30,7 @@ export class MatchController {
   public constructor(
     private readonly matchService: MatchService,
     private readonly matchResultService: MatchResultService,
+    private readonly matchBatchService: MatchBatchService,
   ) {}
 
   @Public()
@@ -52,6 +55,15 @@ export class MatchController {
     @Body() input: CreateMatchDto,
   ): Promise<MatchResponseDto> {
     return toMatchResponse(await this.matchService.create(categoryId, input));
+  }
+
+  @Post('categories/:categoryId/matches/batch')
+  @RequirePermission(Permission.MATCH_CREATE)
+  public async createMany(
+    @Param('categoryId', ParseIdPipe) categoryId: string,
+    @Body() input: CreateMatchBatchDto,
+  ): Promise<MatchResponseDto[]> {
+    return (await this.matchBatchService.createMany(categoryId, input)).map(toMatchResponse);
   }
 
   @Patch('matches/:id')

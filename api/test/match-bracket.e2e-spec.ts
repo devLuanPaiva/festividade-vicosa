@@ -2,19 +2,20 @@ import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
-import { MatchBracketController } from '../src/resources/match/controllers/match-bracket.controller';
-import {
-  MatchResultType,
-  MatchRound,
-  MatchStage,
-  MatchStatus,
-} from '../src/resources/match/enums/match.enums';
-import { MatchBracketGenerator } from '../src/resources/match/services/match-bracket-generator.service';
+import { MatchController } from '../src/resources/match/controllers/match.controller';
+import { MatchSuggestionController } from '../src/resources/match/controllers/match-suggestion.controller';
+import { MatchRound, MatchStage } from '../src/resources/match/enums/match.enums';
+import { BracketSuggestionService } from '../src/resources/match/services/bracket-suggestion.service';
+import { GroupFixtureSuggestionService } from '../src/resources/match/services/group-fixture-suggestion.service';
+import { MatchBatchService } from '../src/resources/match/services/match-batch.service';
+import { MatchResultService } from '../src/resources/match/services/match-result.service';
+import { MatchService } from '../src/resources/match/services/match.service';
 import { Permission } from '../src/resources/role/enums/permission.enum';
 import { createE2eApp } from './support/e2e-app';
 
 const CATEGORY_ID = '00000000-0000-4000-8000-000000000005';
-const BRACKET_PATH = `/categories/${CATEGORY_ID}/bracket`;
+const SUGGESTION_PATH = `/categories/${CATEGORY_ID}/bracket/suggestion`;
+const BATCH_PATH = `/categories/${CATEGORY_ID}/matches/batch`;
 const TEAM_A = '00000000-0000-4000-8000-0000000000a1';
 const TEAM_B = '00000000-0000-4000-8000-0000000000b2';
 
@@ -33,39 +34,24 @@ const users: Record<string, AuthenticatedUser> = {
   },
 };
 
-const match = {
-  id: '00000000-0000-4000-8000-0000000000d1',
-  categoryId: CATEGORY_ID,
-  stage: MatchStage.KNOCKOUT,
-  groupId: null,
-  round: MatchRound.FINAL,
-  bracketPosition: 0,
-  scheduledAt: new Date('2026-12-19T22:00:00.000Z'),
-  location: null,
-  status: MatchStatus.SCHEDULED,
-  teamAId: TEAM_A,
-  teamBId: TEAM_B,
-  resultType: MatchResultType.PLAYED,
-  scoreA: null,
-  scoreB: null,
-  penaltiesA: null,
-  penaltiesB: null,
-  winnerId: null,
-  finalizedById: null,
-  finalizedAt: null,
-  bestPlayerName: null,
-  bestPlayerPhotoKey: null,
-  bestPlayerTeamId: null,
+const validBatch = {
+  matches: [
+    {
+      stage: MatchStage.KNOCKOUT,
+      round: MatchRound.FINAL,
+      bracketPosition: 0,
+      teamAId: TEAM_A,
+      teamBId: TEAM_B,
+      scheduledAt: '2026-12-19T19:00:00-03:00',
+    },
+  ],
 };
 
-const validBracket = {
-  teamIds: [TEAM_A, TEAM_B],
-  scheduledAt: '2026-12-19T19:00:00-03:00',
-};
+const bracketSuggestions = { suggestFirstRound: jest.fn(), suggestNextMatches: jest.fn() };
+const groupFixtureSuggestions = { suggest: jest.fn() };
+const batchService = { createMany: jest.fn() };
 
-const bracketGenerator = { generate: jest.fn() };
-
-describe('Bracket (e2e)', () => {
+describe('Suggested fixtures and bracket (e2e)', () => {
   let app: INestApplication;
   const server = (): App => app.getHttpServer() as App;
   const as = (token: string, call: request.Test): request.Test =>
@@ -73,8 +59,14 @@ describe('Bracket (e2e)', () => {
 
   beforeAll(async () => {
     app = await createE2eApp(
-      [MatchBracketController],
-      [{ provide: MatchBracketGenerator, useValue: bracketGenerator }],
+      [MatchSuggestionController, MatchController],
+      [
+        { provide: BracketSuggestionService, useValue: bracketSuggestions },
+        { provide: GroupFixtureSuggestionService, useValue: groupFixtureSuggestions },
+        { provide: MatchBatchService, useValue: batchService },
+        { provide: MatchService, useValue: {} },
+        { provide: MatchResultService, useValue: {} },
+      ],
       users,
     );
   });
@@ -85,38 +77,75 @@ describe('Bracket (e2e)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    bracketGenerator.generate.mockResolvedValue([match]);
+    bracketSuggestions.suggestFirstRound.mockResolvedValue([]);
+    batchService.createMany.mockResolvedValue([]);
   });
 
-  it('requires login, then the match permission, to generate the bracket', async () => {
-    const anonymous = await request(server()).post(BRACKET_PATH).send(validBracket);
-    const scorer = await as(
-      'scorer-token',
-      request(server()).post(BRACKET_PATH).send(validBracket),
-    );
+  it('requires login, then the match permission, to ask for a suggestion', async () => {
+    const body = { teamIds: [TEAM_A, TEAM_B] };
+    const anonymous = await request(server()).post(SUGGESTION_PATH).send(body);
+    const scorer = await as('scorer-token', request(server()).post(SUGGESTION_PATH).send(body));
 
     expect(anonymous.status).toBe(401);
     expect(scorer.status).toBe(403);
   });
 
-  it('generates the bracket and answers with the created matches', async () => {
+  it('rejects a suggestion request with fewer than two teams', async () => {
     const response = await as(
       'organizer-token',
-      request(server()).post(BRACKET_PATH).send(validBracket),
+      request(server())
+        .post(SUGGESTION_PATH)
+        .send({ teamIds: [TEAM_A] }),
     );
-
-    expect(response.status).toBe(201);
-    expect(bracketGenerator.generate).toHaveBeenCalledWith(CATEGORY_ID, validBracket);
-    expect(response.body).toMatchObject({ results: [{ round: 'FINAL', bracketPosition: 0 }] });
-  });
-
-  it.each([
-    { scenario: 'there is only one team', body: { ...validBracket, teamIds: [TEAM_A] } },
-    { scenario: 'a team id is not a uuid', body: { ...validBracket, teamIds: [TEAM_A, '1'] } },
-  ])('rejects the bracket when $scenario', async ({ body }) => {
-    const response = await as('organizer-token', request(server()).post(BRACKET_PATH).send(body));
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({ errors: { field: 'teamIds' } });
+  });
+
+  it('answers a valid suggestion request without creating anything', async () => {
+    const response = await as(
+      'organizer-token',
+      request(server())
+        .post(SUGGESTION_PATH)
+        .send({ teamIds: [TEAM_A, TEAM_B] }),
+    );
+
+    expect(response.status).toBe(201);
+    expect(batchService.createMany).not.toHaveBeenCalled();
+  });
+
+  it('requires the match permission to create the confirmed matches', async () => {
+    const scorer = await as('scorer-token', request(server()).post(BATCH_PATH).send(validBatch));
+
+    expect(scorer.status).toBe(403);
+  });
+
+  it('creates the confirmed matches', async () => {
+    const response = await as(
+      'organizer-token',
+      request(server()).post(BATCH_PATH).send(validBatch),
+    );
+
+    expect(response.status).toBe(201);
+    expect(batchService.createMany).toHaveBeenCalledWith(CATEGORY_ID, validBatch);
+  });
+
+  it.each([
+    { scenario: 'there is no match', body: { matches: [] }, field: 'matches' },
+    {
+      scenario: 'a nested match has an invalid team',
+      body: { matches: [{ ...validBatch.matches[0], teamAId: '1' }] },
+      field: 'matches.0.teamAId',
+    },
+    {
+      scenario: 'the bracket position is out of range',
+      body: { matches: [{ ...validBatch.matches[0], bracketPosition: 99 }] },
+      field: 'matches.0.bracketPosition',
+    },
+  ])('rejects the batch when $scenario', async ({ body, field }) => {
+    const response = await as('organizer-token', request(server()).post(BATCH_PATH).send(body));
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ errors: { field } });
   });
 });

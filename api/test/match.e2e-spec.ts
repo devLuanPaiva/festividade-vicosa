@@ -4,6 +4,7 @@ import type { App } from 'supertest/types';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
 import { MatchController } from '../src/resources/match/controllers/match.controller';
 import { MatchRound, MatchStage, MatchStatus } from '../src/resources/match/enums/match.enums';
+import { MatchBatchService } from '../src/resources/match/services/match-batch.service';
 import { MatchResultService } from '../src/resources/match/services/match-result.service';
 import { MatchService } from '../src/resources/match/services/match.service';
 import { Permission } from '../src/resources/role/enums/permission.enum';
@@ -77,6 +78,7 @@ function createApp(): Promise<INestApplication> {
     [
       { provide: MatchService, useValue: matchService },
       { provide: MatchResultService, useValue: resultService },
+      { provide: MatchBatchService, useValue: {} },
     ],
     users,
   );

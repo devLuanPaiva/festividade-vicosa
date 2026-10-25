@@ -1,6 +1,5 @@
 import type { MatchRepository } from '../repository/match.repository';
 import { MatchResultType, MatchStage } from '../enums/match.enums';
-import type { MatchBracketAdvancer } from './match-bracket-advancer.service';
 import { MatchResultService } from './match-result.service';
 import type { MatchService } from './match.service';
 import { MATCH_ID, TEAM_A, TEAM_B, stored } from './match.service.fixture';
@@ -11,48 +10,15 @@ const knockoutMatch = { ...stored, stage: MatchStage.KNOCKOUT, groupId: null };
 function createFixture(match: object = stored): {
   service: MatchResultService;
   repository: Record<'saveResult', jest.Mock>;
-  advancer: Record<'assertCorrectionAllowed' | 'advance', jest.Mock>;
 } {
   const repository = { saveResult: jest.fn().mockResolvedValue(undefined) };
   const matchService = { findByIdOrFail: jest.fn().mockResolvedValue(match) };
-  const advancer = {
-    assertCorrectionAllowed: jest.fn().mockResolvedValue(undefined),
-    advance: jest.fn().mockResolvedValue(undefined),
-  };
   const service = new MatchResultService(
     repository as unknown as MatchRepository,
     matchService as unknown as MatchService,
-    advancer as unknown as MatchBracketAdvancer,
   );
-  return { service, repository, advancer };
+  return { service, repository };
 }
-
-describe('MatchResultService.record bracket advancement', () => {
-  it('checks the correction, saves the result and then advances the finalized match', async () => {
-    const { service, repository, advancer } = createFixture(knockoutMatch);
-
-    await service.record(MATCH_ID, ACTOR_ID, { scoreA: 2, scoreB: 0 });
-
-    expect(advancer.assertCorrectionAllowed).toHaveBeenCalledWith(knockoutMatch, TEAM_A);
-    expect(advancer.advance).toHaveBeenCalledWith(knockoutMatch);
-    const [check] = advancer.assertCorrectionAllowed.mock.invocationCallOrder;
-    const [save] = repository.saveResult.mock.invocationCallOrder;
-    const [advance] = advancer.advance.mock.invocationCallOrder;
-    expect(check).toBeLessThan(save ?? 0);
-    expect(save).toBeLessThan(advance ?? 0);
-  });
-
-  it('does not save the result when the next round was already played', async () => {
-    const { service, repository, advancer } = createFixture(knockoutMatch);
-    advancer.assertCorrectionAllowed.mockRejectedValue(new Error('next round played'));
-
-    await expect(service.record(MATCH_ID, ACTOR_ID, { scoreA: 2, scoreB: 0 })).rejects.toThrow(
-      'next round played',
-    );
-    expect(repository.saveResult).not.toHaveBeenCalled();
-    expect(advancer.advance).not.toHaveBeenCalled();
-  });
-});
 
 describe('MatchResultService.record', () => {
   it('finalizes a group match with the winner, the actor and no penalties', async () => {

@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { EmptyState } from '@/components/feedback/EmptyState';
+import { GroupFixtureLinks } from '@/features/admin-suggestions/components/GroupFixtureLinks';
+import type { MatchGroup } from '@/features/admin-teams/types';
 import type { CategoryMatchDay } from '../lib/category-match-days';
 import { editMatchPath, newMatchPath } from '../lib/admin-match-paths';
 
 interface MatchesTabProps {
   categoryId: string;
   days: CategoryMatchDay[];
+  groups: MatchGroup[];
 }
 
 const PRIMARY_LINK_CLASS =
@@ -61,12 +64,13 @@ function MatchDay({
   );
 }
 
-export function MatchesTab({ categoryId, days }: MatchesTabProps): ReactElement {
+export function MatchesTab({ categoryId, days, groups }: MatchesTabProps): ReactElement {
   return (
     <div className="flex flex-col gap-4">
       <Link href={newMatchPath(categoryId)} className={`${PRIMARY_LINK_CLASS} self-start`}>
         Nova partida
       </Link>
+      <GroupFixtureLinks categoryId={categoryId} groups={groups} />
       <div className="overflow-hidden rounded-2xl border border-admin-line bg-admin-surface">
         {days.length === 0 ? <EmptyMatches /> : null}
         {days.map((day) => (

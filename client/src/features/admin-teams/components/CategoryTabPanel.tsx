@@ -38,11 +38,12 @@ const PANELS: Record<CategoryTab, (detail: CategoryDetail) => ReactElement> = {
     <MatchesTab
       categoryId={category.id}
       days={buildCategoryMatchDays(matches ?? [], teams, groups)}
+      groups={groups}
     />
   ),
-  chaveamento: ({ category, matches }) => (
+  chaveamento: ({ category, matches, teams }) => (
     <Suspense fallback={<Loading text="Carregando classificados…" />}>
-      <BracketTab categoryId={category.id} matches={matches ?? []} />
+      <BracketTab categoryId={category.id} matches={matches ?? []} teams={teams} />
     </Suspense>
   ),
 };

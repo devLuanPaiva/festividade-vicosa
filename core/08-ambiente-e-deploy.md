@@ -96,7 +96,7 @@ O script pede **nome completo**, **e-mail**, **senha** e a **confirmação da se
 `cd api && npm run seed:demo` popula a edição 2026 com dados fictícios para ver o portal funcionando: 88 times (8 por categoria, em dois grupos), 142 partidas no calendário real (4 a 6/12 handebol, 9 a 19/12 futsal), resultados em parte das categorias, classificados confirmados e dois mata-matas completos (Handebol Adulto Masculino e Futsal Adulto, este com semifinal decidida nos pênaltis). As demais categorias ficam em estágios diferentes: só agendadas, jogos parciais (uma com W.O.), grupos encerrados e chaveamento gerado sem jogar.
 
 - É uma ferramenta **só para o localhost**: fica em `api/src/database/demo/`, **sem testes** e fora da cobertura (de propósito, para não pesar no `npm run verify`).
-- O seed usa os **serviços da própria API** (sem HTTP), então respeita as regras de negócio (vencedor, desempate, avanço do chaveamento). Os dados são sempre os mesmos (semente fixa).
+- O seed usa os **serviços da própria API** (sem HTTP), então respeita as regras de negócio (vencedor, desempate, sugestões confirmadas do chaveamento). Os dados são sempre os mesmos (semente fixa).
 - `npm run seed:demo -- --reset` **apaga todas as partidas, times e grupos** das categorias da edição e recria. Recusa rodar com `NODE_ENV=production`.
 - Sem `--reset`, o seed para se alguma categoria já tem times.
 - Como o upload de fotos ainda não existe, `photo_key` dos times e `best_player_photo_key` guardam **URL completa**: fotos do Wikimedia Commons para os times e avatares gerados (DiceBear) para os melhores jogadores, que são nomes fictícios. Quando o resource de fotos existir, o client deve aceitar os dois formatos (chave do S3 ou URL absoluta) e os dados reais usarão só a chave.
