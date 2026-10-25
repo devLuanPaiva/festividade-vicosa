@@ -1,4 +1,4 @@
-import { slugify } from './slug.rule';
+import { slugify } from './slugify';
 
 describe('slugify', () => {
   it.each([
