@@ -6,16 +6,14 @@ export enum MediaFolder {
   HISTORY_PHOTO = 'HISTORY_PHOTO',
 }
 
-export const IMAGE_VARIANTS = ['thumb', 'medium', 'large'] as const;
-export type ImageVariant = (typeof IMAGE_VARIANTS)[number];
-
 export interface MediaTarget {
   folder: MediaFolder;
   segments: string[];
 }
 
 const SEGMENT_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const IMAGE_EXTENSION = 'webp';
+const IMAGE_EXTENSION = '.webp';
+const LEGACY_VARIANTS = ['thumb', 'medium', 'large'];
 
 const ROOT_FOLDERS: Record<MediaFolder, string> = {
   [MediaFolder.TEAM_PHOTO]: 'teams',
@@ -40,7 +38,7 @@ const STANDARD_NAMES: Record<MediaFolder, string> = {
 
 const MANAGED_PREFIXES = ['teams/', 'matches/', 'sub-events/', 'history/'];
 
-export function buildMediaBaseKey(target: MediaTarget, randomKey: string): string {
+export function buildMediaKey(target: MediaTarget, randomKey: string): string {
   const { folder, segments } = target;
   if (segments.length === 0 || !segments.every((segment) => SEGMENT_PATTERN.test(segment))) {
     throw new Error(
@@ -49,15 +47,14 @@ export function buildMediaBaseKey(target: MediaTarget, randomKey: string): strin
   }
   const subfolder = SUBFOLDERS[folder];
   const folders = [ROOT_FOLDERS[folder], ...segments, ...(subfolder ? [subfolder] : [])];
-  return `${folders.join('/')}/${STANDARD_NAMES[folder]}-${randomKey}`;
+  return `${folders.join('/')}/${STANDARD_NAMES[folder]}-${randomKey}${IMAGE_EXTENSION}`;
 }
 
-export function variantKey(baseKey: string, variant: ImageVariant): string {
-  return `${baseKey}-${variant}.${IMAGE_EXTENSION}`;
-}
-
-export function allVariantKeys(baseKey: string): string[] {
-  return IMAGE_VARIANTS.map((variant) => variantKey(baseKey, variant));
+export function objectKeysOf(storedKey: string): string[] {
+  if (storedKey.endsWith(IMAGE_EXTENSION)) {
+    return [storedKey];
+  }
+  return LEGACY_VARIANTS.map((variant) => `${storedKey}-${variant}${IMAGE_EXTENSION}`);
 }
 
 export function isManagedMediaKey(value: string): boolean {

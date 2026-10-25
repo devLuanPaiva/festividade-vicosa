@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { ImageProcessor, type ProcessedImage } from './image-processor.service';
+import { ImageProcessor } from './image-processor.service';
 
 const processor = new ImageProcessor();
 
@@ -13,10 +13,6 @@ function photo(
     .toBuffer();
 }
 
-function widthOf(images: ProcessedImage[], variant: string): number | undefined {
-  return images.find((image) => image.variant === variant)?.width;
-}
-
 async function rejectionOf(file: Buffer): Promise<{ code: string; field: string; detail: string }> {
   try {
     await processor.process(file);
@@ -27,22 +23,17 @@ async function rejectionOf(file: Buffer): Promise<{ code: string; field: string;
 }
 
 describe('ImageProcessor', () => {
-  it('turns a big photo into the three sizes, all webp, keeping the proportion', async () => {
-    const images = await processor.process(await photo(3000, 2000));
+  it('turns a big photo into one webp file of at most 1600 px, keeping the proportion', async () => {
+    const image = await processor.process(await photo(3000, 2000));
 
-    expect(images.map((image) => image.variant)).toEqual(['thumb', 'medium', 'large']);
-    expect([320, 960, 1600]).toEqual(images.map((image) => image.width));
-    expect(images.map((image) => image.height)).toEqual([213, 640, 1067]);
-    for (const image of images) {
-      expect((await sharp(image.buffer).metadata()).format).toBe('webp');
-    }
+    expect([image.width, image.height]).toEqual([1600, 1067]);
+    expect((await sharp(image.buffer).metadata()).format).toBe('webp');
   });
 
   it('never enlarges a small image', async () => {
-    const images = await processor.process(await photo(200, 100, 'png'));
+    const image = await processor.process(await photo(200, 100, 'png'));
 
-    expect(widthOf(images, 'thumb')).toBe(200);
-    expect(widthOf(images, 'large')).toBe(200);
+    expect([image.width, image.height]).toEqual([200, 100]);
   });
 
   it('stands a phone photo up and drops the location data it carried', async () => {
@@ -53,10 +44,10 @@ describe('ImageProcessor', () => {
       .withMetadata({ orientation: 6, exif: { IFD0: { Copyright: 'someone' } } })
       .toBuffer();
 
-    const [thumb] = await processor.process(sideways);
-    const metadata = await sharp(thumb?.buffer).metadata();
+    const image = await processor.process(sideways);
+    const metadata = await sharp(image.buffer).metadata();
 
-    expect(thumb?.height).toBeGreaterThan(thumb?.width ?? Infinity);
+    expect(image.height).toBeGreaterThan(image.width);
     expect(metadata.exif).toBeUndefined();
   });
 

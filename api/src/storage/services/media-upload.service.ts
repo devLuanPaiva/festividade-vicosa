@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  allVariantKeys,
-  buildMediaBaseKey,
+  buildMediaKey,
   isManagedMediaKey,
-  variantKey,
+  objectKeysOf,
   type MediaTarget,
 } from '../rules/media-key.rule';
-import { ImageProcessor, type ProcessedImage } from './image-processor.service';
+import { ImageProcessor } from './image-processor.service';
 import { RandomKeyGenerator } from './random-key.generator';
 import { S3StorageService } from './s3-storage.service';
 
@@ -24,33 +23,20 @@ export class MediaUploadService {
 
   public async upload(target: MediaTarget, file: Buffer): Promise<string> {
     this.storage.assertConfigured();
-    const baseKey = buildMediaBaseKey(target, this.randomKeys.next());
-    const images = await this.imageProcessor.process(file);
-    await this.saveAll(baseKey, images);
-    return baseKey;
+    const key = buildMediaKey(target, this.randomKeys.next());
+    const image = await this.imageProcessor.process(file);
+    await this.storage.put(key, image.buffer, WEBP_CONTENT_TYPE);
+    return key;
   }
 
-  public async discard(baseKey: string | null): Promise<void> {
-    if (!baseKey || !isManagedMediaKey(baseKey)) {
+  public async discard(storedKey: string | null): Promise<void> {
+    if (!storedKey || !isManagedMediaKey(storedKey)) {
       return;
     }
     try {
-      await this.storage.remove(allVariantKeys(baseKey));
+      await this.storage.remove(objectKeysOf(storedKey));
     } catch (error) {
-      this.logger.warn(`Left files behind in the bucket for ${baseKey}`, error);
-    }
-  }
-
-  private async saveAll(baseKey: string, images: ProcessedImage[]): Promise<void> {
-    try {
-      await Promise.all(
-        images.map((image) =>
-          this.storage.put(variantKey(baseKey, image.variant), image.buffer, WEBP_CONTENT_TYPE),
-        ),
-      );
-    } catch (error) {
-      await this.discard(baseKey);
-      throw error;
+      this.logger.warn(`Left files behind in the bucket for ${storedKey}`, error);
     }
   }
 }
