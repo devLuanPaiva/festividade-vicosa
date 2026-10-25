@@ -2,12 +2,7 @@
 
 import { revalidatePath, updateTag } from 'next/cache';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
-import { copyFileField } from '@/lib/forms/form-data';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
-import { albumUploadPath } from '../lib/album-target';
-import type { AlbumTarget } from '../types';
-
-const PHOTO_FIELD = 'file';
 
 async function finishRequest(failure: FormErrorState | null): Promise<FormErrorState> {
   if (failure) {
@@ -18,16 +13,8 @@ async function finishRequest(failure: FormErrorState | null): Promise<FormErrorS
   return INITIAL_FORM_ERROR_STATE;
 }
 
-export async function uploadAlbumPhotoAction(
-  target: AlbumTarget,
-  formData: FormData,
-): Promise<FormErrorState> {
-  return finishRequest(
-    await submitAdminRequest(albumUploadPath(target), {
-      method: 'POST',
-      body: copyFileField(formData, PHOTO_FIELD),
-    }),
-  );
+export async function refreshGalleryAction(): Promise<FormErrorState> {
+  return finishRequest(null);
 }
 
 export async function deletePhotoAction(photoId: string): Promise<FormErrorState> {

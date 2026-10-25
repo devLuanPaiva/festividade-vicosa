@@ -1,53 +1,54 @@
 'use client';
 
-import type { ChangeEvent, ReactElement } from 'react';
-import type { FormErrorState } from '@/lib/forms/form-errors';
-import { usePhotoUploadQueue } from '../hooks/use-photo-upload-queue';
-import { UploadQueueList } from './UploadQueueList';
-
-const INPUT_ID = 'album-photos';
+import { MotionConfig } from 'motion/react';
+import type { ReactElement } from 'react';
+import { usePhotoStaging } from '../hooks/use-photo-staging';
+import { summarizeStaging } from '../lib/staging-summary';
+import type { AlbumTarget } from '../types';
+import { PhotoDropzone } from './PhotoDropzone';
+import { StagedPhotoList } from './StagedPhotoList';
+import { UploadActionBar } from './UploadActionBar';
+import { UploadMessages } from './UploadMessages';
 
 interface PhotoUploaderProps {
-  upload: (formData: FormData) => Promise<FormErrorState>;
+  target: AlbumTarget;
+  refresh: () => Promise<unknown>;
 }
 
-export function PhotoUploader({ upload }: PhotoUploaderProps): ReactElement {
-  const { items, isRunning, start } = usePhotoUploadQueue(upload);
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const files = Array.from(event.target.files ?? []);
-    event.target.value = '';
-    if (files.length > 0) {
-      start(files);
-    }
-  };
+export function PhotoUploader({ target, refresh }: PhotoUploaderProps): ReactElement {
+  const staging = usePhotoStaging(target, refresh);
+  const hasPhotos = staging.items.length > 0;
 
   return (
-    <section aria-labelledby="photo-uploader-title" className="flex flex-col gap-3">
-      <h2 id="photo-uploader-title" className="font-bold">
-        Adicionar fotos
-      </h2>
-      <p className="text-sm text-admin-muted">
-        Escolha uma ou várias fotos (JPG, PNG ou WebP). Elas são reduzidas no aparelho e enviadas
-        uma a uma, no fim do álbum.
-      </p>
-      <label
-        htmlFor={INPUT_ID}
-        aria-disabled={isRunning}
-        className={`inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-600 px-6 font-semibold text-white transition-colors hover:bg-brand-700 ${isRunning ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
-      >
-        {isRunning ? 'Enviando…' : 'Escolher fotos'}
-      </label>
-      <input
-        id={INPUT_ID}
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        multiple
-        disabled={isRunning}
-        onChange={handleChange}
-        className="sr-only"
-      />
-      <UploadQueueList items={items} />
-    </section>
+    <MotionConfig reducedMotion="user">
+      <section aria-labelledby="photo-uploader-title" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="photo-uploader-title" className="font-bold">
+            Adicionar fotos
+          </h2>
+          <p className="text-sm text-admin-muted">
+            Escolha as fotos, confira as prévias e envie. Elas são reduzidas no aparelho antes do
+            envio e entram no fim do álbum.
+          </p>
+        </div>
+        <PhotoDropzone onFiles={staging.add} disabled={staging.isSending} compact={hasPhotos} />
+        <UploadMessages notices={staging.notices} sentCount={staging.sentCount} />
+        {hasPhotos ? (
+          <>
+            <StagedPhotoList
+              items={staging.items}
+              isSending={staging.isSending}
+              onRemove={staging.remove}
+            />
+            <UploadActionBar
+              summary={summarizeStaging(staging.items)}
+              isSending={staging.isSending}
+              onSend={staging.send}
+              onClear={staging.clear}
+            />
+          </>
+        ) : null}
+      </section>
+    </MotionConfig>
   );
 }

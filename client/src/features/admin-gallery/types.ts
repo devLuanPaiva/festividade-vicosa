@@ -3,11 +3,11 @@ export type AlbumTarget =
 
 export type { GalleryDay, GalleryPhoto as AlbumPhoto } from '@/features/gallery/types';
 
-export type UploadStatus = 'waiting' | 'uploading' | 'done' | 'failed';
+export type StagedStatus = 'staged' | 'waiting' | 'uploading' | 'done' | 'failed';
 
-export interface UploadItem {
+export interface StagedPhoto {
   id: number;
-  name: string;
-  status: UploadStatus;
+  file: File;
+  status: StagedStatus;
   message: string | null;
 }
