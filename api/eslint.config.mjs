@@ -70,6 +70,8 @@ export default tseslint.config(
     files: [
       'src/resources/auth/decorators/decorators.ts',
       'src/common/validation/field-decorators.ts',
+      'src/storage/upload/upload-decorators.ts',
+      'src/resources/gallery/decorators/*.ts',
     ],
     rules: {
       '@typescript-eslint/naming-convention': 'off',

@@ -6,7 +6,7 @@ import { MAX_UPLOAD_BYTES } from '../services/image-processor.service';
 
 export const IMAGE_UPLOAD_FIELD = 'file';
 
-const ONE_MINUTE_IN_MILLISECONDS = 60_000;
+export const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 const UPLOADS_PER_MINUTE = 30;
 
 export const UPLOAD_THROTTLE_OPTIONS = [
