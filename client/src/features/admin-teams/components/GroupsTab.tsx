@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog';
 import type { Team } from '@/features/games/types';
 import { deleteGroupAction } from '../actions/group-actions';
@@ -49,15 +50,12 @@ export function GroupsTab({ categoryId, groups, teams }: GroupsTabProps): ReactE
       <GroupCreateForm categoryId={categoryId} />
       <div className="overflow-hidden rounded-2xl border border-admin-line bg-admin-surface">
         {groups.length === 0 ? (
-          <section aria-labelledby="no-groups-title" className="flex flex-col gap-1 p-5">
-            <h2 id="no-groups-title" className="font-bold">
-              Nenhum grupo ainda
-            </h2>
-            <p className="text-sm text-admin-muted">
-              Crie um grupo para organizar os times da fase de grupos, por exemplo Grupo A. Com
-              poucos times, um grupo só já basta.
-            </p>
-          </section>
+          <EmptyState
+            tone="admin"
+            icon="table"
+            title="Nenhum grupo ainda"
+            description="Crie um grupo para organizar os times da fase de grupos, por exemplo Grupo A. Com poucos times, um grupo só já basta."
+          />
         ) : (
           <ul className="divide-y divide-admin-line">
             {groups.map((group) => (

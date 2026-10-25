@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { Reveal } from '@/components/motion/Reveal';
 import type { SubEvent } from '@/features/schedule/types';
 import { SubEventCard } from './SubEventCard';
@@ -10,9 +11,14 @@ interface SubEventGridProps {
 export function SubEventGrid({ subEvents }: SubEventGridProps): ReactElement {
   if (subEvents.length === 0) {
     return (
-      <p className="mt-6 max-w-xl text-white/80">
-        A programação completa será publicada em breve. Volte para conferir as datas.
-      </p>
+      <div className="mt-8">
+        <EmptyState
+          tone="dark"
+          icon="calendar"
+          title="Programação em breve"
+          description="A programação completa será publicada em breve. Volte para conferir as datas."
+        />
+      </div>
     );
   }
 

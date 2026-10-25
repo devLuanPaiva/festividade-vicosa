@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { Container } from '@/components/layout/Container';
 import { Reveal } from '@/components/motion/Reveal';
 import { WaveEdge } from '@/components/ui/WaveEdge';
@@ -18,9 +19,13 @@ export function StandingsSection({ groups }: StandingsSectionProps): ReactElemen
           Classificação
         </h2>
         {groups.length === 0 ? (
-          <p className="mt-6 rounded-3xl bg-white p-8 text-center text-ink-soft">
-            Os grupos desta categoria ainda não foram definidos.
-          </p>
+          <div className="mt-6">
+            <EmptyState
+              icon="table"
+              title="Grupos em definição"
+              description="Os grupos desta categoria ainda não foram definidos. A classificação aparece assim que os jogos começarem."
+            />
+          </div>
         ) : (
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
             {groups.map((group, index) => (

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, type ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { filterCategories } from '../lib/filter-categories';
 import { categoryPath } from '../lib/admin-team-paths';
 import type { ModalityCategories } from '../types';
@@ -12,11 +13,12 @@ interface CategorySearchListProps {
 
 function EmptyResult({ onClear }: { onClear: () => void }): ReactElement {
   return (
-    <section aria-labelledby="no-category-title" className="flex flex-col items-start gap-2 p-5">
-      <h2 id="no-category-title" className="font-bold">
-        Nenhuma categoria encontrada
-      </h2>
-      <p className="text-sm text-admin-muted">Tente outro nome ou limpe a busca para ver todas.</p>
+    <EmptyState
+      tone="admin"
+      icon="search"
+      title="Nenhuma categoria encontrada"
+      description="Tente outro nome ou limpe a busca para ver todas."
+    >
       <button
         type="button"
         onClick={onClear}
@@ -24,7 +26,7 @@ function EmptyResult({ onClear }: { onClear: () => void }): ReactElement {
       >
         Limpar busca
       </button>
-    </section>
+    </EmptyState>
   );
 }
 
