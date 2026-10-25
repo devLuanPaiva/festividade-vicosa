@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ADMIN_SECTIONS,
   CATEGORIES_SECTION,
+  GALLERY_SECTION,
   HOME_SECTION,
   MATCHES_SECTION,
   activeSectionLabel,
@@ -16,7 +17,7 @@ function labelsFor(permissions: string[]): string[] {
 describe('admin sections', () => {
   it('always shows the home, then only what each person is allowed to use', () => {
     expect(labelsFor([])).toEqual(['Início']);
-    expect(labelsFor(['photo:upload'])).toEqual(['Início']);
+    expect(labelsFor(['photo:upload'])).toEqual(['Início', 'Galeria']);
     expect(labelsFor(['match:record-score'])).toEqual(['Início', 'Partidas']);
     expect(labelsFor(['team:manage', 'match:record-score'])).toEqual([
       'Início',
@@ -29,6 +30,7 @@ describe('admin sections', () => {
     expect(isActiveSection('/admin/partidas/abc', MATCHES_SECTION)).toBe(true);
     expect(isActiveSection('/admin/categorias/abc/times/novo', CATEGORIES_SECTION)).toBe(true);
     expect(isActiveSection('/admin/times/abc', CATEGORIES_SECTION)).toBe(true);
+    expect(isActiveSection('/admin/galeria/abc/2026-12-09', GALLERY_SECTION)).toBe(true);
   });
 
   it('highlights the home only on the home itself', () => {

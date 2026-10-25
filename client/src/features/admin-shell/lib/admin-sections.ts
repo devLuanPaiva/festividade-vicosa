@@ -6,6 +6,7 @@ const PANEL_LABEL = 'Painel';
 
 export const ADMIN_MATCHES_PATH = '/admin/partidas';
 export const ADMIN_CATEGORIES_PATH = '/admin/categorias';
+export const ADMIN_GALLERY_PATH = '/admin/galeria';
 
 export interface AdminSection {
   label: string;
@@ -43,7 +44,21 @@ export const CATEGORIES_SECTION: AdminSection = {
   pathPrefixes: [ADMIN_CATEGORIES_PATH, '/admin/times'],
 };
 
-export const ADMIN_SECTIONS: AdminSection[] = [HOME_SECTION, MATCHES_SECTION, CATEGORIES_SECTION];
+export const GALLERY_SECTION: AdminSection = {
+  label: 'Galeria',
+  icon: 'image',
+  href: ADMIN_GALLERY_PATH,
+  permission: 'photo:upload',
+  exactPaths: [],
+  pathPrefixes: [ADMIN_GALLERY_PATH],
+};
+
+export const ADMIN_SECTIONS: AdminSection[] = [
+  HOME_SECTION,
+  MATCHES_SECTION,
+  CATEGORIES_SECTION,
+  GALLERY_SECTION,
+];
 
 function isInside(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
