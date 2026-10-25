@@ -30,6 +30,12 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       REFRESH_TOKEN_EXPIRES_IN_DAYS: ${REFRESH_TOKEN_EXPIRES_IN_DAYS:-7}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      AWS_REGION: ${AWS_REGION:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      S3_BUCKET: ${S3_BUCKET:-jocevs}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      MEDIA_PUBLIC_URL: ${MEDIA_PUBLIC_URL:-https://cdn.jocevs.com.br}
     depends_on:
       db:
         condition: service_healthy

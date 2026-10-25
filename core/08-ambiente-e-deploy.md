@@ -9,11 +9,61 @@
 | `REFRESH_TOKEN_EXPIRES_IN_DAYS` | `.env` na raiz | Validade do token de renovação, em dias (padrão `7`, máximo `90`) |
 | `GOOGLE_CLIENT_ID` | `.env` na raiz e `client/.env` | ID do cliente OAuth do Google (opcional; sem ele o login com Google fica indisponível) |
 | `GOOGLE_CLIENT_SECRET`, `SITE_URL` | `client/.env` | Segredo do cliente OAuth (só o client usa) e endereço público do site, usado na URL de retorno `SITE_URL/admin/login/google/callback` |
-| `CORS_ORIGIN` | `.env` na raiz | Origens permitidas, separadas por vírgula (ex.: `https://app.dominio`) |
-| `API_DOMAIN` | `.env` na raiz | Domínio público da API (Caddy emite o certificado) |
+| `CORS_ORIGIN` | `.env` na raiz | Origens permitidas, separadas por vírgula (produção: `https://painel.jocevs.com.br`) |
+| `API_DOMAIN` | `.env` na raiz | Domínio público da API (Caddy emite o certificado); produção: `api.jocevs.com.br` |
+| `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | `.env` na raiz e `api/.env` | Credenciais do usuário IAM da API e a região do bucket. **Só a API usa.** Em branco, a API sobe normalmente e o envio de imagem responde `STORAGE_NOT_CONFIGURED` |
+| `S3_BUCKET` | `.env` na raiz e `api/.env` | Nome do bucket (padrão `jocevs`) |
+| `MEDIA_PUBLIC_URL` | `.env` na raiz e `api/.env` | Endereço público das imagens, sem barra no final (padrão `https://cdn.jocevs.com.br`) |
+| `S3_ENDPOINT` | `.env` na raiz e `api/.env` | Opcional: endereço de um servidor compatível com S3 para testes locais; vazio na AWS |
 | `DATABASE_HOST`, `DATABASE_PORT`, `PORT`, `NODE_ENV` | `api/.env` (fora do Docker) | Rodar a API direto com `npm run start:dev` |
 
 A API valida tudo na subida (`api/src/config/environment.ts`) e **não sobe** com variável faltando ou inválida. Nenhum `.env` é versionado; use os `.env.example`.
+
+## AWS: bucket, IAM e CloudFront
+A API é a única que fala com o S3 (ADR-02). O navegador só lê as imagens pelo CloudFront.
+
+1. **Bucket `jocevs`**: privado, com *Block all public access* ligado e sem ACL. As pastas nascem sozinhas quando a API grava (ver ADR-06).
+2. **Usuário IAM da API**: só pode escrever e apagar neste bucket (nada de leitura, listagem ou outros serviços):
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "ApiWritesMedia",
+         "Effect": "Allow",
+         "Action": ["s3:PutObject", "s3:DeleteObject"],
+         "Resource": "arn:aws:s3:::jocevs/*"
+       }
+     ]
+   }
+   ```
+   A chave de acesso desse usuário vai para `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY` no `.env` do servidor. Nunca no repositório, no client nem no chat.
+3. **Certificado (ACM)** para `cdn.jocevs.com.br`, na região `us-east-1` (exigência do CloudFront).
+4. **CloudFront**: origem no bucket `jocevs` com *Origin Access Control* (OAC), nome alternativo `cdn.jocevs.com.br`, certificado do passo 3, redirecionar HTTP para HTTPS e a política de cache *CachingOptimized* (os arquivos nunca mudam de nome).
+5. **Política do bucket** para o CloudFront ler (troque `ACCOUNT_ID` e `DISTRIBUTION_ID`):
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "CloudFrontReadsMedia",
+         "Effect": "Allow",
+         "Principal": { "Service": "cloudfront.amazonaws.com" },
+         "Action": "s3:GetObject",
+         "Resource": "arn:aws:s3:::jocevs/*",
+         "Condition": {
+           "StringEquals": {
+             "AWS:SourceArn": "arn:aws:cloudfront::ACCOUNT_ID:distribution/DISTRIBUTION_ID"
+           }
+         }
+       }
+     ]
+   }
+   ```
+6. **Route 53**: registro `cdn` (alias A/AAAA) para a distribuição, `api` para o IP elástico da EC2 e `painel` e o apex para a Vercel.
+7. No servidor: `AWS_REGION` (a região do bucket), as duas chaves, `S3_BUCKET=jocevs` e `MEDIA_PUBLIC_URL=https://cdn.jocevs.com.br`. Para o login com Google no painel, `SITE_URL=https://painel.jocevs.com.br` e a URL de retorno `https://painel.jocevs.com.br/admin/login/google/callback` cadastrada no console do Google.
+
+As rotas de foto aceitam JPG, PNG ou WebP de até 10 MB e têm limite de 20 envios por minuto.
 
 ## Desenvolvimento
 1. `cp .env.example .env` e ajuste a senha.
@@ -26,7 +76,7 @@ A API valida tudo na subida (`api/src/config/environment.ts`) e **não sobe** co
 2. IP elástico e registro `api` no Route 53 apontando para ele.
 3. Criar o `.env` no servidor com senha forte e `API_DOMAIN`/`CORS_ORIGIN` reais.
 4. `docker compose -f docker-compose.yml up -d --build` (ignora o override de desenvolvimento).
-5. Conferir `https://api.<dominio>/health`.
+5. Conferir `https://api.jocevs.com.br/health`.
 
 As migrations rodam sozinhas quando a API sobe (`migrationsRun`). Cada feature traz a sua migration e a sua entidade (arquivos `*.entity.ts`), então o esquema cresce junto com o código.
 

@@ -8,15 +8,15 @@ flowchart LR
   U([Visitante / Admin<br/>navegador ou PWA])
   R53[Route 53<br/>DNS]
   subgraph Vercel
-    WEB[Next.js<br/>app.dominio]
+    WEB[Next.js<br/>jocevs.com.br e painel.jocevs.com.br]
   end
   subgraph EC2["AWS EC2 (docker-compose)"]
     PX[Caddy<br/>HTTPS]
     API[NestJS + TypeORM]
     DB[(PostgreSQL)]
   end
-  CF[CloudFront<br/>midia.dominio]
-  S3[(S3 privado<br/>fotos)]
+  CF[CloudFront<br/>cdn.jocevs.com.br]
+  S3[(S3 privado<br/>bucket jocevs)]
 
   U -.->|DNS| R53
   U -->|HTTPS| WEB
@@ -30,11 +30,11 @@ flowchart LR
   API -->|revalidar páginas| WEB
 ```
 
-- `app.dominio` → Next.js na Vercel · `api.dominio` → API na EC2 (Caddy com certificado automático) · `midia.dominio` → fotos no S3 via CloudFront.
-- Route 53 só resolve nomes: `app` aponta (CNAME) para a Vercel, `api` para o IP elástico da EC2, `midia` para o CloudFront.
+- `jocevs.com.br` → portal público e `painel.jocevs.com.br` → painel administrativo, ambos Next.js na Vercel · `api.jocevs.com.br` → API na EC2 (Caddy com certificado automático) · `cdn.jocevs.com.br` → fotos no S3 via CloudFront.
+- Route 53 só resolve nomes: o apex e `painel` apontam para a Vercel, `api` para o IP elástico da EC2 e `cdn` (alias) para o CloudFront.
 - O client **nunca** fala com o banco nem grava no S3. Só chama a API (ADR-02). A leitura de foto pela URL do CloudFront é a única exceção, e é só leitura de arquivo público.
-- O navegador do admin envia as fotos **direto para `api.dominio`**, sem passar pela Vercel (as funções da Vercel têm limite de corpo de ~4,5 MB, pequeno para foto de celular).
-- CORS na API liberado só para `app.dominio` (e `localhost` em desenvolvimento).
+- O navegador do admin envia as fotos **direto para `api.jocevs.com.br`**, sem passar pela Vercel (as funções da Vercel têm limite de corpo de ~4,5 MB, pequeno para foto de celular).
+- CORS na API liberado só para `painel.jocevs.com.br` (e `localhost` em desenvolvimento).
 
 ## Stack
 | Camada | Tecnologia | Observação |
@@ -42,15 +42,15 @@ flowchart LR
 | Front | Next.js (**App Router**, Cache Components) na **Vercel** | Já no repo. Páginas públicas com cache no servidor (`use cache`); painel admin renderizado no navegador |
 | API | NestJS + **TypeORM** | Já no repo. Roda em container na EC2 |
 | Banco | **PostgreSQL** em container | Mesmo `docker-compose` da API; volume persistente + backup para o S3 (ADR-04) |
-| Proxy/HTTPS | Caddy em container | Certificado Let's Encrypt automático para `api.dominio` |
+| Proxy/HTTPS | Caddy em container | Certificado Let's Encrypt automático para `api.jocevs.com.br` |
 | Fotos | S3 + CloudFront | Bucket privado, só o CloudFront lê (OAC) |
-| DNS | Route 53 | Zona hospedada + registros para app, api, midia |
+| DNS | Route 53 | Zona hospedada + registros para o apex, painel, api e cdn |
 | Certificados | ACM (só para o CloudFront, em us-east-1) | Vercel e Caddy emitem os seus sozinhos |
 
 ## Decisões (ADR curtos)
 
 ### ADR-01 — S3 + CloudFront + Route 53 para mídia e entrega
-- **Decisão:** fotos no S3 privado, entregues pelo CloudFront no domínio `midia.<dominio>`.
+- **Decisão:** fotos no S3 privado, entregues pelo CloudFront em `cdn.jocevs.com.br`. Um único bucket, `jocevs`, com pastas por tipo de arquivo (ADR-06).
 - **Por quê:** barato, escala no pico dos jogos sem trabalho extra, e a CDN reduz latência em rede móvel fraca.
 - **Consequência:** URLs de foto nunca mudam; ao trocar uma foto, gera-se uma chave nova (evita cache velho).
 
@@ -85,7 +85,20 @@ flowchart LR
 ### ADR-06 — Fotos: processamento no upload
 - A API recebe a imagem, valida tipo (JPEG/PNG/WebP) e tamanho, **gera variantes** (miniatura, média, grande, em WebP) com `sharp` e grava no S3.
 - Motivo: foto de celular tem vários MB; entregar o original no 4G de uma cidade do interior estraga a experiência (RNF-02).
-- Chaves no S3: `photos/{albumId}/{photoId}/{variant}.webp`.
+- **Um bucket (`jocevs`), pastas por dono do arquivo.** Cada foto vira três arquivos (`thumb` 320 px, `medium` 960 px, `large` 1600 px, todos WebP) e é gravada assim:
+
+  | Tipo | Pasta e nome (sem a variante) |
+  |------|-------------------------------|
+  | Foto do time | `teams/{teamId}/team-{chave}` |
+  | Foto de partida (mural) | `matches/{matchId}/photos/photo-{chave}` |
+  | Foto do melhor jogador | `matches/{matchId}/best-player/best-player-{chave}` |
+  | Galeria do sub-evento por dia | `sub-events/{subEventId}/{AAAA-MM-DD}/photo-{chave}` |
+  | História | `history/{itemId}/photo-{chave}` |
+
+- **Nome padronizado:** `{nome-padrão}-{chave}-{variante}.webp`. O nome padrão depende do tipo (`team`, `photo`, `best-player`) e a `{chave}` são 24 caracteres hexadecimais aleatórios (12 bytes). O nome que o arquivo tinha no celular nunca é usado nem gravado.
+- O banco guarda só a **chave-base** (a coluna `photo_key`/`storage_key`, sem a variante nem a extensão). A URL pública de cada tamanho é `https://cdn.jocevs.com.br/{chave-base}-{thumb|medium|large}.webp`.
+- Cada arquivo sobe com `Cache-Control: public, max-age=31536000, immutable`: como a chave muda a cada troca, o cache nunca fica velho.
+- A API lê JPG, PNG ou WebP, corrige a rotação do celular e **descarta os metadados** (EXIF, localização).
 - **Não guardar o original**, só as variantes (decisão para economizar disco e custo; avisar a equipe para manter as fotos originais no celular/Drive).
 - Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos de um álbum em fila.
 - **Volume estimado:** ~2.500 fotos × 3 variantes (miniatura ~20 KB, média ~150 KB, grande ~500 KB ≈ 0,7 MB por foto) ≈ **1,75 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.

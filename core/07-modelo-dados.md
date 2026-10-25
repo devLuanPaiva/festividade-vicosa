@@ -105,10 +105,10 @@ Restrições da `match`:
 | `album` | `id`, `title`, `date` (nulo), `sub_event_id` (nulo), `match_id` (nulo), `history_item_id` (nulo) | **`CHECK` de exatamente um dono** entre os três; `UNIQUE(match_id)`, `UNIQUE(history_item_id)`, `UNIQUE(sub_event_id, date)` |
 | `photo` | `id`, `album_id` (nulo), `storage_key`, `caption`, `sort_order`, `width`, `height`, `size_bytes`, `uploaded_by_id`, `created_at` | `ON DELETE CASCADE` a partir do álbum; índice `(album_id, sort_order)` |
 
-- **`storage_key`** guarda o prefixo no S3 (`photos/{albumId}/{photoId}`); as URLs das variantes são montadas como `https://midia.dominio/{storage_key}/{thumb|medium|large}.webp` (ADR-06). Não se grava URL completa, para poder trocar o domínio.
+- **`storage_key`** guarda o prefixo no S3 (`matches/{matchId}/photos/photo-{chave}` (ou a pasta do tipo, ver ADR-06)); as URLs das variantes são montadas como `https://cdn.jocevs.com.br/{storage_key}-{thumb|medium|large}.webp` (ADR-06). Não se grava URL completa, para poder trocar o domínio.
 - **`album_id` nulo** = foto avulsa, usada só como foto de time ou de melhor jogador.
 - Ao excluir foto, a API apaga os 3 arquivos do S3; um álbum excluído em cascata exige o mesmo trabalho (a API lista as fotos antes de apagar).
-- Ao trocar a foto de um time, a API grava uma foto nova e apaga a antiga (a chave muda, então não há cache velho, ADR-01).
+- A foto do time não usa a tabela `photo`: a chave-base fica direto em `team.photo_key` (`teams/{teamId}/team-{chave}`). Ao trocar, a API grava os arquivos novos, atualiza o time e apaga os antigos (a chave muda, então não há cache velho, ADR-01). Valores antigos que são endereço completo (os da demonstração) são tratados como externos e nunca apagados.
 
 ### Usuários e permissões
 | Tabela | Colunas principais | Restrições |

@@ -121,8 +121,10 @@ A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festiv
 | POST | `/categories/:categoryId/teams` | `team:manage` | Cria: `name`, `city`, `slug?`, `abbreviation?` (2 a 10 caracteres), `photoKey?`, `groupId?`. Sem `slug`, ele é gerado do nome. 409 se o nome ou o slug já existem na categoria; 400 se o grupo é de outra categoria (RN-13) |
 | PATCH | `/teams/:id` | `team:manage` | Altera os campos informados (`groupId: null` tira o time do grupo; `abbreviation: null` e `photoKey: null` limpam o campo). O slug não muda sozinho quando o nome muda |
 | DELETE | `/teams/:id` | `team:manage` | Exclui o time. 204 |
+| PUT | `/teams/:id/photo` | `team:manage` | Troca a foto do time. `multipart/form-data` com o arquivo no campo `file` (JPG, PNG ou WebP, até 10 MB). A API gera os três tamanhos em WebP, grava no S3 em `teams/{teamId}/team-{chave}-{thumb, medium ou large}.webp`, atualiza `photoKey` e apaga os arquivos antigos. Devolve o time. Erros: 400 `FILE_REQUIRED`, `FILE_TYPE_INVALID` e `IMAGE_UNREADABLE` (campo `file`), 413 `PAYLOAD_TOO_LARGE`, 503 `STORAGE_NOT_CONFIGURED` e `STORAGE_UNAVAILABLE`. Limite de 20 envios por minuto |
+| DELETE | `/teams/:id/photo` | `team:manage` | Tira a foto do time (`photoKey` vira nulo) e apaga os arquivos do S3. Devolve o time |
 
-As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave do arquivo da foto (`photoKey`); o upload entra com o resource de fotos; o bloqueio de excluir time com partidas (RN-33) entra junto com o resource de partidas.
+As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave-base da foto (`photoKey`), e as URLs dos três tamanhos são `https://cdn.jocevs.com.br/{photoKey}-{thumb, medium ou large}.webp`. O bloqueio de excluir time com partidas (RN-33) já vale.
 
 ## Partidas e resultados (RF-04, RF-05, RF-23)
 | Método | Rota | Permissão | Descrição |
