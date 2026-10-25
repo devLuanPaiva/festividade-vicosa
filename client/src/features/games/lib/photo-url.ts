@@ -1,7 +1,20 @@
+import { getMediaPublicUrl } from '@/lib/config/server-env';
+
 const ABSOLUTE_URL_PATTERN = /^https?:\/\//;
 
-export function resolvePhotoUrl(photoKey: string | null): string | null {
-  return photoKey && ABSOLUTE_URL_PATTERN.test(photoKey) ? photoKey : null;
+export type PhotoVariant = 'thumb' | 'medium' | 'large';
+
+export function resolvePhotoUrl(
+  photoKey: string | null,
+  variant: PhotoVariant = 'medium',
+): string | null {
+  if (!photoKey) {
+    return null;
+  }
+  if (ABSOLUTE_URL_PATTERN.test(photoKey)) {
+    return photoKey;
+  }
+  return `${getMediaPublicUrl()}/${photoKey}-${variant}.webp`;
 }
 
 export function isVectorPhoto(url: string): boolean {

@@ -1,5 +1,6 @@
 const DEFAULT_API_BASE_URL = 'http://localhost:3000';
 const DEFAULT_SITE_URL = 'http://localhost:3001';
+const DEFAULT_MEDIA_PUBLIC_URL = 'https://cdn.jocevs.com.br';
 const GOOGLE_CALLBACK_PATH = '/admin/login/google/callback';
 
 export interface GoogleOAuthConfig {
@@ -18,6 +19,10 @@ export function getApiBaseUrl(): string {
 
 export function getSiteUrl(): string {
   return withoutTrailingSlash(process.env.SITE_URL ?? DEFAULT_SITE_URL);
+}
+
+export function getMediaPublicUrl(): string {
+  return withoutTrailingSlash(process.env.MEDIA_PUBLIC_URL || DEFAULT_MEDIA_PUBLIC_URL);
 }
 
 export function getGoogleOAuthConfig(): GoogleOAuthConfig | null {
