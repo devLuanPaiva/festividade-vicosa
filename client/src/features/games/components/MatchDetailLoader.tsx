@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
+import { getMatchImages } from '@/features/gallery/services/get-gallery';
 import { getMatchDetail } from '../services/get-match-detail';
 import { MatchDetailView } from './MatchDetailView';
 
@@ -9,9 +10,9 @@ interface MatchDetailLoaderProps {
 
 export async function MatchDetailLoader({ params }: MatchDetailLoaderProps): Promise<ReactElement> {
   const { matchId } = await params;
-  const detail = await getMatchDetail(matchId);
+  const [detail, images] = await Promise.all([getMatchDetail(matchId), getMatchImages(matchId)]);
   if (!detail) {
     notFound();
   }
-  return <MatchDetailView detail={detail} />;
+  return <MatchDetailView detail={detail} images={images} />;
 }

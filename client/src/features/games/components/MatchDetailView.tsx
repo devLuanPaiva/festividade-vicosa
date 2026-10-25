@@ -3,6 +3,8 @@ import { Container } from '@/components/layout/Container';
 import { PageHero } from '@/components/layout/PageHero';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { WaveEdge } from '@/components/ui/WaveEdge';
+import { MatchPhotoWall } from '@/features/gallery/components/MatchPhotoWall';
+import type { GalleryImage } from '@/features/gallery/types';
 import { buildGamesHref, scopeOfStatus } from '../lib/game-filters';
 import { getMatchOutcome } from '../lib/match-outcome';
 import { categoryLabel, stageLabel } from '../lib/match-labels';
@@ -15,9 +17,10 @@ const UPCOMING_NOTE = 'Em breve';
 
 interface MatchDetailViewProps {
   detail: MatchDetail;
+  images: GalleryImage[];
 }
 
-export function MatchDetailView({ detail }: MatchDetailViewProps): ReactElement {
+export function MatchDetailView({ detail, images }: MatchDetailViewProps): ReactElement {
   const { match, teamA, teamB, category } = detail;
   const outcome = getMatchOutcome(match);
   const bestPlayerTeam = match.bestPlayer?.teamId === teamB.id ? teamB : teamA;
@@ -42,6 +45,7 @@ export function MatchDetailView({ detail }: MatchDetailViewProps): ReactElement 
           {match.bestPlayer ? (
             <BestPlayerCard player={match.bestPlayer} team={bestPlayerTeam} />
           ) : null}
+          <MatchPhotoWall images={images} />
           <div className="flex flex-col gap-4 sm:flex-row">
             <ButtonLink href={`/categorias/${category.id}`}>Classificação da categoria</ButtonLink>
             <ButtonLink
