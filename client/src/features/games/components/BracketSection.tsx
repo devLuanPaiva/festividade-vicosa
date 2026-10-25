@@ -26,7 +26,14 @@ export function BracketSection({ matches }: BracketSectionProps): ReactElement {
             O chaveamento será definido ao fim da fase de grupos.
           </p>
         ) : null}
-        {tree ? <BracketTree tree={tree} /> : null}
+        {tree ? (
+          <>
+            <p className="mt-6 text-sm text-white/70 md:hidden">
+              Deslize para os lados para ver a chave completa.
+            </p>
+            <BracketTree tree={tree} />
+          </>
+        ) : null}
         <BracketExtraMatches
           title={roundLabel('THIRD_PLACE')}
           matches={thirdPlace ? [thirdPlace] : []}

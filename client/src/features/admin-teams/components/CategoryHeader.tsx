@@ -13,7 +13,10 @@ export function CategoryHeader({ categoryId, title, metadata }: CategoryHeaderPr
   return (
     <header className="flex flex-col gap-3">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">
-        <Link href={ADMIN_CATEGORIES_PATH} className="font-semibold text-brand-700">
+        <Link
+          href={ADMIN_CATEGORIES_PATH}
+          className="inline-flex min-h-11 items-center font-semibold text-brand-700"
+        >
           Categorias
         </Link>{' '}
         <span aria-hidden="true">›</span> {title}

@@ -12,14 +12,20 @@ export function GalleryBreadcrumb({ subEvent, title }: GalleryBreadcrumbProps): 
   return (
     <header className="flex flex-col gap-2">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">
-        <Link href={ADMIN_GALLERY_PATH} className="font-semibold text-brand-700">
+        <Link
+          href={ADMIN_GALLERY_PATH}
+          className="inline-flex min-h-11 items-center font-semibold text-brand-700"
+        >
           Galeria
         </Link>
         {subEvent ? (
           <>
             {' '}
             <span aria-hidden="true">›</span>{' '}
-            <Link href={subEventGalleryPath(subEvent.id)} className="font-semibold text-brand-700">
+            <Link
+              href={subEventGalleryPath(subEvent.id)}
+              className="inline-flex min-h-11 items-center font-semibold text-brand-700"
+            >
               {subEvent.name}
             </Link>
           </>
