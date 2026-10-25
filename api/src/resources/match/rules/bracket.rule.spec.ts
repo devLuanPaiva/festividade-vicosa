@@ -19,11 +19,11 @@ function pairsOf(count: number): string[] {
 }
 
 describe('findBracketTeamsProblem', () => {
-  it.each([2, 16])('accepts %i distinct teams', (count) => {
+  it.each([2, 16, 32])('accepts %i distinct teams', (count) => {
     expect(findBracketTeamsProblem(teams(count))).toBeNull();
   });
 
-  it.each([0, 3, 17])('refuses %i teams', (count) => {
+  it.each([0, 3, 33])('refuses %i teams', (count) => {
     expect(findBracketTeamsProblem(teams(count))).toMatchObject({
       code: 'BRACKET_SIZE_INVALID',
       field: 'teamIds',
@@ -43,6 +43,7 @@ describe('firstRoundFor', () => {
     [4, MatchRound.SEMI_FINAL],
     [8, MatchRound.QUARTER_FINAL],
     [16, MatchRound.ROUND_OF_16],
+    [32, MatchRound.ROUND_OF_32],
   ])('starts %i teams at %s', (count, round) => {
     expect(firstRoundFor(count)).toBe(round);
   });
@@ -54,6 +55,27 @@ describe('pairFirstRound', () => {
     [4, ['1x4', '2x3']],
     [8, ['1x8', '4x5', '2x7', '3x6']],
     [16, ['1x16', '8x9', '4x13', '5x12', '2x15', '7x10', '3x14', '6x11']],
+    [
+      32,
+      [
+        '1x32',
+        '16x17',
+        '8x25',
+        '9x24',
+        '4x29',
+        '13x20',
+        '5x28',
+        '12x21',
+        '2x31',
+        '15x18',
+        '7x26',
+        '10x23',
+        '3x30',
+        '14x19',
+        '6x27',
+        '11x22',
+      ],
+    ],
   ])('pairs %i seeds so the best seeds meet only late', (count, expected) => {
     expect(pairsOf(count)).toEqual(expected);
   });
@@ -73,6 +95,13 @@ describe('winnerDestination', () => {
       position: 3,
       next: MatchRound.QUARTER_FINAL,
       nextPosition: 1,
+      slot: 'teamBId',
+    },
+    {
+      round: MatchRound.ROUND_OF_32,
+      position: 5,
+      next: MatchRound.ROUND_OF_16,
+      nextPosition: 2,
       slot: 'teamBId',
     },
     {
