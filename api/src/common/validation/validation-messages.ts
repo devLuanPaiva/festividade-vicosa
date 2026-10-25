@@ -44,6 +44,7 @@ export const VALIDATION_MESSAGES = {
     'Informe de 2 a 16 identificadores de times válidos, do melhor para o pior cabeça de chave.',
   score: 'O placar deve ser um número inteiro entre 0 e 999.',
   penalties: 'Os pênaltis devem ser um número inteiro entre 0 e 999.',
+  photoIds: 'Informe os identificadores das fotos do álbum, na nova ordem.',
   bestPlayerName: 'O nome do melhor jogador deve ter no máximo 120 caracteres.',
 } as const;
 

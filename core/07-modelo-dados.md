@@ -102,11 +102,12 @@ Restrições da `match`:
 ### Fotos
 | Tabela | Colunas principais | Restrições |
 |--------|-------------------|-----------|
-| `album` | `id`, `title`, `date` (nulo), `sub_event_id` (nulo), `match_id` (nulo), `history_item_id` (nulo) | **`CHECK` de exatamente um dono** entre os três; `UNIQUE(match_id)`, `UNIQUE(history_item_id)`, `UNIQUE(sub_event_id, date)` |
-| `photo` | `id`, `album_id` (nulo), `storage_key`, `caption`, `sort_order`, `width`, `height`, `size_bytes`, `uploaded_by_id`, `created_at` | `ON DELETE CASCADE` a partir do álbum; índice `(album_id, sort_order)` |
+| `album` | `id`, `sub_event_id` (nulo), `event_date` (nulo), `match_id` (nulo) | **`CHECK` de exatamente um dono**: sub-evento + dia, ou partida; `UNIQUE(sub_event_id, event_date)`, `UNIQUE(match_id)`. O álbum nasce no primeiro envio e não tem título (o nome vem do sub-evento e do dia). O álbum da história entra junto com o item da história |
+| `photo` | `id`, `album_id`, `storage_key` (único), `sort_order`, `uploaded_by_id`, `created_at` | `ON DELETE CASCADE` a partir do álbum; índice `(album_id, sort_order)`. Sem legenda nem dimensões por enquanto |
 
 - **`storage_key`** guarda o prefixo no S3 (`matches/{matchId}/photos/photo-{chave}` (ou a pasta do tipo, ver ADR-06)); as URLs das variantes são montadas como `https://cdn.jocevs.com.br/{storage_key}-{thumb|medium|large}.webp` (ADR-06). Não se grava URL completa, para poder trocar o domínio.
-- **`album_id` nulo** = foto avulsa, usada só como foto de time ou de melhor jogador.
+- Foto de time e de melhor jogador não usam a tabela `photo`: a chave-base fica direto em `team.photo_key` e `match.best_player_photo_key`.
+- A partida com álbum de fotos não pode ser excluída (409 `MATCH_HAS_PHOTOS`): exclua as fotos antes.
 - Ao excluir foto, a API apaga os 3 arquivos do S3; um álbum excluído em cascata exige o mesmo trabalho (a API lista as fotos antes de apagar).
 - A foto do time não usa a tabela `photo`: a chave-base fica direto em `team.photo_key` (`teams/{teamId}/team-{chave}`). Ao trocar, a API grava os arquivos novos, atualiza o time e apaga os antigos (a chave muda, então não há cache velho, ADR-01). Valores antigos que são endereço completo (os da demonstração) são tratados como externos e nunca apagados.
 

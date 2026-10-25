@@ -1,3 +1,4 @@
+import { QueryFailedError } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { MatchStatus } from '../enums/match.enums';
 import {
@@ -114,5 +115,19 @@ describe('MatchService.remove', () => {
 
     await expect(service.remove(MATCH_ID)).rejects.toBeInstanceOf(NotFoundException);
     expect(repository.remove).not.toHaveBeenCalled();
+  });
+
+  it('keeps a match that still has photos and tells to delete the photos first', async () => {
+    const { service, repository } = createFixture();
+    const foreignKeyViolation = new QueryFailedError(
+      'DELETE',
+      [],
+      Object.assign(new Error('violates foreign key'), { code: '23503' }),
+    );
+    repository.remove.mockRejectedValue(foreignKeyViolation);
+
+    await expect(service.remove(MATCH_ID)).rejects.toMatchObject({
+      response: { code: 'MATCH_HAS_PHOTOS', field: 'id' },
+    });
   });
 });
