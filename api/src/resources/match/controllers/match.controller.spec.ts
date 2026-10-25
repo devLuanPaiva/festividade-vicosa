@@ -1,6 +1,7 @@
 import { IS_PUBLIC_KEY, REQUIRED_PERMISSIONS_KEY } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
 import { MatchStage, MatchStatus } from '../enums/match.enums';
+import type { MatchBatchService } from '../services/match-batch.service';
 import type { MatchResultService } from '../services/match-result.service';
 import type { MatchService } from '../services/match.service';
 import { MatchController } from './match.controller';
@@ -43,6 +44,7 @@ describe('MatchController', () => {
     const controller = new MatchController(
       {} as unknown as MatchService,
       resultService as unknown as MatchResultService,
+      {} as unknown as MatchBatchService,
     );
 
     await controller.recordResult(ACTOR, MATCH_ID, { scoreA: 2, scoreB: 1 });

@@ -5,7 +5,8 @@ import { AppModule } from '../../app.module';
 import { CategoryService } from '../../resources/category/services/category.service';
 import { EditionService } from '../../resources/edition/services/edition.service';
 import { MatchGroupService } from '../../resources/match-group/services/match-group.service';
-import { MatchBracketGenerator } from '../../resources/match/services/match-bracket-generator.service';
+import { BracketSuggestionService } from '../../resources/match/services/bracket-suggestion.service';
+import { MatchBatchService } from '../../resources/match/services/match-batch.service';
 import { MatchResultService } from '../../resources/match/services/match-result.service';
 import { MatchService } from '../../resources/match/services/match.service';
 import { QualificationService } from '../../resources/qualification/services/qualification.service';
@@ -49,7 +50,8 @@ async function buildContext(app: INestApplicationContext, logger: Logger): Promi
       teams: get(TeamService),
       matches: get(MatchService),
       results: get(MatchResultService),
-      bracket: get(MatchBracketGenerator),
+      batch: get(MatchBatchService),
+      suggestions: get(BracketSuggestionService),
       qualification: get(QualificationService),
       standings: get(StandingService),
     },

@@ -41,7 +41,9 @@ export const VALIDATION_MESSAGES = {
   qualifiedTeamIds:
     'Informe os identificadores dos times classificados, do primeiro ao último colocado.',
   bracketTeamIds:
-    'Informe de 2 a 16 identificadores de times válidos, do melhor para o pior cabeça de chave.',
+    'Informe de 2 a 32 identificadores de times válidos, do melhor para o pior cabeça de chave.',
+  bracketPosition: 'A posição no chaveamento deve ser um número inteiro de 0 a 15.',
+  matchBatch: 'Informe de 1 a 64 partidas para criar.',
   score: 'O placar deve ser um número inteiro entre 0 e 999.',
   penalties: 'Os pênaltis devem ser um número inteiro entre 0 e 999.',
   photoIds: 'Informe os identificadores das fotos do álbum, na nova ordem.',

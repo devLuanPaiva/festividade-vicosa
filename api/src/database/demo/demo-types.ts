@@ -1,5 +1,6 @@
 import type { MatchGroupService } from '../../resources/match-group/services/match-group.service';
-import type { MatchBracketGenerator } from '../../resources/match/services/match-bracket-generator.service';
+import type { BracketSuggestionService } from '../../resources/match/services/bracket-suggestion.service';
+import type { MatchBatchService } from '../../resources/match/services/match-batch.service';
 import type { MatchResultService } from '../../resources/match/services/match-result.service';
 import type { MatchService } from '../../resources/match/services/match.service';
 import type { QualificationService } from '../../resources/qualification/services/qualification.service';
@@ -17,7 +18,8 @@ export interface DemoServices {
   teams: Pick<TeamService, 'create' | 'listByCategory' | 'remove'>;
   matches: Pick<MatchService, 'create' | 'update' | 'listByCategory' | 'remove'>;
   results: Pick<MatchResultService, 'record'>;
-  bracket: Pick<MatchBracketGenerator, 'generate'>;
+  batch: Pick<MatchBatchService, 'createMany'>;
+  suggestions: Pick<BracketSuggestionService, 'suggestFirstRound' | 'suggestNextMatches'>;
   qualification: Pick<QualificationService, 'confirm'>;
   standings: Pick<StandingService, 'getByGroup' | 'listSeeding'>;
 }
