@@ -1,44 +1,55 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, type ReactElement } from 'react';
+import { usePhotoSelection } from '../hooks/use-photo-selection';
 import type { GalleryImage } from '../types';
+import { GalleryThumb } from './GalleryThumb';
+import { GalleryToolbar } from './GalleryToolbar';
 import { PhotoLightbox } from './PhotoLightbox';
-
-const THUMBNAIL_SIZE = 320;
 
 interface PhotoGalleryProps {
   images: GalleryImage[];
+  fileBase: string;
 }
 
-export function PhotoGallery({ images }: PhotoGalleryProps): ReactElement {
+export function PhotoGallery({ images, fileBase }: PhotoGalleryProps): ReactElement {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const selection = usePhotoSelection(images, fileBase);
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <GalleryToolbar
+        isSelecting={selection.isSelecting}
+        selectedCount={selection.selectedIds.size}
+        totalCount={images.length}
+        isDownloading={selection.isDownloading}
+        onStartSelecting={selection.start}
+        onCancel={selection.cancel}
+        onSelectAll={selection.selectAll}
+        onDownload={selection.downloadSelected}
+      />
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {images.map((image, index) => (
           <li key={image.id}>
-            <button
-              type="button"
-              onClick={() => setOpenIndex(index)}
-              aria-label={`Abrir a foto ${index + 1} de ${images.length}`}
-              className="block w-full overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(7,59,134,0.12)] transition-transform duration-300 hover:-translate-y-1"
-            >
-              <Image
-                src={image.thumbUrl}
-                alt=""
-                width={THUMBNAIL_SIZE}
-                height={THUMBNAIL_SIZE}
-                unoptimized
-                loading="lazy"
-                className="aspect-square w-full object-cover"
-              />
-            </button>
+            <GalleryThumb
+              image={image}
+              position={index + 1}
+              total={images.length}
+              isSelecting={selection.isSelecting}
+              isSelected={selection.selectedIds.has(image.id)}
+              onActivate={() =>
+                selection.isSelecting ? selection.toggle(image.id) : setOpenIndex(index)
+              }
+            />
           </li>
         ))}
       </ul>
-      <PhotoLightbox images={images} openIndex={openIndex} onChange={setOpenIndex} />
-    </>
+      <PhotoLightbox
+        images={images}
+        fileBase={fileBase}
+        openIndex={openIndex}
+        onChange={setOpenIndex}
+      />
+    </div>
   );
 }

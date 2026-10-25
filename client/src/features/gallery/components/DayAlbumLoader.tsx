@@ -36,7 +36,7 @@ export async function DayAlbumLoader({ params }: DayAlbumLoaderProps): Promise<R
             description="As fotos deste dia ainda não foram publicadas. Volte em breve!"
           />
         ) : (
-          <PhotoGallery images={images} />
+          <PhotoGallery images={images} fileBase={`festividade-vicosa-${date}`} />
         )}
         <div>
           <ButtonLink href={subEventAlbumsPath(subEvent.id)} variant="brand">
