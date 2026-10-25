@@ -13,7 +13,7 @@
 | `API_DOMAIN` | `.env` na raiz | Domínio público da API (Caddy emite o certificado); produção: `api.jocevs.com.br` |
 | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | `.env` na raiz e `api/.env` | Credenciais do usuário IAM da API e a região do bucket. **Só a API usa.** Em branco, a API sobe normalmente e o envio de imagem responde `STORAGE_NOT_CONFIGURED` |
 | `S3_BUCKET` | `.env` na raiz e `api/.env` | Nome do bucket (padrão `jocevs`) |
-| `MEDIA_PUBLIC_URL` | `.env` na raiz e `api/.env` | Endereço público das imagens, sem barra no final (padrão `https://cdn.jocevs.com.br`) |
+| `MEDIA_PUBLIC_URL` | `.env` na raiz, `api/.env` e variáveis do painel na Vercel | Endereço público das imagens, sem barra no final (padrão `https://cdn.jocevs.com.br`) |
 | `S3_ENDPOINT` | `.env` na raiz e `api/.env` | Opcional: endereço de um servidor compatível com S3 para testes locais; vazio na AWS |
 | `DATABASE_HOST`, `DATABASE_PORT`, `PORT`, `NODE_ENV` | `api/.env` (fora do Docker) | Rodar a API direto com `npm run start:dev` |
 
