@@ -1,28 +1,45 @@
 'use client';
 
 import type { ReactElement } from 'react';
-import { FormFooter } from '@/components/ui/FormFooter';
+import type { SelectOption } from '@/components/ui/SelectField';
+import { SubmitButton } from '@/components/ui/SubmitButton';
+import { SuggestionReviewForm } from '@/features/admin-suggestions/components/SuggestionReviewForm';
 import { useBracketForm } from '../hooks/use-bracket-form';
 import { BRACKET_ERROR_FIELD, type SeededTeam } from '../types';
-import { BracketScheduleFields } from './BracketScheduleFields';
 import { SeedRow } from './SeedRow';
 
 interface BracketFormProps {
   categoryId: string;
   seeding: SeededTeam[];
-  cancelHref: string;
+  teamOptions: SelectOption[];
+  returnPath: string;
 }
 
-export function BracketForm({ categoryId, seeding, cancelHref }: BracketFormProps): ReactElement {
+export function BracketForm({
+  categoryId,
+  seeding,
+  teamOptions,
+  returnPath,
+}: BracketFormProps): ReactElement {
   const form = useBracketForm(categoryId, seeding);
   const seedsError = form.errorFor(BRACKET_ERROR_FIELD);
 
+  if (form.state.rows) {
+    return (
+      <SuggestionReviewForm
+        target={{ categoryId, returnPath }}
+        rows={form.state.rows}
+        teamOptions={teamOptions}
+        submitLabel="Criar chaveamento"
+      />
+    );
+  }
   return (
     <form action={form.formAction} className="flex flex-col gap-5">
       <p className="text-sm text-admin-muted">
         Informe a ordem dos cabeças de chave (1 é o melhor) e deixe em branco quem fica de fora. O
-        chaveamento aceita 2, 4, 8 ou 16 times: o 1º enfrenta o último, o 2º o penúltimo, e assim
-        por diante.
+        chaveamento aceita 2, 4, 8, 16 ou 32 times: o 1º enfrenta o último, o 2º o penúltimo, e
+        assim por diante. Em seguida você revisa a sugestão antes de criar.
       </p>
       <ul className="divide-y divide-admin-line overflow-hidden rounded-2xl border border-admin-line bg-admin-surface">
         {seeding.map((team) => (
@@ -39,13 +56,14 @@ export function BracketForm({ categoryId, seeding, cancelHref }: BracketFormProp
           {seedsError}
         </p>
       ) : null}
-      <BracketScheduleFields form={form} />
       {form.otherError ? (
         <p role="alert" className="rounded-xl bg-danger/10 p-4 text-sm font-semibold text-danger">
           {form.otherError}
         </p>
       ) : null}
-      <FormFooter cancelHref={cancelHref} submitLabel="Gerar chaveamento" />
+      <SubmitButton pendingLabel="Gerando sugestão…" className="min-h-12 self-start px-6">
+        Ver sugestão de chaveamento
+      </SubmitButton>
     </form>
   );
 }
