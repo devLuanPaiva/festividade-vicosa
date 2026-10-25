@@ -18,6 +18,7 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-11 | Compartilhar partida/foto por link (WhatsApp) | P2 |
 | RF-12 | Favoritar time e ver "meus times" (sem login, salvo no aparelho) | P3 |
 | RF-13 | Interações com o público (a definir: enquete, palpite…). Envio de fotos pelo público está fora de escopo. | P3 |
+| RF-14 | Baixar as fotos da galeria e do mural da partida, uma a uma (no visualizador) ou várias de uma vez (selecionar e baixar); o arquivo baixado leva um nome legível | P1 |
 
 ## Funcionais — painel administrativo
 | ID | Requisito | Prio |
