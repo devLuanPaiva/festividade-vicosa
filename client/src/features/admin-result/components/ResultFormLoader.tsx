@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import type { ReactElement } from 'react';
+import { matchPhotosPath } from '@/features/admin-gallery/lib/admin-gallery-paths';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { formatMatchTime } from '@/features/games/lib/match-dates';
 import { categoryLabel, stageLabel } from '@/features/games/lib/match-labels';
@@ -30,6 +32,14 @@ export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promi
         <h1 className="text-2xl font-bold">
           {teamA.name} x {teamB.name}
         </h1>
+        {hasPermission(user, 'photo:upload') ? (
+          <Link
+            href={matchPhotosPath(match.id)}
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-700"
+          >
+            Fotos da partida ›
+          </Link>
+        ) : null}
       </header>
       <ResultForm detail={detail} />
     </>
