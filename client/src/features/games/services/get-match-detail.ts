@@ -1,9 +1,5 @@
-import { cacheLife, cacheTag } from 'next/cache';
-import { ApiError } from '@/lib/api/api-response';
 import { fetchApiResult } from '@/lib/api/server-fetch';
 import type { Category, Match, Team } from '../types';
-
-const UNAVAILABLE_CACHE_LIFE = { stale: 5, revalidate: 5, expire: 30 };
 
 export interface MatchDetail {
   match: Match;
@@ -33,16 +29,9 @@ export async function fetchMatchDetail(matchId: string): Promise<MatchDetail> {
 }
 
 export async function getMatchDetail(matchId: string): Promise<MatchDetail | null> {
-  'use cache';
-  cacheTag('matches', `match-${matchId}`);
-
   try {
-    cacheLife('seconds');
     return await fetchMatchDetail(matchId);
-  } catch (error) {
-    if (!(error instanceof ApiError && error.statusCode < 500)) {
-      cacheLife(UNAVAILABLE_CACHE_LIFE);
-    }
+  } catch {
     return null;
   }
 }
