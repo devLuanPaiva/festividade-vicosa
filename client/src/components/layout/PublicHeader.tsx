@@ -33,7 +33,11 @@ export function PublicHeader(): ReactElement {
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${surfaceClassName}`}
     >
       <Container className="flex h-16 items-center justify-between">
-        <Link href="/" aria-label="Festividade de Viçosa, página inicial">
+        <Link
+          href="/"
+          aria-label="Festividade de Viçosa, página inicial"
+          className="inline-flex min-h-11 items-center"
+        >
           <Image src={prefectureLogo} alt="Prefeitura de Viçosa" className="h-8 w-auto" priority />
         </Link>
         <nav aria-label="Principal" className="hidden md:block">

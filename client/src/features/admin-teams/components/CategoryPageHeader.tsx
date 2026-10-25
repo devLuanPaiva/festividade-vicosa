@@ -17,11 +17,17 @@ export function CategoryPageHeader({
   return (
     <header className="flex flex-col gap-2">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">
-        <Link href={ADMIN_CATEGORIES_PATH} className="font-semibold text-brand-700">
+        <Link
+          href={ADMIN_CATEGORIES_PATH}
+          className="inline-flex min-h-11 items-center font-semibold text-brand-700"
+        >
           Categorias
         </Link>{' '}
         <span aria-hidden="true">›</span>{' '}
-        <Link href={categoryPath(categoryId)} className="font-semibold text-brand-700">
+        <Link
+          href={categoryPath(categoryId)}
+          className="inline-flex min-h-11 items-center font-semibold text-brand-700"
+        >
           {categoryTitle}
         </Link>
       </nav>

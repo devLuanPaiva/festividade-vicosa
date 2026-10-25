@@ -55,7 +55,7 @@ export function SuggestionScheduleFields({
   const time = rowFieldName(index, 'time');
   const location = rowFieldName(index, 'location');
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
       <TextField
         name={date}
         type="date"
@@ -74,15 +74,17 @@ export function SuggestionScheduleFields({
         isOptional
         onInput={touch(time)}
       />
-      <TextField
-        name={location}
-        label="Local"
-        defaultValue={row.location}
-        errorMessage={errorFor(location)}
-        maxLength={MAX_LOCATION_LENGTH}
-        isOptional
-        onInput={touch(location)}
-      />
+      <div className="col-span-2 sm:col-span-1">
+        <TextField
+          name={location}
+          label="Local"
+          defaultValue={row.location}
+          errorMessage={errorFor(location)}
+          maxLength={MAX_LOCATION_LENGTH}
+          isOptional
+          onInput={touch(location)}
+        />
+      </div>
     </div>
   );
 }

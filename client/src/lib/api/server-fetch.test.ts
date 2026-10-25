@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from './api-response';
-import { fetchApiPage, fetchApiResult, sendApiCommand, sendApiRequest } from './server-fetch';
+import {
+  fetchApiPage,
+  fetchApiResult,
+  sendApiCommand,
+  sendApiPageRequest,
+  sendApiRequest,
+} from './server-fetch';
 
 function stubFetch(status: number, body: unknown): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn().mockResolvedValue({
@@ -38,6 +44,18 @@ describe('server fetch', () => {
     stubFetch(200, { status: 'success', results: [{ id: 'a' }, { id: 'b' }] });
 
     await expect(fetchApiPage('/editions')).resolves.toHaveLength(2);
+  });
+
+  it('unwraps the results of a list answered to a POST, which the api sends as a page', async () => {
+    const fetchMock = stubFetch(201, { status: 'success', results: [{ round: 'FINAL' }] });
+
+    await expect(
+      sendApiPageRequest('/categories/c/bracket/suggestion', {
+        method: 'POST',
+        body: { teamIds: [] },
+      }),
+    ).resolves.toEqual([{ round: 'FINAL' }]);
+    expect(sentRequest(fetchMock).method).toBe('POST');
   });
 
   it('builds the url from the configured base url without a trailing slash', async () => {
