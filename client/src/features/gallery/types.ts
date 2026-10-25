@@ -13,6 +13,7 @@ export interface GalleryDay {
 
 export interface GalleryImage {
   id: string;
+  storageKey: string;
   thumbUrl: string;
   largeUrl: string;
 }

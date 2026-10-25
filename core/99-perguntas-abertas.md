@@ -20,7 +20,7 @@ Marque `[x]` quando resolvida e mova a decisão para o doc correspondente.
 - [x] Infra → S3 + CloudFront + Route 53; conexões partem sempre da API (ADR-01, ADR-02).
 - [x] Hospedagem → Next.js na Vercel; API + Postgres + Caddy via docker-compose numa EC2 (ADR-03).
 - [x] Banco → PostgreSQL em container, TypeORM com migrations, backup diário para o S3 (ADR-04).
-- [x] Volume de fotos → ~20 por partida, ~180 partidas, ~2.500 no total (~2 GB em variantes WebP).
+- [x] Volume de fotos → ~20 por partida, ~180 partidas, ~2.500 no total (~1 GB em arquivos WebP).
 - [x] "claude front" = CloudFront e "router 53" = Route 53.
 - [x] Evento roda ~1 mês, com domínio próprio.
 

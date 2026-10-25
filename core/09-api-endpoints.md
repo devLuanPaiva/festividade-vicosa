@@ -121,10 +121,10 @@ A edição **2026** e os 7 sub-eventos do calendário (handebol 4–6/12, festiv
 | POST | `/categories/:categoryId/teams` | `team:manage` | Cria: `name`, `city`, `slug?`, `abbreviation?` (2 a 10 caracteres), `photoKey?`, `groupId?`. Sem `slug`, ele é gerado do nome. 409 se o nome ou o slug já existem na categoria; 400 se o grupo é de outra categoria (RN-13) |
 | PATCH | `/teams/:id` | `team:manage` | Altera os campos informados (`groupId: null` tira o time do grupo; `abbreviation: null` e `photoKey: null` limpam o campo). O slug não muda sozinho quando o nome muda |
 | DELETE | `/teams/:id` | `team:manage` | Exclui o time. 204 |
-| PUT | `/teams/:id/photo` | `team:manage` | Troca a foto do time. `multipart/form-data` com o arquivo no campo `file` (JPG, PNG ou WebP, até 10 MB). A API gera os três tamanhos em WebP, grava no S3 em `teams/{categoria}/{time}/team-{chave}-{thumb, medium ou large}.webp`, atualiza `photoKey` e apaga os arquivos antigos. Devolve o time. Erros: 400 `FILE_REQUIRED`, `FILE_TYPE_INVALID` e `IMAGE_UNREADABLE` (campo `file`), 413 `PAYLOAD_TOO_LARGE`, 503 `STORAGE_NOT_CONFIGURED` e `STORAGE_UNAVAILABLE`. Limite de 20 envios por minuto |
+| PUT | `/teams/:id/photo` | `team:manage` | Troca a foto do time. `multipart/form-data` com o arquivo no campo `file` (JPG, PNG ou WebP, até 10 MB). A API converte para um único WebP de até 1600 px, grava no S3 em `teams/{categoria}/{time}/team-{chave}.webp`, atualiza `photoKey` e apaga o arquivo antigo. Devolve o time. Erros: 400 `FILE_REQUIRED`, `FILE_TYPE_INVALID` e `IMAGE_UNREADABLE` (campo `file`), 413 `PAYLOAD_TOO_LARGE`, 503 `STORAGE_NOT_CONFIGURED` e `STORAGE_UNAVAILABLE`. Limite de 20 envios por minuto |
 | DELETE | `/teams/:id/photo` | `team:manage` | Tira a foto do time (`photoKey` vira nulo) e apaga os arquivos do S3. Devolve o time |
 
-As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave-base da foto (`photoKey`), e as URLs dos três tamanhos são `https://cdn.jocevs.com.br/{photoKey}-{thumb, medium ou large}.webp`. O bloqueio de excluir time com partidas (RN-33) já vale.
+As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do seed da migration. O time guarda só a chave do arquivo da foto (`photoKey`), e a URL é `https://cdn.jocevs.com.br/{photoKey}`. O bloqueio de excluir time com partidas (RN-33) já vale.
 
 ## Partidas e resultados (RF-04, RF-05, RF-23)
 | Método | Rota | Permissão | Descrição |
@@ -168,9 +168,9 @@ A classificação é **calculada na hora** a partir das partidas `FINALIZED` da 
 | GET | `/matches/:matchId/photos` | pública | Mural de fotos da partida |
 | POST | `/matches/:matchId/photos` | `photo:upload` | Envia uma foto para o mural da partida |
 | PUT | `/photos/order` | `photo:delete` | Reordena um álbum: `{ photoIds }` com **todas** as fotos do álbum, na nova ordem (400 `PHOTO_ORDER_INVALID` se falta, repete ou sobra alguma). Devolve as fotos na nova ordem |
-| DELETE | `/photos/:id` | `photo:delete` | Exclui a foto e apaga os 3 arquivos do S3. 204 |
+| DELETE | `/photos/:id` | `photo:delete` | Exclui a foto e apaga o arquivo do S3. 204 |
 
-Cada foto vem como `{ id, albumId, photoKey, sortOrder, createdAt }`; a URL de cada tamanho é `https://cdn.jocevs.com.br/{photoKey}-{thumb, medium ou large}.webp`. Um `:date` inválido devolve 400 `INVALID_DATE`. Excluir uma partida que tem fotos devolve 409 `MATCH_HAS_PHOTOS`.
+Cada foto vem como `{ id, albumId, photoKey, sortOrder, createdAt }`; a URL é `https://cdn.jocevs.com.br/{photoKey}`. Um `:date` inválido devolve 400 `INVALID_DATE`. Excluir uma partida que tem fotos devolve 409 `MATCH_HAS_PHOTOS`.
 
 ## Indicadores (painel)
 | Método | Rota | Permissão | Descrição |

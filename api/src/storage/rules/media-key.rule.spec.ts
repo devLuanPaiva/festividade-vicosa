@@ -1,46 +1,40 @@
-import {
-  allVariantKeys,
-  buildMediaBaseKey,
-  isManagedMediaKey,
-  MediaFolder,
-  variantKey,
-} from './media-key.rule';
+import { buildMediaKey, isManagedMediaKey, MediaFolder, objectKeysOf } from './media-key.rule';
 
 const KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2';
 
-describe('buildMediaBaseKey', () => {
+describe('buildMediaKey', () => {
   it.each([
     {
       folder: MediaFolder.TEAM_PHOTO,
       segments: ['futsal-sub-15-masculino', 'centro'],
-      expected: `teams/futsal-sub-15-masculino/centro/team-${KEY}`,
+      expected: `teams/futsal-sub-15-masculino/centro/team-${KEY}.webp`,
     },
     {
       folder: MediaFolder.MATCH_PHOTO,
       segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
-      expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/photos/photo-${KEY}`,
+      expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/photos/photo-${KEY}.webp`,
     },
     {
       folder: MediaFolder.BEST_PLAYER,
       segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
-      expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/best-player/best-player-${KEY}`,
+      expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/best-player/best-player-${KEY}.webp`,
     },
     {
       folder: MediaFolder.EVENT_PHOTO,
-      segments: ['jocev-futsal', '2026-12-13'],
-      expected: `sub-events/jocev-futsal/2026-12-13/photo-${KEY}`,
+      segments: ['jocev-handball', '2026-12-04'],
+      expected: `sub-events/jocev-handball/2026-12-04/photo-${KEY}.webp`,
     },
     {
       folder: MediaFolder.HISTORY_PHOTO,
       segments: ['2026', 'primeira-festividade'],
-      expected: `history/2026/primeira-festividade/photo-${KEY}`,
+      expected: `history/2026/primeira-festividade/photo-${KEY}.webp`,
     },
-  ])('puts $folder in readable folders with the standard name and the random key', (input) => {
-    expect(buildMediaBaseKey(input, KEY)).toBe(input.expected);
+  ])('names the one file of $folder after its folders, the standard name and the key', (input) => {
+    expect(buildMediaKey(input, KEY)).toBe(input.expected);
   });
 
   it('never carries the name the file had on the phone', () => {
-    const key = buildMediaBaseKey({ folder: MediaFolder.EVENT_PHOTO, segments: ['x', 'y'] }, KEY);
+    const key = buildMediaKey({ folder: MediaFolder.EVENT_PHOTO, segments: ['x', 'y'] }, KEY);
 
     expect(key).not.toMatch(/IMG|\.jpe?g|\.png/i);
   });
@@ -48,17 +42,20 @@ describe('buildMediaBaseKey', () => {
   it.each([[[]], [['../etc']], [['Centro']], [['centro/..']], [['a b']], [['']]])(
     'refuses the folders %j',
     (segments) => {
-      expect(() => buildMediaBaseKey({ folder: MediaFolder.TEAM_PHOTO, segments }, KEY)).toThrow(
+      expect(() => buildMediaKey({ folder: MediaFolder.TEAM_PHOTO, segments }, KEY)).toThrow(
         'lowercase',
       );
     },
   );
 });
 
-describe('variants', () => {
-  it('names each size after the same base key, always as webp', () => {
-    expect(variantKey('teams/x/team-k', 'thumb')).toBe('teams/x/team-k-thumb.webp');
-    expect(allVariantKeys('teams/x/team-k')).toEqual([
+describe('objectKeysOf', () => {
+  it('is the file itself for a photo saved as one file', () => {
+    expect(objectKeysOf('teams/x/team-k.webp')).toEqual(['teams/x/team-k.webp']);
+  });
+
+  it('lists the three sizes of a photo saved before the single file', () => {
+    expect(objectKeysOf('teams/x/team-k')).toEqual([
       'teams/x/team-k-thumb.webp',
       'teams/x/team-k-medium.webp',
       'teams/x/team-k-large.webp',
@@ -68,7 +65,7 @@ describe('variants', () => {
 
 describe('isManagedMediaKey', () => {
   it('tells keys written by the API from the address of an external image', () => {
-    expect(isManagedMediaKey('teams/centro/team-k')).toBe(true);
+    expect(isManagedMediaKey('teams/centro/team-k.webp')).toBe(true);
     expect(isManagedMediaKey('https://commons.wikimedia.org/photo.jpg')).toBe(false);
     expect(isManagedMediaKey('teams/../secrets')).toBe(false);
   });

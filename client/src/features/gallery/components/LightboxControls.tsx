@@ -1,15 +1,21 @@
 import type { ReactElement } from 'react';
+import { Icon } from '@/components/ui/Icon';
 
 const ROUND_BUTTON_CLASS =
   'absolute inline-flex size-12 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70';
 const SIDE_BUTTON_CLASS = `${ROUND_BUTTON_CLASS} top-1/2 -translate-y-1/2 text-3xl`;
 
 interface LightboxControlsProps {
+  downloadUrl: string;
   onStep: (offset: number) => void;
   onClose: () => void;
 }
 
-export function LightboxControls({ onStep, onClose }: LightboxControlsProps): ReactElement {
+export function LightboxControls({
+  downloadUrl,
+  onStep,
+  onClose,
+}: LightboxControlsProps): ReactElement {
   return (
     <>
       <button
@@ -28,6 +34,14 @@ export function LightboxControls({ onStep, onClose }: LightboxControlsProps): Re
       >
         ›
       </button>
+      <a
+        href={downloadUrl}
+        download
+        aria-label="Baixar esta foto"
+        className={`${ROUND_BUTTON_CLASS} right-16 top-3 text-xl`}
+      >
+        <Icon name="download" className="size-6" />
+      </a>
       <button
         type="button"
         aria-label="Fechar"

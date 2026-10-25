@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import type { KeyboardEvent, MouseEvent, ReactElement } from 'react';
 import { useDialogVisibility } from '../hooks/use-dialog-visibility';
+import { downloadHref, photoFileName } from '../lib/photo-download';
 import { stepIndex } from '../lib/step-index';
 import type { GalleryImage } from '../types';
 import { LightboxControls } from './LightboxControls';
@@ -11,11 +12,17 @@ const ARROW_OFFSETS: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1 };
 
 interface PhotoLightboxProps {
   images: GalleryImage[];
+  fileBase: string;
   openIndex: number | null;
   onChange: (index: number | null) => void;
 }
 
-export function PhotoLightbox({ images, openIndex, onChange }: PhotoLightboxProps): ReactElement {
+export function PhotoLightbox({
+  images,
+  fileBase,
+  openIndex,
+  onChange,
+}: PhotoLightboxProps): ReactElement {
   const image = openIndex === null ? undefined : images[openIndex];
   const dialogRef = useDialogVisibility(image !== undefined);
 
@@ -52,7 +59,11 @@ export function PhotoLightbox({ images, openIndex, onChange }: PhotoLightboxProp
             unoptimized
             className="max-h-full w-auto max-w-full object-contain"
           />
-          <LightboxControls onStep={step} onClose={() => onChange(null)} />
+          <LightboxControls
+            downloadUrl={downloadHref(image.storageKey, photoFileName(fileBase, openIndex ?? 0))}
+            onStep={step}
+            onClose={() => onChange(null)}
+          />
         </div>
       ) : null}
     </dialog>

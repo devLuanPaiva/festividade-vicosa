@@ -85,26 +85,26 @@ flowchart LR
 - Classificação calculada pela API na hora da requisição e cacheada. Não é gravada (RN-19).
 
 ### ADR-06 — Fotos: processamento no upload
-- A API recebe a imagem, valida tipo (JPEG/PNG/WebP) e tamanho, **gera variantes** (miniatura, média, grande, em WebP) com `sharp` e grava no S3.
+- A API recebe a imagem, valida tipo (JPEG/PNG/WebP) e tamanho, corrige a rotação, remove os metadados, converte para **um único arquivo WebP** de até 1600 px de largura (qualidade 78) com `sharp` e grava no S3.
 - Motivo: foto de celular tem vários MB; entregar o original no 4G de uma cidade do interior estraga a experiência (RNF-02).
-- **Um bucket (`jocevs`), pastas por dono do arquivo.** Cada foto vira três arquivos (`thumb` 320 px, `medium` 960 px, `large` 1600 px, todos WebP) e é gravada assim:
+- **Um bucket (`jocevs`), pastas legíveis por dono do arquivo.** Cada foto vira **um arquivo WebP** e é gravada assim:
 
   | Tipo | Pasta e nome (sem a variante) |
   |------|-------------------------------|
-  | Foto do time | `teams/{categoria}/{time}/team-{chave}` |
-  | Foto de partida (mural) | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/photos/photo-{chave}` |
-  | Foto do melhor jogador | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/best-player/best-player-{chave}` |
-  | Galeria do sub-evento por dia | `sub-events/{sub-evento}/{AAAA-MM-DD}/photo-{chave}` |
-  | História | `history/{ano}/{item}/photo-{chave}` |
+  | Foto do time | `teams/{categoria}/{time}/team-{chave}.webp` |
+  | Foto de partida (mural) | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/photos/photo-{chave}.webp` |
+  | Foto do melhor jogador | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/best-player/best-player-{chave}.webp` |
+  | Galeria do sub-evento por dia | `sub-events/{sub-evento}/{AAAA-MM-DD}/photo-{chave}.webp` |
+  | História | `history/{ano}/{item}/photo-{chave}.webp` |
 
 - **Pastas legíveis:** os nomes das pastas são slugs (minúsculas, números e hífens), sem espaços nem acentos. `{categoria}` é modalidade + nome + gênero (`futsal-sub-15-masculino`; o gênero não repete se o nome já o traz), `{time}` é o slug do time, `{sub-evento}` é o tipo (`jocev-futsal`) e o horário da partida é o de Fortaleza no momento do envio. Trocar a data da partida depois não move arquivos já enviados: a chave guardada no banco continua valendo.
-- **Nome padronizado:** `{nome-padrão}-{chave}-{variante}.webp`. O nome padrão depende do tipo (`team`, `photo`, `best-player`) e a `{chave}` são 24 caracteres hexadecimais aleatórios (12 bytes). O nome que o arquivo tinha no celular nunca é usado nem gravado.
-- O banco guarda só a **chave-base** (a coluna `photo_key`/`storage_key`, sem a variante nem a extensão). A URL pública de cada tamanho é `https://cdn.jocevs.com.br/{chave-base}-{thumb|medium|large}.webp`.
+- **Nome padronizado:** `{nome-padrão}-{chave}.webp`. O nome padrão depende do tipo (`team`, `photo`, `best-player`) e a `{chave}` são 24 caracteres hexadecimais aleatórios (12 bytes). O nome que o arquivo tinha no celular nunca é usado nem gravado.
+- O banco guarda a **chave do arquivo** (a coluna `photo_key`/`storage_key`, já com `.webp`). A URL pública é `https://cdn.jocevs.com.br/{chave}`. Fotos enviadas antes desta mudança, em três tamanhos, têm chave sem extensão e continuam sendo lidas e apagadas pelos três arquivos `{chave}-{thumb|medium|large}.webp`.
 - Cada arquivo sobe com `Cache-Control: public, max-age=31536000, immutable`: como a chave muda a cada troca, o cache nunca fica velho.
 - A API lê JPG, PNG ou WebP, corrige a rotação do celular e **descarta os metadados** (EXIF, localização).
-- **Não guardar o original**, só as variantes (decisão para economizar disco e custo; avisar a equipe para manter as fotos originais no celular/Drive).
+- **Não guardar o original**, só o arquivo reduzido (decisão para economizar disco e custo; avisar a equipe para manter as fotos originais no celular/Drive). Decisão de 25/10/2026: um arquivo só por foto, no lugar de três tamanhos, para simplificar o bucket; a grade da galeria passa a carregar o mesmo arquivo do visualizador.
 - Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos de um álbum em fila, cada uma reduzida no navegador antes do envio.
-- **Volume estimado:** ~2.500 fotos × 3 variantes (miniatura ~20 KB, média ~150 KB, grande ~500 KB ≈ 0,7 MB por foto) ≈ **1,75 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.
+- **Volume estimado:** ~2.500 fotos × ~0,3 a 0,5 MB (WebP de 1600 px) ≈ **0,8 a 1,3 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.
 
 ### ADR-07 — Autenticação e autorização
 - Login por e-mail e senha (hash com `scrypt`) ou por conta Google. O Google só autentica quem **já tem usuário ativo** com o mesmo e-mail (verificado pelo Google); o login não cria usuário.
