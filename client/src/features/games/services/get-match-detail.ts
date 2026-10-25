@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { fetchApiResult } from '@/lib/api/server-fetch';
 import type { Category, Match, Team } from '../types';
 
@@ -28,10 +29,10 @@ export async function fetchMatchDetail(matchId: string): Promise<MatchDetail> {
   return { match, teamA, teamB, category, groupName };
 }
 
-export async function getMatchDetail(matchId: string): Promise<MatchDetail | null> {
+export const getMatchDetail = cache(async (matchId: string): Promise<MatchDetail | null> => {
   try {
     return await fetchMatchDetail(matchId);
   } catch {
     return null;
   }
-}
+});

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { fetchApiPage } from '@/lib/api/server-fetch';
 import { toGalleryImages } from '../lib/gallery-images';
 import type { GalleryDay, GalleryImage, GalleryPhoto } from '../types';
@@ -17,18 +18,20 @@ export async function getSubEventDays(subEventId: string): Promise<GalleryDay[]>
   }
 }
 
-export async function getDayImages(subEventId: string, date: string): Promise<GalleryImage[]> {
-  try {
-    return await fetchAlbumImages(`/sub-events/${subEventId}/gallery/${date}`);
-  } catch {
-    return [];
-  }
-}
+export const getDayImages = cache(
+  async (subEventId: string, date: string): Promise<GalleryImage[]> => {
+    try {
+      return await fetchAlbumImages(`/sub-events/${subEventId}/gallery/${date}`);
+    } catch {
+      return [];
+    }
+  },
+);
 
-export async function getMatchImages(matchId: string): Promise<GalleryImage[]> {
+export const getMatchImages = cache(async (matchId: string): Promise<GalleryImage[]> => {
   try {
     return await fetchAlbumImages(`/matches/${matchId}/photos`);
   } catch {
     return [];
   }
-}
+});
