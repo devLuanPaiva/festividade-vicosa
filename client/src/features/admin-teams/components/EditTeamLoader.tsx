@@ -2,13 +2,16 @@ import type { ReactElement } from 'react';
 import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { categoryLabel } from '@/features/games/lib/match-labels';
+import { resolvePhotoUrl } from '@/features/games/lib/photo-url';
 import { orNotFound } from '@/lib/api/missing-resource';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
+import { removeTeamPhotoAction, uploadTeamPhotoAction } from '../actions/team-photo-actions';
 import { deleteTeamAction, updateTeamAction } from '../actions/team-actions';
 import { categoryPath } from '../lib/admin-team-paths';
 import { getTeamWithGroups } from '../services/get-team-form-data';
 import { TeamForm } from './TeamForm';
+import { TeamPhotoSection } from './TeamPhotoSection';
 import { CategoryPageHeader } from './CategoryPageHeader';
 
 interface EditTeamLoaderProps {
@@ -29,6 +32,12 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
         categoryId={category.id}
         categoryTitle={categoryLabel(category)}
         title={team.name}
+      />
+      <TeamPhotoSection
+        teamName={team.name}
+        photoUrl={resolvePhotoUrl(team.photoKey, 'medium')}
+        uploadAction={uploadTeamPhotoAction.bind(null, team.id)}
+        removeAction={removeTeamPhotoAction.bind(null, team.id)}
       />
       <TeamForm
         action={updateTeamAction.bind(null, target)}

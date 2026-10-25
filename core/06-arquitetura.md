@@ -33,8 +33,9 @@ flowchart LR
 - `jocevs.com.br` → portal público e `painel.jocevs.com.br` → painel administrativo, ambos Next.js na Vercel · `api.jocevs.com.br` → API na EC2 (Caddy com certificado automático) · `cdn.jocevs.com.br` → fotos no S3 via CloudFront.
 - Route 53 só resolve nomes: o apex e `painel` apontam para a Vercel, `api` para o IP elástico da EC2 e `cdn` (alias) para o CloudFront.
 - O client **nunca** fala com o banco nem grava no S3. Só chama a API (ADR-02). A leitura de foto pela URL do CloudFront é a única exceção, e é só leitura de arquivo público.
-- O navegador do admin envia as fotos **direto para `api.jocevs.com.br`**, sem passar pela Vercel (as funções da Vercel têm limite de corpo de ~4,5 MB, pequeno para foto de celular).
-- CORS na API liberado só para `painel.jocevs.com.br` (e `localhost` em desenvolvimento).
+- O navegador do admin **não fala com a API**: ele envia a foto para o servidor do painel (Server Action do Next.js na Vercel), que a repassa à API com o token de sessão, guardado em cookie e nunca entregue ao navegador. Só a API grava no S3.
+- Antes de enviar, o navegador reduz a foto para no máximo 2000 px (JPEG, sem EXIF), abaixo de ~3,5 MB, para caber no limite de ~4,5 MB do corpo das funções da Vercel. O limite do Server Action está em 4 MB. A API continua aceitando até 10 MB.
+- Como o navegador não chama a API, não há CORS a liberar para o painel. O `CORS_ORIGIN` só vale para quem chamar a API direto de um navegador.
 
 ## Stack
 | Camada | Tecnologia | Observação |
@@ -59,6 +60,7 @@ flowchart LR
 - **Por quê:** credenciais AWS ficam só no servidor, as permissões (RN-40 a RN-47) são aplicadas num único ponto, e dá para validar tipo e tamanho do arquivo.
 - **Consequência:** o upload passa pela API (multipart) em vez de URL pré-assinada direto para o S3. Fica mais simples e seguro, mas a API recebe os bytes. Com poucos uploads simultâneos (só a equipe do painel envia, RN-32) isso é tranquilo.
 - **Alternativa descartada:** URL pré-assinada (client → S3). Quebraria a regra de que a conexão parte da API.
+- **Alternativa descartada:** navegador enviando direto para a API. Exigiria entregar um token curto ao navegador (risco em caso de XSS) e liberar CORS. O envio pelo servidor do painel mantém o token só no servidor.
 
 ### ADR-03 — Hospedagem: Next.js na Vercel, API + banco numa EC2 (decidido)
 - **Decisão:** um `docker-compose.yml` na raiz sobe **API, PostgreSQL e Caddy** numa única EC2. O Next.js vai para a Vercel.
@@ -100,7 +102,7 @@ flowchart LR
 - Cada arquivo sobe com `Cache-Control: public, max-age=31536000, immutable`: como a chave muda a cada troca, o cache nunca fica velho.
 - A API lê JPG, PNG ou WebP, corrige a rotação do celular e **descarta os metadados** (EXIF, localização).
 - **Não guardar o original**, só as variantes (decisão para economizar disco e custo; avisar a equipe para manter as fotos originais no celular/Drive).
-- Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos de um álbum em fila.
+- Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos de um álbum em fila, cada uma reduzida no navegador antes do envio.
 - **Volume estimado:** ~2.500 fotos × 3 variantes (miniatura ~20 KB, média ~150 KB, grande ~500 KB ≈ 0,7 MB por foto) ≈ **1,75 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.
 
 ### ADR-07 — Autenticação e autorização

@@ -92,6 +92,17 @@ describe('server fetch', () => {
     ).resolves.toBeUndefined();
   });
 
+  it('sends a form as it is, leaving the multipart boundary to fetch', async () => {
+    const fetchMock = stubFetch(200, { status: 'success', result: null });
+    const form = new FormData();
+    form.set('file', new Blob(['image']), 'photo.jpg');
+
+    await sendApiCommand('/teams/a/photo', { method: 'PUT', body: form, token: 'secret-token' });
+
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({ body: form });
+    expect(sentRequest(fetchMock).headers).not.toHaveProperty('Content-Type');
+  });
+
   it('does not send credentials on public requests', async () => {
     const fetchMock = stubFetch(200, { status: 'success', result: null });
 
