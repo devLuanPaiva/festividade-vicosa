@@ -2,6 +2,7 @@
 
 import { useState, type ReactElement } from 'react';
 import { usePhotoSelection } from '../hooks/use-photo-selection';
+import { findImageIndex } from '../lib/find-image';
 import type { GalleryImage } from '../types';
 import { GalleryThumb } from './GalleryThumb';
 import { GalleryToolbar } from './GalleryToolbar';
@@ -10,10 +11,19 @@ import { PhotoLightbox } from './PhotoLightbox';
 interface PhotoGalleryProps {
   images: GalleryImage[];
   fileBase: string;
+  shareText: string;
+  initialPhotoId?: string | null;
 }
 
-export function PhotoGallery({ images, fileBase }: PhotoGalleryProps): ReactElement {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+export function PhotoGallery({
+  images,
+  fileBase,
+  shareText,
+  initialPhotoId = null,
+}: PhotoGalleryProps): ReactElement {
+  const [openIndex, setOpenIndex] = useState<number | null>(() =>
+    findImageIndex(images, initialPhotoId),
+  );
   const selection = usePhotoSelection(images, fileBase);
 
   return (
@@ -47,6 +57,7 @@ export function PhotoGallery({ images, fileBase }: PhotoGalleryProps): ReactElem
       <PhotoLightbox
         images={images}
         fileBase={fileBase}
+        shareText={shareText}
         openIndex={openIndex}
         onChange={setOpenIndex}
       />

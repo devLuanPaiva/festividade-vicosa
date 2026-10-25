@@ -15,7 +15,7 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-08 | Exibir página do time: nome, categoria, foto, grupo e partidas | P1 |
 | RF-09 | Destacar "próximos jogos" e "últimos resultados" na home | P1 |
 | RF-10 | Vôlei de areia, Corrida e Ecopedal: página de divulgação + galeria (sem inscrição, placar nem ranking) | P1 |
-| RF-11 | Compartilhar partida/foto por link (WhatsApp) | P2 |
+| RF-11 | Compartilhar partida ou foto por link (WhatsApp): botão de compartilhar na partida e em cada foto; o link mostra uma prévia com título, descrição e imagem (cartão do placar ou a própria foto) | P2 |
 | RF-12 | Favoritar time e ver "meus times" (sem login, salvo no aparelho) | P3 |
 | RF-13 | Interações com o público (a definir: enquete, palpite…). Envio de fotos pelo público está fora de escopo. | P3 |
 | RF-14 | Baixar as fotos da galeria e do mural da partida, uma a uma (no visualizador) ou várias de uma vez (selecionar e baixar); o arquivo baixado leva um nome legível | P1 |

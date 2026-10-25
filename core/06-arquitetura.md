@@ -119,6 +119,12 @@ flowchart LR
 - Estratégia: cache da casca do app e assets estáticos; **dados de jogos sempre da rede** (rede primeiro, com fallback "sem conexão"). Evita mostrar resultado desatualizado.
 - Notificações push ficam **fora do MVP**.
 
+### ADR-09 — Compartilhamento por link (RF-11)
+- A partida (`/jogos/:id`) e o álbum do dia (`/galeria/:subEventId/:data`) têm `generateMetadata` com título, descrição e imagem para a prévia do WhatsApp (Open Graph e Twitter card).
+- Foto: o link leva `?foto=<id>`; a página abre o visualizador nessa foto e usa **a própria foto** como imagem da prévia. Sem `?foto=`, a partida usa o **cartão do placar** gerado em `/jogos/:id/cartao` (imagem 1200x630 com `ImageResponse`, só texto) e o álbum não tem imagem.
+- O botão usa o compartilhamento nativo do aparelho (`navigator.share`) e, onde não existe (desktop), abre o WhatsApp com o texto e o link.
+- As URLs absolutas da prévia vêm de `metadataBase`, calculado de `SITE_URL` **no build**: defina `SITE_URL` (domínio público do site) no ambiente de build da Vercel.
+
 ## Estrutura de pastas sugerida
 ```
 api/src/

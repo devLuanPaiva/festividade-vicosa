@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import type { KeyboardEvent, MouseEvent, ReactElement } from 'react';
 import { useDialogVisibility } from '../hooks/use-dialog-visibility';
+import { photoSharePath } from '@/lib/share/share-links';
 import { downloadHref, photoFileName } from '../lib/photo-download';
 import { stepIndex } from '../lib/step-index';
 import type { GalleryImage } from '../types';
@@ -13,6 +14,7 @@ const ARROW_OFFSETS: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1 };
 interface PhotoLightboxProps {
   images: GalleryImage[];
   fileBase: string;
+  shareText: string;
   openIndex: number | null;
   onChange: (index: number | null) => void;
 }
@@ -20,6 +22,7 @@ interface PhotoLightboxProps {
 export function PhotoLightbox({
   images,
   fileBase,
+  shareText,
   openIndex,
   onChange,
 }: PhotoLightboxProps): ReactElement {
@@ -61,6 +64,7 @@ export function PhotoLightbox({
           />
           <LightboxControls
             downloadUrl={downloadHref(image.storageKey, photoFileName(fileBase, openIndex ?? 0))}
+            share={{ title: shareText, text: shareText, url: photoSharePath(image.id) }}
             onStep={step}
             onClose={() => onChange(null)}
           />
