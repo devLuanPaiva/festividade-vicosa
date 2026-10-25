@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath, updateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import { copyFileField } from '@/lib/forms/form-data';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
@@ -14,7 +14,6 @@ async function finishRequest(failure: FormErrorState | null): Promise<FormErrorS
     return failure;
   }
   revalidatePath('/admin', 'layout');
-  updateTag('gallery');
   return INITIAL_FORM_ERROR_STATE;
 }
 
