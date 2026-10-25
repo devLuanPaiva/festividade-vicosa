@@ -26,7 +26,9 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps): ReactElement {
   return (
     <html lang="pt-BR" className={fontVariableClassNames}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased" cz-shortcut-listen="false">
+        {children}
+      </body>
     </html>
   );
 }
