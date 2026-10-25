@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { CategoryModule } from './resources/category/category.module';
 import { EditionModule } from './resources/edition/edition.module';
+import { GalleryModule } from './resources/gallery/gallery.module';
 import { HealthModule } from './resources/health/health.module';
 import { IndicatorModule } from './resources/indicator/indicator.module';
 import { MatchModule } from './resources/match/match.module';
@@ -27,6 +28,7 @@ import { TeamModule } from './resources/team/team.module';
     TeamModule,
     MatchModule,
     StandingModule,
+    GalleryModule,
   ],
 })
 export class AppModule {}
