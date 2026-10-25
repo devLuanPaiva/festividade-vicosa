@@ -6,13 +6,14 @@ import {
 } from '@nestjs/common';
 import { apiError } from '../../../common/errors/api-error';
 import { runUnlessReferenced } from '../../../common/database/foreign-key-violation';
+import { MediaFolder, type MediaTarget } from '../../../storage/rules/media-key.rule';
 import { CategoryService } from '../../category/services/category.service';
 import { MatchGroupService } from '../../match-group/services/match-group.service';
 import type { CreateTeamDto } from '../dto/create-team.dto';
 import type { UpdateTeamDto } from '../dto/update-team.dto';
 import type { Team } from '../entities/team.entity';
 import { TeamRepository, type TeamFilters } from '../repository/team.repository';
-import { slugify } from '../rules/slug.rule';
+import { slugify } from '../../../common/text/slugify';
 
 @Injectable()
 export class TeamService {
@@ -37,6 +38,11 @@ export class TeamService {
       throw new NotFoundException(apiError('TEAM_NOT_FOUND', 'Time não encontrado.', 'id'));
     }
     return team;
+  }
+
+  public async photoTarget(team: Team): Promise<MediaTarget> {
+    const categoryFolder = await this.categoryService.mediaFolderOf(team.categoryId);
+    return { folder: MediaFolder.TEAM_PHOTO, segments: [categoryFolder, team.slug] };
   }
 
   public async create(categoryId: string, input: CreateTeamDto): Promise<Team> {
