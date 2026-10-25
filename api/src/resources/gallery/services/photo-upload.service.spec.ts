@@ -1,11 +1,19 @@
 import type { MediaUploadService } from '../../../storage/services/media-upload.service';
 import type { PhotoRepository } from '../repository/photo.repository';
 import type { AlbumService } from './album.service';
+import type { AlbumTargetService } from './album-target.service';
+import { PhotoStoreService } from './photo-store.service';
 import { PhotoUploadService } from './photo-upload.service';
 
 const SUB_EVENT_ID = '00000000-0000-4000-8000-0000000000e1';
 const MATCH_ID = '00000000-0000-4000-8000-0000000000b1';
-const STORAGE_KEY = 'matches/m/photos/photo-aaaaaaaaaaaaaaaaaaaaaaaa';
+const STORAGE_KEY =
+  'matches/futsal/centro-x-acude-2026-12-09-1930/photos/photo-aaaaaaaaaaaaaaaaaaaaaaaa';
+const DAY_TARGET = { folder: 'EVENT_PHOTO', segments: ['jocev-futsal', '2026-12-09'] };
+const MATCH_TARGET = {
+  folder: 'MATCH_PHOTO',
+  segments: ['futsal', 'centro-x-acude-2026-12-09-1930'],
+};
 const UPLOAD = { file: Buffer.from('photo'), uploadedById: 'user-1' };
 
 function createFixture(): {
@@ -17,26 +25,31 @@ function createFixture(): {
     ensureForEventDay: jest.fn().mockResolvedValue({ id: 'album-day' }),
     ensureForMatch: jest.fn().mockResolvedValue({ id: 'album-match' }),
   };
+  const targets = {
+    forEventDay: jest.fn().mockResolvedValue(DAY_TARGET),
+    forMatch: jest.fn().mockResolvedValue(MATCH_TARGET),
+  };
   const repository = { create: jest.fn().mockResolvedValue({ id: 'photo-1' }) };
   const media = { upload: jest.fn().mockResolvedValue(STORAGE_KEY), discard: jest.fn() };
-  const service = new PhotoUploadService(
-    albums as unknown as AlbumService,
+  const store = new PhotoStoreService(
     repository as unknown as PhotoRepository,
     media as unknown as MediaUploadService,
+  );
+  const service = new PhotoUploadService(
+    albums as unknown as AlbumService,
+    targets as unknown as AlbumTargetService,
+    store,
   );
   return { service, repository, media };
 }
 
 describe('PhotoUploadService', () => {
-  it('stores a gallery photo in the folder of its sub-event and day', async () => {
+  it('stores a gallery photo in the folder of its event and day', async () => {
     const { service, repository, media } = createFixture();
 
     await service.addToEventDay(SUB_EVENT_ID, '2026-12-09', UPLOAD);
 
-    expect(media.upload).toHaveBeenCalledWith(
-      { folder: 'EVENT_PHOTO', ownerId: SUB_EVENT_ID, day: '2026-12-09' },
-      UPLOAD.file,
-    );
+    expect(media.upload).toHaveBeenCalledWith(DAY_TARGET, UPLOAD.file);
     expect(repository.create).toHaveBeenCalledWith({
       albumId: 'album-day',
       storageKey: STORAGE_KEY,
@@ -44,15 +57,12 @@ describe('PhotoUploadService', () => {
     });
   });
 
-  it('stores a match photo in the folder of the match', async () => {
+  it('stores a match photo in the folder of the game', async () => {
     const { service, media } = createFixture();
 
     await service.addToMatch(MATCH_ID, UPLOAD);
 
-    expect(media.upload).toHaveBeenCalledWith(
-      { folder: 'MATCH_PHOTO', ownerId: MATCH_ID },
-      UPLOAD.file,
-    );
+    expect(media.upload).toHaveBeenCalledWith(MATCH_TARGET, UPLOAD.file);
   });
 
   it('removes the uploaded files when the photo cannot be saved', async () => {

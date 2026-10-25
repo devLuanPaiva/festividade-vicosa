@@ -7,7 +7,8 @@ import { UploadedPhoto } from '../decorators/uploaded-photo.decorator';
 import type { PhotoResponseDto } from '../dto/photo-response.dto';
 import { toPhotoResponse } from '../mappers/photo-response.mapper';
 import { GalleryService } from '../services/gallery.service';
-import { PhotoUploadService, type PhotoUpload } from '../services/photo-upload.service';
+import type { PhotoUpload } from '../services/photo-store.service';
+import { PhotoUploadService } from '../services/photo-upload.service';
 
 @Controller('matches/:matchId/photos')
 export class MatchPhotoController {
