@@ -9,7 +9,7 @@ interface RequestOptions {
 
 function buildHeaders({ body, token }: RequestOptions): Record<string, string> {
   const headers: Record<string, string> = { Accept: 'application/json' };
-  if (body !== undefined) {
+  if (body !== undefined && !(body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
   if (token) {
@@ -18,11 +18,18 @@ function buildHeaders({ body, token }: RequestOptions): Record<string, string> {
   return headers;
 }
 
+function serializeBody(body: unknown): BodyInit | undefined {
+  if (body === undefined || body instanceof FormData) {
+    return body;
+  }
+  return JSON.stringify(body);
+}
+
 async function requestJson(path: string, options: RequestOptions): Promise<unknown> {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     method: options.method ?? 'GET',
     headers: buildHeaders(options),
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    body: serializeBody(options.body),
     cache: options.token ? 'no-store' : undefined,
   });
   const body: unknown = await response.json().catch(() => null);
