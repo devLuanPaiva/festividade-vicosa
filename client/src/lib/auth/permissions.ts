@@ -1,4 +1,10 @@
-export type Permission = 'match:record-score' | 'match:create' | 'team:manage' | 'user:manage';
+export type Permission =
+  | 'match:record-score'
+  | 'match:create'
+  | 'team:manage'
+  | 'user:manage'
+  | 'photo:upload'
+  | 'photo:delete';
 
 export interface AuthenticatedUser {
   id: string;

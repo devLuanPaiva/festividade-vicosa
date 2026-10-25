@@ -1,6 +1,7 @@
 'use server';
 
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
+import { copyFileField } from '@/lib/forms/form-data';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
 import { refreshChampionshipData } from '../lib/refresh-championship-data';
 
@@ -27,11 +28,7 @@ export async function uploadTeamPhotoAction(
   _previousState: FormErrorState,
   formData: FormData,
 ): Promise<FormErrorState> {
-  const body = new FormData();
-  const file = formData.get(PHOTO_FIELD);
-  if (file instanceof File) {
-    body.set(PHOTO_FIELD, file, file.name);
-  }
+  const body = copyFileField(formData, PHOTO_FIELD);
   return sendPhotoRequest(teamId, { method: 'PUT', body });
 }
 
