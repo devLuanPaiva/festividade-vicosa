@@ -73,6 +73,30 @@ export class EnvironmentVariables {
   @IsOptional()
   @IsString()
   public GOOGLE_CLIENT_ID?: string;
+
+  @IsOptional()
+  @IsString()
+  public AWS_REGION?: string;
+
+  @IsOptional()
+  @IsString()
+  public AWS_ACCESS_KEY_ID?: string;
+
+  @IsOptional()
+  @IsString()
+  public AWS_SECRET_ACCESS_KEY?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public S3_BUCKET = 'jocevs';
+
+  @IsOptional()
+  @IsString()
+  public S3_ENDPOINT?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public MEDIA_PUBLIC_URL = 'https://cdn.jocevs.com.br';
 }
 
 export function validateEnvironment(config: Record<string, unknown>): EnvironmentVariables {

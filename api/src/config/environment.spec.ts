@@ -23,6 +23,20 @@ describe('validateEnvironment', () => {
     expect(environment.REFRESH_TOKEN_EXPIRES_IN_DAYS).toBe(7);
   });
 
+  it('boots with the AWS variables blank and uses the jocevs bucket and CDN by default', () => {
+    const environment = validateEnvironment({
+      ...validConfig,
+      AWS_REGION: '',
+      AWS_ACCESS_KEY_ID: '',
+      AWS_SECRET_ACCESS_KEY: '',
+      S3_ENDPOINT: '',
+    });
+
+    expect(environment.S3_BUCKET).toBe('jocevs');
+    expect(environment.MEDIA_PUBLIC_URL).toBe('https://cdn.jocevs.com.br');
+    expect(environment.AWS_ACCESS_KEY_ID).toBe('');
+  });
+
   it('converts numeric strings to numbers', () => {
     const environment = validateEnvironment({
       ...validConfig,
