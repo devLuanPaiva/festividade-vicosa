@@ -16,6 +16,11 @@ const timeFormat = new Intl.DateTimeFormat(LOCALE, {
   minute: '2-digit',
 });
 
+const weekdayShortFormat = new Intl.DateTimeFormat(LOCALE, {
+  timeZone: TIME_ZONE,
+  weekday: 'short',
+});
+
 export function toDayKey(isoDate: string): string {
   return dayKeyFormat.format(new Date(isoDate));
 }
@@ -26,4 +31,13 @@ export function formatDayHeading(isoDate: string): string {
 
 export function formatMatchTime(isoDate: string): string {
   return timeFormat.format(new Date(isoDate));
+}
+
+export function formatShortWeekday(isoDate: string): string {
+  return weekdayShortFormat.format(new Date(isoDate)).replace('.', '');
+}
+
+export function formatDayMonth(isoDate: string): string {
+  const [, month, day] = toDayKey(isoDate).split('-');
+  return `${day}/${month}`;
 }
