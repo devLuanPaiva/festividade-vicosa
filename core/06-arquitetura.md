@@ -40,7 +40,7 @@ flowchart LR
 ## Stack
 | Camada | Tecnologia | Observação |
 |--------|-----------|------------|
-| Front | Next.js (**App Router**, Cache Components) na **Vercel** | Já no repo. Páginas públicas com cache no servidor (`use cache`); painel admin renderizado no navegador |
+| Front | Next.js (**App Router**, Cache Components) na **Vercel** | Já no repo. Páginas públicas renderizadas no servidor, **sem cache de dados** por enquanto (ver "Cache" abaixo); painel admin renderizado no navegador |
 | API | NestJS + **TypeORM** | Já no repo. Roda em container na EC2 |
 | Banco | **PostgreSQL** em container | Mesmo `docker-compose` da API; volume persistente + backup para o S3 (ADR-04) |
 | Proxy/HTTPS | Caddy em container | Certificado Let's Encrypt automático para `api.jocevs.com.br` |
@@ -79,7 +79,7 @@ flowchart LR
 - **Por quê:** volume minúsculo (algumas centenas de partidas); RDS custaria mais que a EC2 inteira.
 
 ### ADR-05 — Cache e atualização do placar (sem tempo real)
-- Páginas públicas (home, jogos, classificação, galeria) buscam dados **no servidor** em funções com `'use cache'`, `cacheLife` curto (ex.: minutos) como rede de segurança e `cacheTag` por assunto (`schedule`, `matches`, `standings`). A falha da API é tratada dentro do escopo de cache, com vida curta, e a parte que depende dela fica em `<Suspense>`.
+- Páginas públicas (home, jogos, classificação, galeria) buscam dados **no servidor**, **sem cache**: cada acesso consulta a API. Decisão de 25/10/2026 para que toda mudança do painel apareça na hora durante os testes. A falha da API é tratada dentro do serviço (lista vazia ou `null`) e a parte que depende dela fica em `<Suspense>`. **Pendência antes de 4/12:** medir a carga dos dias de jogo na API/EC2 e, se for preciso, voltar com cache curto (`use cache` + `cacheTag`, invalidado ao finalizar a partida) para cumprir o RNF-03.
 - Ao **finalizar uma partida**, a API chama (com um segredo compartilhado) a rota de *on-demand revalidation* do Next na Vercel, que atualiza só as páginas afetadas (partida, time, jogos, classificação).
 - Meta: resultado no ar em até ~1 min (RNF-04). Sem WebSocket e sem polling no client.
 - Classificação calculada pela API na hora da requisição e cacheada. Não é gravada (RN-19).
@@ -141,7 +141,7 @@ client/src/
 | Risco | Mitigação |
 |-------|-----------|
 | Identidade visual atrasa | Design tokens trocáveis; construir com visual neutro |
-| Pico de acesso no dia das finais | ISR na Vercel (leitura não depende da EC2) + CloudFront nas fotos; testar carga antes do dia 4/12 |
+| Pico de acesso no dia das finais | Hoje sem cache de dados: cada visita consulta a API na EC2. Testar carga antes do dia 4/12 e, se preciso, voltar com cache curto no servidor + CloudFront nas fotos |
 | EC2 cair no meio do evento | Alarme no CloudWatch, `restart: unless-stopped` no compose, AMI/snapshot antes do evento |
 | Placar errado lançado no celular | Confirmação antes de finalizar; correção permitida (RN-23); registro de quem finalizou |
 | Custo de nuvem surpresa | Alerta de orçamento no AWS Budgets; instância única e AWS Budgets com alerta |

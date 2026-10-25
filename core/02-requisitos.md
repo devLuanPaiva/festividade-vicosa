@@ -41,7 +41,7 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 |----|-----------|
 | RNF-01 | **Mobile-first**: uso principal em celular; layout testado a partir de 360px |
 | RNF-02 | Desempenho em rede móvel fraca: imagens otimizadas (redimensionadas, WebP, lazy-load) |
-| RNF-03 | Páginas públicas com cache (SSG/ISR); picos nos dias de jogo não podem derrubar o site |
+| RNF-03 | Picos nos dias de jogo não podem derrubar o site. Páginas públicas **sem cache de dados por enquanto** (decisão de 25/10/2026); reavaliar com teste de carga antes de 4/12 (cache curto no servidor, SSG/ISR) |
 | RNF-04 | Resultado publicado no portal em até ~1 min após finalizar a partida (cache invalidado ao finalizar). Sem tempo real. |
 | RNF-05 | Painel admin protegido (autenticação, senha com hash, HTTPS) |
 | RNF-06 | Identidade visual aplicada via design tokens trocáveis |
