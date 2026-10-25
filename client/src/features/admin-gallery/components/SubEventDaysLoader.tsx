@@ -5,7 +5,7 @@ import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
 import { dayGalleryPath } from '../lib/admin-gallery-paths';
 import { eachDay } from '../lib/each-day';
-import { photoCountLabel } from '../lib/photo-count-label';
+import { photoCountLabel } from '@/features/gallery/lib/photo-count-label';
 import { getGalleryDays, getSubEvent } from '../services/get-gallery-data';
 import { GalleryBreadcrumb } from './GalleryBreadcrumb';
 import { GalleryLink } from './GalleryLink';

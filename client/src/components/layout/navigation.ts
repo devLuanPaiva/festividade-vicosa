@@ -9,4 +9,5 @@ export const publicNavigation: NavigationItem[] = [
   { label: 'JOCEV’S', href: '/#modalidades' },
   { label: 'Programação', href: '/#programacao' },
   { label: 'Jogos', href: '/jogos' },
+  { label: 'Galeria', href: '/galeria' },
 ];
