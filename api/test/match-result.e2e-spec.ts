@@ -3,6 +3,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
 import { MatchController } from '../src/resources/match/controllers/match.controller';
+import { MatchBatchService } from '../src/resources/match/services/match-batch.service';
 import { MatchResultService } from '../src/resources/match/services/match-result.service';
 import { MatchService } from '../src/resources/match/services/match.service';
 import { Permission } from '../src/resources/role/enums/permission.enum';
@@ -40,6 +41,7 @@ describe('Match results (e2e)', () => {
       [
         { provide: MatchService, useValue: {} },
         { provide: MatchResultService, useValue: resultService },
+        { provide: MatchBatchService, useValue: {} },
       ],
       users,
     );
