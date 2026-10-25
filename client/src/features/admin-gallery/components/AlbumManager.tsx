@@ -2,8 +2,8 @@ import type { ReactElement } from 'react';
 import { resolvePhotoUrl } from '@/features/games/lib/photo-url';
 import {
   deletePhotoAction,
+  refreshGalleryAction,
   reorderPhotosAction,
-  uploadAlbumPhotoAction,
 } from '../actions/photo-actions';
 import { getAlbumPhotos } from '../services/get-gallery-data';
 import type { AlbumPhoto, AlbumTarget } from '../types';
@@ -29,7 +29,7 @@ export async function AlbumManager({
   const photos = await getAlbumPhotos(target);
   return (
     <>
-      <PhotoUploader upload={uploadAlbumPhotoAction.bind(null, target)} />
+      <PhotoUploader target={target} refresh={refreshGalleryAction} />
       <PhotoGrid
         photos={toGridPhotos(photos)}
         canManage={canManage}
