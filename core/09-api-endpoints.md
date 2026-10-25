@@ -159,6 +159,19 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 
 A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference`, `points`, `walkoverLosses`, `tied` (os critérios não separaram o time de outro, RN-21) e `qualifiedPosition` (posição confirmada pela equipe técnica, ou nulo, RN-29). Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória e vale 2x0 no saldo (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Desempate pelo edital (RN-21). A tabela não calcula quem classifica: a equipe técnica confirma os classificados de cada grupo (RN-29).
 
+## Galeria de fotos (RF-03, RF-05, RF-26)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/sub-events/:subEventId/gallery` | pública | Dias do sub-evento que têm fotos, por data: `[{ date, photoCount, coverPhotoKey }]` |
+| GET | `/sub-events/:subEventId/gallery/:date` | pública | Fotos do dia (`AAAA-MM-DD`), na ordem do álbum. Lista vazia se o dia não tem álbum |
+| POST | `/sub-events/:subEventId/gallery/:date/photos` | `photo:upload` | Envia uma foto (`multipart/form-data`, campo `file`, mesmas regras da foto do time) para o fim do álbum do dia, criando o álbum se preciso. 400 `DAY_OUTSIDE_SUB_EVENT` (campo `date`) se o dia está fora do período do sub-evento. Limite de 20 envios por minuto |
+| GET | `/matches/:matchId/photos` | pública | Mural de fotos da partida |
+| POST | `/matches/:matchId/photos` | `photo:upload` | Envia uma foto para o mural da partida |
+| PUT | `/photos/order` | `photo:delete` | Reordena um álbum: `{ photoIds }` com **todas** as fotos do álbum, na nova ordem (400 `PHOTO_ORDER_INVALID` se falta, repete ou sobra alguma). Devolve as fotos na nova ordem |
+| DELETE | `/photos/:id` | `photo:delete` | Exclui a foto e apaga os 3 arquivos do S3. 204 |
+
+Cada foto vem como `{ id, albumId, photoKey, sortOrder, createdAt }`; a URL de cada tamanho é `https://cdn.jocevs.com.br/{photoKey}-{thumb, medium ou large}.webp`. Um `:date` inválido devolve 400 `INVALID_DATE`. Excluir uma partida que tem fotos devolve 409 `MATCH_HAS_PHOTOS`.
+
 ## Indicadores (painel)
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
