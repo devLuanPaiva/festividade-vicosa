@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { startTransition, useActionState, type ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
 import { movePhoto } from '../lib/move-photo';
@@ -93,7 +94,14 @@ export function PhotoGrid({
   const ids = photos.map((photo) => photo.id);
 
   if (photos.length === 0) {
-    return <p className="text-sm text-admin-muted">Este álbum ainda não tem fotos.</p>;
+    return (
+      <EmptyState
+        tone="admin"
+        icon="image"
+        title="Este álbum ainda não tem fotos"
+        description="Envie as primeiras fotos acima. Elas aparecem aqui na ordem do álbum."
+      />
+    );
   }
   return (
     <section aria-label="Fotos do álbum" className="flex flex-col gap-3">

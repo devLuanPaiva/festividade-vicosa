@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import type { CategoryMatchDay } from '../lib/category-match-days';
 import { editMatchPath, newMatchPath } from '../lib/admin-match-paths';
 
@@ -13,15 +14,12 @@ const PRIMARY_LINK_CLASS =
 
 function EmptyMatches(): ReactElement {
   return (
-    <section aria-labelledby="no-matches-title" className="flex flex-col gap-1 p-5">
-      <h2 id="no-matches-title" className="font-bold">
-        Nenhuma partida ainda
-      </h2>
-      <p className="text-sm text-admin-muted">
-        Cadastre as partidas da fase de grupos e do mata-mata. O resultado é lançado depois, na aba
-        Jogos.
-      </p>
-    </section>
+    <EmptyState
+      tone="admin"
+      icon="calendar"
+      title="Nenhuma partida ainda"
+      description="Cadastre as partidas da fase de grupos e do mata-mata. O resultado é lançado depois, na aba Jogos."
+    />
   );
 }
 

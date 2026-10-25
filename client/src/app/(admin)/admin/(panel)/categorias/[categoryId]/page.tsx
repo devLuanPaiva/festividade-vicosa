@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminListSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { CategoryDetailLoader } from '@/features/admin-teams/components/CategoryDetailLoader';
 
@@ -14,7 +15,7 @@ export default function AdminCategoryRoute({
   searchParams,
 }: AdminCategoryRouteProps): ReactElement {
   return (
-    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando categoria…</p>}>
+    <Suspense fallback={<AdminListSkeleton label="Carregando categoria" />}>
       <CategoryDetailLoader params={params} searchParams={searchParams} />
     </Suspense>
   );

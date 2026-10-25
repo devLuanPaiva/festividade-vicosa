@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminFormSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { EditMatchLoader } from '@/features/admin-matches/components/EditMatchLoader';
 
@@ -10,7 +11,7 @@ interface EditMatchRouteProps {
 
 export default function EditMatchRoute({ params }: EditMatchRouteProps): ReactElement {
   return (
-    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando…</p>}>
+    <Suspense fallback={<AdminFormSkeleton label="Carregando a partida" count={5} />}>
       <EditMatchLoader params={params} />
     </Suspense>
   );

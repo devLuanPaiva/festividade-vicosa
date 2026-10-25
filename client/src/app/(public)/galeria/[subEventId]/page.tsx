@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { PublicPageSkeleton } from '@/components/loading/PublicPageSkeleton';
+import { AlbumCardsSkeleton } from '@/features/gallery/components/GallerySkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { SubEventAlbumsLoader } from '@/features/gallery/components/SubEventAlbumsLoader';
 
@@ -13,7 +15,13 @@ interface SubEventAlbumsRouteProps {
 
 export default function SubEventAlbumsRoute({ params }: SubEventAlbumsRouteProps): ReactElement {
   return (
-    <Suspense fallback={<div className="surface-arena min-h-svh" />}>
+    <Suspense
+      fallback={
+        <PublicPageSkeleton label="Carregando os álbuns">
+          <AlbumCardsSkeleton />
+        </PublicPageSkeleton>
+      }
+    >
       <SubEventAlbumsLoader params={params} />
     </Suspense>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminAlbumSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { MatchAlbumLoader } from '@/features/admin-gallery/components/MatchAlbumLoader';
 
@@ -10,7 +11,7 @@ interface MatchPhotosRouteProps {
 
 export default function MatchPhotosRoute({ params }: MatchPhotosRouteProps): ReactElement {
   return (
-    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando as fotos…</p>}>
+    <Suspense fallback={<AdminAlbumSkeleton label="Carregando as fotos" />}>
       <MatchAlbumLoader params={params} />
     </Suspense>
   );

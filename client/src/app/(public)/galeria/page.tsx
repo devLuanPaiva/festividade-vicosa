@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AlbumSectionSkeleton } from '@/features/gallery/components/GallerySkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { PageHero } from '@/components/layout/PageHero';
 import { GalleryIndexLoader } from '@/features/gallery/components/GalleryIndexLoader';
@@ -16,7 +17,7 @@ export default function GalleryRoute(): ReactElement {
         title="Galeria"
         description="Os melhores momentos da festividade, dia a dia."
       />
-      <Suspense fallback={<div className="surface-paper min-h-64" />}>
+      <Suspense fallback={<AlbumSectionSkeleton />}>
         <GalleryIndexLoader />
       </Suspense>
     </>

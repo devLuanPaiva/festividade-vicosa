@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { MatchDetailSkeleton } from '@/components/loading/MatchDetailSkeleton';
 import { Suspense, type ReactElement } from 'react';
 import { MatchDetailLoader } from '@/features/games/components/MatchDetailLoader';
 
@@ -13,7 +14,7 @@ interface MatchRouteProps {
 
 export default function MatchRoute({ params }: MatchRouteProps): ReactElement {
   return (
-    <Suspense fallback={<div className="surface-arena min-h-svh" />}>
+    <Suspense fallback={<MatchDetailSkeleton />}>
       <MatchDetailLoader params={params} />
     </Suspense>
   );

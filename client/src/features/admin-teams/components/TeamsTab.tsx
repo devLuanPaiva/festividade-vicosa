@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import type { Team } from '@/features/games/types';
 import { newTeamPath, teamPath } from '../lib/admin-team-paths';
 import { buildRosterSections } from '../lib/roster-sections';
@@ -17,20 +18,19 @@ function teamDetails(team: Team): string {
 
 function EmptyTeams({ categoryId }: { categoryId: string }): ReactElement {
   return (
-    <section aria-labelledby="no-teams-title" className="flex flex-col items-start gap-2 p-5">
-      <h2 id="no-teams-title" className="font-bold">
-        Nenhum time ainda
-      </h2>
-      <p className="text-sm text-admin-muted">
-        Cadastre os times da categoria para montar os grupos e as partidas.
-      </p>
+    <EmptyState
+      tone="admin"
+      icon="users"
+      title="Nenhum time ainda"
+      description="Cadastre os times da categoria para montar os grupos e as partidas."
+    >
       <Link
         href={newTeamPath(categoryId)}
         className="inline-flex min-h-12 items-center rounded-xl bg-brand-600 px-6 font-semibold text-white hover:bg-brand-700"
       >
         Adicionar time
       </Link>
-    </section>
+    </EmptyState>
   );
 }
 

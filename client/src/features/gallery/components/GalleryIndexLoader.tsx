@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { formatDateRange } from '@/features/schedule/lib/format-date-range';
 import { getEditionSubEvents } from '@/features/schedule/services/get-edition-sub-events';
 import { FESTIVAL_YEAR } from '@/lib/config/festival';
@@ -6,8 +7,6 @@ import { subEventAlbumsPath } from '../lib/gallery-paths';
 import { getSubEventDays } from '../services/get-gallery';
 import { AlbumCard } from './AlbumCard';
 import { GallerySection } from './GallerySection';
-
-const EMPTY_MESSAGE = 'As fotos serão publicadas durante a festividade. Volte em breve!';
 
 export async function GalleryIndexLoader(): Promise<ReactElement> {
   const subEvents = await getEditionSubEvents(FESTIVAL_YEAR);
@@ -18,7 +17,11 @@ export async function GalleryIndexLoader(): Promise<ReactElement> {
   return (
     <GallerySection label="Álbuns por sub-evento">
       {withPhotos.length === 0 ? (
-        <p className="text-lg text-ink-soft">{EMPTY_MESSAGE}</p>
+        <EmptyState
+          icon="image"
+          title="As fotos chegam em breve"
+          description="Os álbuns são publicados durante a festividade. Volte para conferir os melhores momentos!"
+        />
       ) : (
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {withPhotos.map(({ subEvent, days }) => (

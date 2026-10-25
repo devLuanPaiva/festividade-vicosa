@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { PageHero } from '@/components/layout/PageHero';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { formatDateRange } from '@/features/schedule/lib/format-date-range';
@@ -29,7 +30,11 @@ export async function DayAlbumLoader({ params }: DayAlbumLoaderProps): Promise<R
       <PageHero eyebrow={subEvent.name} title={formatDateRange(date, date)} />
       <GallerySection label={`Fotos de ${formatDateRange(date, date)}`}>
         {images.length === 0 ? (
-          <p className="text-lg text-ink-soft">Ainda não há fotos neste dia. Volte em breve!</p>
+          <EmptyState
+            icon="image"
+            title="Ainda não há fotos neste dia"
+            description="As fotos deste dia ainda não foram publicadas. Volte em breve!"
+          />
         ) : (
           <PhotoGallery images={images} />
         )}

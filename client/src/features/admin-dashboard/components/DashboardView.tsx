@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { ADMIN_CATEGORIES_PATH } from '@/features/admin-shell/lib/admin-sections';
 import { buildDayColumns } from '../lib/day-columns';
 import { buildKpiTiles } from '../lib/kpi-tiles';
@@ -17,18 +18,19 @@ interface DashboardViewProps {
 
 function EmptyChampionship(): ReactElement {
   return (
-    <section className="flex flex-col items-start gap-2 rounded-2xl border border-admin-line bg-admin-surface p-5">
-      <h2 className="text-lg font-bold">Nenhuma partida cadastrada ainda</h2>
-      <p className="text-sm text-admin-muted">
-        Cadastre os times e as partidas para acompanhar o andamento do campeonato por aqui.
-      </p>
+    <EmptyState
+      tone="admin"
+      icon="trophy"
+      title="Nenhuma partida cadastrada ainda"
+      description="Cadastre os times e as partidas para acompanhar o andamento do campeonato por aqui."
+    >
       <Link
         href={ADMIN_CATEGORIES_PATH}
         className="inline-flex min-h-12 items-center rounded-xl bg-brand-600 px-6 font-semibold text-white hover:bg-brand-700"
       >
         Ir para o campeonato
       </Link>
-    </section>
+    </EmptyState>
   );
 }
 
