@@ -1,6 +1,7 @@
 import type { Gender, Match, MatchRound } from '../types';
 
 const ROUND_LABELS: Record<MatchRound, string> = {
+  ROUND_OF_32: '16 avos de final',
   ROUND_OF_16: 'Oitavas de final',
   QUARTER_FINAL: 'Quartas de final',
   SEMI_FINAL: 'Semifinal',
