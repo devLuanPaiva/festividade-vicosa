@@ -11,6 +11,7 @@ import { MatchRepository } from './repository/match.repository';
 import { MatchBracketAdvancer } from './services/match-bracket-advancer.service';
 import { MatchBracketGenerator } from './services/match-bracket-generator.service';
 import { MatchFixtureValidator } from './services/match-fixture-validator.service';
+import { MatchMediaService } from './services/match-media.service';
 import { MatchListingService } from './services/match-listing.service';
 import { MatchResultService } from './services/match-result.service';
 import { MatchService } from './services/match.service';
@@ -25,8 +26,9 @@ import { MatchService } from './services/match.service';
     MatchBracketAdvancer,
     MatchBracketGenerator,
     MatchFixtureValidator,
+    MatchMediaService,
     MatchRepository,
   ],
-  exports: [MatchService],
+  exports: [MatchService, MatchMediaService],
 })
 export class MatchModule {}

@@ -11,6 +11,7 @@ import type { CreateCategoryDto } from '../dto/create-category.dto';
 import type { UpdateCategoryDto } from '../dto/update-category.dto';
 import type { Category } from '../entities/category.entity';
 import { CategoryRepository, type CategoryFilters } from '../repository/category.repository';
+import { categoryFolderName } from '../rules/category-folder.rule';
 import { hasChampionship } from '../rules/championship.rule';
 
 @Injectable()
@@ -37,6 +38,12 @@ export class CategoryService {
       );
     }
     return category;
+  }
+
+  public async mediaFolderOf(categoryId: string): Promise<string> {
+    const { subEventId, name, gender } = await this.findByIdOrFail(categoryId);
+    const { type: subEventType } = await this.subEventService.findByIdOrFail(subEventId);
+    return categoryFolderName({ subEventType, name, gender });
   }
 
   public async create(subEventId: string, input: CreateCategoryDto): Promise<Category> {
