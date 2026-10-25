@@ -1,4 +1,5 @@
 import { Suspense, type ReactElement } from 'react';
+import { LoadingRegion, Skeleton } from '@/components/loading/Skeleton';
 import { BracketTab } from '@/features/admin-bracket/components/BracketTab';
 import { MatchesTab } from '@/features/admin-matches/components/MatchesTab';
 import { buildCategoryMatchDays } from '@/features/admin-matches/lib/category-match-days';
@@ -14,7 +15,11 @@ interface CategoryTabPanelProps {
 }
 
 function Loading({ text }: { text: string }): ReactElement {
-  return <p className="text-sm text-admin-muted">{text}</p>;
+  return (
+    <LoadingRegion label={text}>
+      <Skeleton tone="admin" className="h-40 w-full rounded-2xl" />
+    </LoadingRegion>
+  );
 }
 
 const PANELS: Record<CategoryTab, (detail: CategoryDetail) => ReactElement> = {

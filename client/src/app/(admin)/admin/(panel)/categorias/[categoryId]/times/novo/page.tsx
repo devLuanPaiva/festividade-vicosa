@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminFormSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { NewTeamLoader } from '@/features/admin-teams/components/NewTeamLoader';
 
@@ -10,7 +11,7 @@ interface NewTeamRouteProps {
 
 export default function NewTeamRoute({ params }: NewTeamRouteProps): ReactElement {
   return (
-    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando…</p>}>
+    <Suspense fallback={<AdminFormSkeleton label="Carregando o formulário do time" />}>
       <NewTeamLoader params={params} />
     </Suspense>
   );

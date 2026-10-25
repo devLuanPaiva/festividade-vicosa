@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminFormSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { NewMatchLoader } from '@/features/admin-matches/components/NewMatchLoader';
 
@@ -10,7 +11,7 @@ interface NewMatchRouteProps {
 
 export default function NewMatchRoute({ params }: NewMatchRouteProps): ReactElement {
   return (
-    <Suspense fallback={<p className="text-sm text-admin-muted">Carregando…</p>}>
+    <Suspense fallback={<AdminFormSkeleton label="Carregando o formulário da partida" count={5} />}>
       <NewMatchLoader params={params} />
     </Suspense>
   );

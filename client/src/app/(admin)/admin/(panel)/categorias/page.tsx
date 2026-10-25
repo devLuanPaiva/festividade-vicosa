@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminLinksSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { AdminCategoriesLoader } from '@/features/admin-teams/components/AdminCategoriesLoader';
 
@@ -13,7 +14,7 @@ export default function AdminCategoriesPage(): ReactElement {
           Escolha uma categoria para gerir os grupos e os times dela.
         </p>
       </header>
-      <Suspense fallback={<p className="text-sm text-admin-muted">Carregando categorias…</p>}>
+      <Suspense fallback={<AdminLinksSkeleton label="Carregando categorias" />}>
         <AdminCategoriesLoader />
       </Suspense>
     </>
