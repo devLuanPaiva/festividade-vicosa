@@ -59,6 +59,13 @@ describe('buildErrorResponse', () => {
     expect(response.message).toBe('Muitas requisições');
   });
 
+  it('tells in portuguese that an uploaded file is too big', () => {
+    const response = respond(new HttpException('File too large', HttpStatus.PAYLOAD_TOO_LARGE));
+
+    expect(response.errors.code).toBe('PAYLOAD_TOO_LARGE');
+    expect(response.errors.detail).toBe('O arquivo enviado é grande demais. O limite é de 10 MB.');
+  });
+
   it('never leaks the message of an unexpected error', () => {
     const response = respond(new Error('relation "users" does not exist'));
 
