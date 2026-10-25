@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { CardGridSkeleton } from '@/components/loading/CardGridSkeleton';
+import { PublicPageSkeleton } from '@/components/loading/PublicPageSkeleton';
 import { Suspense, type ReactElement } from 'react';
 import { CategoryLoader } from '@/features/games/components/CategoryLoader';
 
@@ -13,7 +15,13 @@ interface CategoryRouteProps {
 
 export default function CategoryRoute({ params }: CategoryRouteProps): ReactElement {
   return (
-    <Suspense fallback={<div className="surface-arena min-h-svh" />}>
+    <Suspense
+      fallback={
+        <PublicPageSkeleton label="Carregando a categoria">
+          <CardGridSkeleton count={4} />
+        </PublicPageSkeleton>
+      }
+    >
       <CategoryLoader params={params} />
     </Suspense>
   );

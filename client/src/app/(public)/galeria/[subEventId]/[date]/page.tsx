@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { PublicPageSkeleton } from '@/components/loading/PublicPageSkeleton';
+import { DayPhotosSkeleton } from '@/features/gallery/components/GallerySkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { DayAlbumLoader } from '@/features/gallery/components/DayAlbumLoader';
 
@@ -13,7 +15,13 @@ interface DayAlbumRouteProps {
 
 export default function DayAlbumRoute({ params }: DayAlbumRouteProps): ReactElement {
   return (
-    <Suspense fallback={<div className="surface-arena min-h-svh" />}>
+    <Suspense
+      fallback={
+        <PublicPageSkeleton label="Carregando as fotos">
+          <DayPhotosSkeleton />
+        </PublicPageSkeleton>
+      }
+    >
       <DayAlbumLoader params={params} />
     </Suspense>
   );
