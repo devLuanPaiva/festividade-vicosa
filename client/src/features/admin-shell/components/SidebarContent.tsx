@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactElement, ReactNode } from 'react';
 import { Icon } from '@/components/ui/Icon';
-import { ADMIN_MATCHES_PATH, isActiveSection, visibleSections } from '../lib/admin-sections';
+import { ADMIN_HOME_PATH } from '@/lib/auth/auth-paths';
+import { isActiveSection, visibleSections } from '../lib/admin-sections';
 import type { ShellUser } from '../types';
 import { SidebarLink } from './SidebarLink';
 import { SidebarUser } from './SidebarUser';
@@ -19,7 +20,7 @@ interface SidebarContentProps {
 function Brand({ isCollapsed }: { isCollapsed: boolean }): ReactElement {
   return (
     <Link
-      href={ADMIN_MATCHES_PATH}
+      href={ADMIN_HOME_PATH}
       className="flex min-h-14 min-w-0 flex-1 items-center gap-3 px-3 text-white"
       aria-label="Painel da Festividade, ir para o início"
     >

@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 import { Suspense, type ReactElement } from 'react';
-import { AdminMatchesLoader } from '@/features/admin-matches/components/AdminMatchesLoader';
+import { DashboardLoader } from '@/features/admin-dashboard/components/DashboardLoader';
+import { DashboardSkeleton } from '@/features/admin-dashboard/components/DashboardSkeleton';
 
-export const metadata: Metadata = { title: 'Jogos' };
+export const metadata: Metadata = { title: 'Início' };
 
 export default function AdminHomePage(): ReactElement {
   return (
-    <>
-      <h1 className="text-2xl font-bold">Lançar placar</h1>
-      <Suspense fallback={<p className="text-sm text-admin-muted">Carregando jogos…</p>}>
-        <AdminMatchesLoader />
-      </Suspense>
-    </>
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardLoader />
+    </Suspense>
   );
 }
