@@ -91,12 +91,13 @@ flowchart LR
 
   | Tipo | Pasta e nome (sem a variante) |
   |------|-------------------------------|
-  | Foto do time | `teams/{teamId}/team-{chave}` |
-  | Foto de partida (mural) | `matches/{matchId}/photos/photo-{chave}` |
-  | Foto do melhor jogador | `matches/{matchId}/best-player/best-player-{chave}` |
-  | Galeria do sub-evento por dia | `sub-events/{subEventId}/{AAAA-MM-DD}/photo-{chave}` |
-  | História | `history/{itemId}/photo-{chave}` |
+  | Foto do time | `teams/{categoria}/{time}/team-{chave}` |
+  | Foto de partida (mural) | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/photos/photo-{chave}` |
+  | Foto do melhor jogador | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/best-player/best-player-{chave}` |
+  | Galeria do sub-evento por dia | `sub-events/{sub-evento}/{AAAA-MM-DD}/photo-{chave}` |
+  | História | `history/{ano}/{item}/photo-{chave}` |
 
+- **Pastas legíveis:** os nomes das pastas são slugs (minúsculas, números e hífens), sem espaços nem acentos. `{categoria}` é modalidade + nome + gênero (`futsal-sub-15-masculino`; o gênero não repete se o nome já o traz), `{time}` é o slug do time, `{sub-evento}` é o tipo (`jocev-futsal`) e o horário da partida é o de Fortaleza no momento do envio. Trocar a data da partida depois não move arquivos já enviados: a chave guardada no banco continua valendo.
 - **Nome padronizado:** `{nome-padrão}-{chave}-{variante}.webp`. O nome padrão depende do tipo (`team`, `photo`, `best-player`) e a `{chave}` são 24 caracteres hexadecimais aleatórios (12 bytes). O nome que o arquivo tinha no celular nunca é usado nem gravado.
 - O banco guarda só a **chave-base** (a coluna `photo_key`/`storage_key`, sem a variante nem a extensão). A URL pública de cada tamanho é `https://cdn.jocevs.com.br/{chave-base}-{thumb|medium|large}.webp`.
 - Cada arquivo sobe com `Cache-Control: public, max-age=31536000, immutable`: como a chave muda a cada troca, o cache nunca fica velho.

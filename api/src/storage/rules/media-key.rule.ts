@@ -11,20 +11,23 @@ export type ImageVariant = (typeof IMAGE_VARIANTS)[number];
 
 export interface MediaTarget {
   folder: MediaFolder;
-  ownerId: string;
-  day?: string;
+  segments: string[];
 }
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const SEGMENT_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const IMAGE_EXTENSION = 'webp';
 
-const FOLDER_PATHS: Record<MediaFolder, (ownerId: string, day: string) => string> = {
-  [MediaFolder.TEAM_PHOTO]: (ownerId) => `teams/${ownerId}`,
-  [MediaFolder.MATCH_PHOTO]: (ownerId) => `matches/${ownerId}/photos`,
-  [MediaFolder.BEST_PLAYER]: (ownerId) => `matches/${ownerId}/best-player`,
-  [MediaFolder.EVENT_PHOTO]: (ownerId, day) => `sub-events/${ownerId}/${day}`,
-  [MediaFolder.HISTORY_PHOTO]: (ownerId) => `history/${ownerId}`,
+const ROOT_FOLDERS: Record<MediaFolder, string> = {
+  [MediaFolder.TEAM_PHOTO]: 'teams',
+  [MediaFolder.MATCH_PHOTO]: 'matches',
+  [MediaFolder.BEST_PLAYER]: 'matches',
+  [MediaFolder.EVENT_PHOTO]: 'sub-events',
+  [MediaFolder.HISTORY_PHOTO]: 'history',
+};
+
+const SUBFOLDERS: Partial<Record<MediaFolder, string>> = {
+  [MediaFolder.MATCH_PHOTO]: 'photos',
+  [MediaFolder.BEST_PLAYER]: 'best-player',
 };
 
 const STANDARD_NAMES: Record<MediaFolder, string> = {
@@ -38,15 +41,15 @@ const STANDARD_NAMES: Record<MediaFolder, string> = {
 const MANAGED_PREFIXES = ['teams/', 'matches/', 'sub-events/', 'history/'];
 
 export function buildMediaBaseKey(target: MediaTarget, randomKey: string): string {
-  if (!UUID_PATTERN.test(target.ownerId)) {
-    throw new Error('The owner of a media file must be identified by a UUID.');
+  const { folder, segments } = target;
+  if (segments.length === 0 || !segments.every((segment) => SEGMENT_PATTERN.test(segment))) {
+    throw new Error(
+      'Each folder of a media file must be written in lowercase letters, digits and hyphens.',
+    );
   }
-  const day = target.day ?? '';
-  if (target.folder === MediaFolder.EVENT_PHOTO && !DAY_PATTERN.test(day)) {
-    throw new Error('A gallery photo needs the day it belongs to, as YYYY-MM-DD.');
-  }
-  const folderPath = FOLDER_PATHS[target.folder](target.ownerId, day);
-  return `${folderPath}/${STANDARD_NAMES[target.folder]}-${randomKey}`;
+  const subfolder = SUBFOLDERS[folder];
+  const folders = [ROOT_FOLDERS[folder], ...segments, ...(subfolder ? [subfolder] : [])];
+  return `${folders.join('/')}/${STANDARD_NAMES[folder]}-${randomKey}`;
 }
 
 export function variantKey(baseKey: string, variant: ImageVariant): string {

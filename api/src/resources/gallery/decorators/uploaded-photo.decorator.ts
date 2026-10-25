@@ -1,7 +1,7 @@
 import { createParamDecorator, UnauthorizedException, type ExecutionContext } from '@nestjs/common';
 import { requireUploadedImage } from '../../../storage/upload/image-upload';
 import type { AuthenticatedRequest } from '../../auth/dto/authenticated-user.dto';
-import type { PhotoUpload } from '../services/photo-upload.service';
+import type { PhotoUpload } from '../services/photo-store.service';
 
 type UploadRequest = AuthenticatedRequest & { file?: Express.Multer.File };
 

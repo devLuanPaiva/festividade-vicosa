@@ -3,8 +3,8 @@ import type { ImageProcessor, ProcessedImage } from './image-processor.service';
 import { MediaUploadService } from './media-upload.service';
 import type { S3StorageService } from './s3-storage.service';
 
-const OWNER = '3f2a6b1c-9d4e-4f70-8a15-0c2b7e9d1a44';
-const BASE_KEY = `teams/${OWNER}/team-0123456789abcdef01234567`;
+const TEAM_FOLDERS = ['futsal-sub-15-masculino', 'centro'];
+const BASE_KEY = `teams/futsal-sub-15-masculino/centro/team-0123456789abcdef01234567`;
 
 const IMAGES: ProcessedImage[] = (['thumb', 'medium', 'large'] as const).map((variant) => ({
   variant,
@@ -33,7 +33,7 @@ function createFixture(): {
   return { service, storage, processor };
 }
 
-const TARGET = { folder: MediaFolder.TEAM_PHOTO, ownerId: OWNER };
+const TARGET = { folder: MediaFolder.TEAM_PHOTO, segments: TEAM_FOLDERS };
 
 describe('MediaUploadService.upload', () => {
   it('saves the three sizes next to each other and returns the key that names them all', async () => {

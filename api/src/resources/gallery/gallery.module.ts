@@ -11,6 +11,8 @@ import { Photo } from './entities/photo.entity';
 import { AlbumRepository } from './repository/album.repository';
 import { PhotoRepository } from './repository/photo.repository';
 import { AlbumService } from './services/album.service';
+import { AlbumTargetService } from './services/album-target.service';
+import { PhotoStoreService } from './services/photo-store.service';
 import { GalleryService } from './services/gallery.service';
 import { PhotoManagementService } from './services/photo-management.service';
 import { PhotoUploadService } from './services/photo-upload.service';
@@ -20,6 +22,8 @@ import { PhotoUploadService } from './services/photo-upload.service';
   controllers: [GalleryController, MatchPhotoController, PhotoController],
   providers: [
     AlbumService,
+    AlbumTargetService,
+    PhotoStoreService,
     GalleryService,
     PhotoUploadService,
     PhotoManagementService,
