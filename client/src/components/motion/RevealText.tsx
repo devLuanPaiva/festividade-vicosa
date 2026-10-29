@@ -61,7 +61,7 @@ export function RevealText({
       >
         {text.split(' ').map((word, index) => (
           <Fragment key={`${word}-${index}`}>
-            <span className="inline-block overflow-hidden pb-[0.1em] align-bottom">
+            <span className="mt-[-0.25em] inline-block overflow-hidden pt-[0.25em] pb-[0.1em] align-bottom">
               <motion.span className="inline-block origin-bottom-left" variants={wordVariants}>
                 {word}
               </motion.span>

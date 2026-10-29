@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next';
 
+const LAN_DEV_ORIGINS = ['192.168.*.*', '10.*.*.*', '172.*.*.*'];
+
 const nextConfig: NextConfig = {
+  allowedDevOrigins: LAN_DEV_ORIGINS,
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {
