@@ -12,7 +12,7 @@ export function Marquee({ items, reverse = false, className = '' }: MarqueeProps
   const animationClassName = reverse ? 'animate-marquee-reverse' : 'animate-marquee';
 
   return (
-    <div aria-hidden="true" className={`flex overflow-hidden ${className}`}>
+    <div aria-hidden="true" className={`flex overflow-hidden pt-[0.2em] ${className}`}>
       <ul className={`flex w-max shrink-0 items-center ${animationClassName}`}>
         {loopedItems.map((item, index) => (
           <li key={`${item}-${index}`} className="flex items-center gap-6 pr-6">
