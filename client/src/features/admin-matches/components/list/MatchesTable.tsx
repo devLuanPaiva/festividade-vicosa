@@ -62,7 +62,7 @@ function Row({ row }: { row: MatchListRow }): ReactElement {
 
 export function MatchesTable({ rows, query }: MatchesTableProps): ReactElement {
   return (
-    <div className="overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <table className="w-full min-w-[56rem] border-collapse">
         <caption className="sr-only">Partidas do campeonato</caption>
         <thead className="bg-admin-canvas">

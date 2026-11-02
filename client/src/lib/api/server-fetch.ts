@@ -54,6 +54,11 @@ export async function sendApiRequest<T>(path: string, options: RequestOptions): 
   return body.result;
 }
 
+export async function sendApiPageRequest<T>(path: string, options: RequestOptions): Promise<T[]> {
+  const body = (await requestJson(path, options)) as ApiPage<T>;
+  return body.results;
+}
+
 export async function sendApiCommand(path: string, options: RequestOptions): Promise<void> {
   await requestJson(path, options);
 }

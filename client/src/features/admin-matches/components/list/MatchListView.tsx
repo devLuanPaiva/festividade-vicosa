@@ -43,12 +43,12 @@ function ResultsFrame({
       ) : (
         <>
           {showTable ? (
-            <div className={query.view === 'auto' ? 'hidden md:block' : ''}>
+            <div className={query.view === 'auto' ? 'hidden lg:block' : ''}>
               <MatchesTable rows={page.items} query={query} />
             </div>
           ) : null}
           {showCards ? (
-            <div className={query.view === 'auto' ? 'md:hidden' : ''}>
+            <div className={query.view === 'auto' ? 'lg:hidden' : ''}>
               <MatchCards rows={page.items} />
             </div>
           ) : null}

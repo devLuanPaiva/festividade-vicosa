@@ -6,7 +6,7 @@ import {
 } from '@/features/admin-qualified/lib/order-teams-by-position';
 import { toBracketRows } from '@/features/admin-suggestions/lib/suggestion-rows';
 import type { BracketMatchSuggestion } from '@/features/admin-suggestions/types';
-import { requestAdminResult } from '@/lib/api/submit-admin-request';
+import { requestAdminList } from '@/lib/api/submit-admin-request';
 import { BRACKET_ERROR_FIELD, type BracketFormState } from '../types';
 
 export async function suggestBracketAction(
@@ -19,7 +19,7 @@ export async function suggestBracketAction(
   if (!ordered.ok) {
     return { errorMessage: ordered.message, errorField: BRACKET_ERROR_FIELD, values, rows: null };
   }
-  const outcome = await requestAdminResult<BracketMatchSuggestion[]>(
+  const outcome = await requestAdminList<BracketMatchSuggestion>(
     `/categories/${encodeURIComponent(categoryId)}/bracket/suggestion`,
     { method: 'POST', body: { teamIds: ordered.teamIds } },
   );

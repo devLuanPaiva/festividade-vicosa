@@ -18,7 +18,7 @@ export function MatchDayGroup({ day }: MatchDayGroupProps): ReactElement {
           {day.heading}
         </h2>
       </Reveal>
-      <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {day.matches.map((match, index) => (
           <li key={match.id}>
             <Reveal delay={Math.min(index, 5) * 0.06} className="h-full">
