@@ -9,17 +9,18 @@ import { TrajectorySection } from './components/trajectory/TrajectorySection';
 import { marqueeBottomItems, marqueeTopItems } from './data/home-content';
 
 export interface HomePageProps {
+  modalitiesContent: ReactNode;
   programContent: ReactNode;
 }
 
-export function HomePage({ programContent }: HomePageProps): ReactElement {
+export function HomePage({ modalitiesContent, programContent }: HomePageProps): ReactElement {
   return (
     <>
       <HeroSection />
       <StatsSection />
       <TrajectorySection />
       <MarqueeBand items={marqueeTopItems} />
-      <ModalitiesSection />
+      <ModalitiesSection>{modalitiesContent}</ModalitiesSection>
       <ProgramSection>{programContent}</ProgramSection>
       <MarqueeBand items={marqueeBottomItems} reverse tilt="right" />
       <ClosingSection />

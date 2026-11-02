@@ -26,7 +26,7 @@ export function SubEventGrid({ subEvents }: SubEventGridProps): ReactElement {
     <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {subEvents.map((subEvent, index) => (
         <li key={subEvent.id}>
-          <Reveal delay={(index % 3) * 0.1} direction="scale">
+          <Reveal delay={(index % 3) * 0.1} direction="scale" className="h-full">
             <SubEventCard subEvent={subEvent} />
           </Reveal>
         </li>

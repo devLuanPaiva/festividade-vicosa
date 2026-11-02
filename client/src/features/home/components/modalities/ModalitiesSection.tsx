@@ -1,13 +1,14 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { Section } from '@/components/layout/Section';
-import { Reveal } from '@/components/motion/Reveal';
 import { RevealText } from '@/components/motion/RevealText';
-import { TiltCard } from '@/components/motion/TiltCard';
 import { ButtonLink } from '@/components/ui/ButtonLink';
-import { modalities } from '../../data/home-content';
-import { ModalityCard } from './ModalityCard';
+import { buildGamesHref } from '@/features/games/lib/game-filters';
 
-export function ModalitiesSection(): ReactElement {
+interface ModalitiesSectionProps {
+  children: ReactNode;
+}
+
+export function ModalitiesSection({ children }: ModalitiesSectionProps): ReactElement {
   return (
     <Section tone="arena" id="modalidades" labelledBy="modalities-title">
       <RevealText
@@ -19,19 +20,12 @@ export function ModalitiesSection(): ReactElement {
         Campeonato de futsal e handebol, vôlei de areia e festival cultural. Em breve, grupos,
         placares e fotos de cada partida.
       </p>
-      <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {modalities.map((modality, index) => (
-          <li key={modality.name}>
-            <Reveal delay={index * 0.1}>
-              <TiltCard>
-                <ModalityCard modality={modality} />
-              </TiltCard>
-            </Reveal>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-12">
-        <ButtonLink href="/#programacao">Ver a programação</ButtonLink>
+      {children}
+      <p className="mt-8 text-sm font-semibold text-sun">
+        Toque em um card para ir direto à página daquela modalidade.
+      </p>
+      <div className="mt-6">
+        <ButtonLink href={buildGamesHref({ scope: 'proximos' })}>Ver jogos</ButtonLink>
       </div>
     </Section>
   );
