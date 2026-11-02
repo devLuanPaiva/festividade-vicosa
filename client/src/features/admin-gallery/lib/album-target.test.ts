@@ -5,8 +5,8 @@ const DAY = { kind: 'event-day', subEventId: 'sub-1', date: '2026-12-09' } as co
 const MATCH = { kind: 'match', matchId: 'match-1' } as const;
 
 describe('album paths', () => {
-  it('lists the photos of a day and uploads to its photos route', () => {
-    expect(albumListPath(DAY)).toBe('/sub-events/sub-1/gallery/2026-12-09');
+  it('lists the uploads of a day and sends photos to its photos route', () => {
+    expect(albumListPath(DAY)).toBe('/sub-events/sub-1/gallery/2026-12-09/uploads');
     expect(albumUploadPath(DAY)).toBe('/sub-events/sub-1/gallery/2026-12-09/photos');
   });
 

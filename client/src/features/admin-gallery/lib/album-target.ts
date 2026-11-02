@@ -1,13 +1,23 @@
 import type { AlbumTarget } from '../types';
 
+function eventDayPath(subEventId: string, date: string): string {
+  return `/sub-events/${encodeURIComponent(subEventId)}/gallery/${encodeURIComponent(date)}`;
+}
+
+function matchPhotosApiPath(matchId: string): string {
+  return `/matches/${encodeURIComponent(matchId)}/photos`;
+}
+
 export function albumListPath(target: AlbumTarget): string {
   if (target.kind === 'match') {
-    return `/matches/${encodeURIComponent(target.matchId)}/photos`;
+    return matchPhotosApiPath(target.matchId);
   }
-  const subEventId = encodeURIComponent(target.subEventId);
-  return `/sub-events/${subEventId}/gallery/${encodeURIComponent(target.date)}`;
+  return `${eventDayPath(target.subEventId, target.date)}/uploads`;
 }
 
 export function albumUploadPath(target: AlbumTarget): string {
-  return target.kind === 'match' ? albumListPath(target) : `${albumListPath(target)}/photos`;
+  if (target.kind === 'match') {
+    return matchPhotosApiPath(target.matchId);
+  }
+  return `${eventDayPath(target.subEventId, target.date)}/photos`;
 }
