@@ -1,14 +1,15 @@
 import type { ReactElement } from 'react';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { getAdminCategories } from '@/features/admin-teams/services/get-admin-categories';
-import { requireCurrentUser, requireSessionToken } from '@/lib/auth/current-user';
+import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
 import { CHOOSE_CATEGORY_FOR_MATCH_PATH, newMatchPath } from '../../lib/admin-match-paths';
 import { buildActiveFilters } from '../../lib/match-list-chips';
-import { buildMatchListData } from '../../lib/match-list-data';
+import { buildScopeParams, situationParam, toStatusCounts } from '../../lib/match-list-api';
 import { buildDayOptions } from '../../lib/match-list-options';
 import { parseMatchListQuery, type RawSearchParams } from '../../lib/match-list-query';
-import { getAdminMatches } from '../../services/get-admin-matches';
+import { toMatchListRow } from '../../lib/match-list-row';
+import { getMatchDays, getMatchPage, getMatchSituations } from '../../services/get-match-page';
 import { MatchListView } from './MatchListView';
 
 interface MatchListLoaderProps {
@@ -23,24 +24,35 @@ export async function MatchListLoader({
     return <NoPermission action="lançar placares" />;
   }
   const query = parseMatchListQuery(await searchParams);
-  const [matches, modalities] = await Promise.all([
-    getAdminMatches(await requireSessionToken()),
+  const scope = buildScopeParams(query);
+  const [page, counts, dayValues, modalities] = await Promise.all([
+    getMatchPage({
+      scope,
+      situation: situationParam(query.status),
+      order: query.order,
+      page: query.page,
+      pageSize: query.pageSize,
+    }),
+    getMatchSituations(scope),
+    getMatchDays({}),
     getAdminCategories(),
   ]);
-  const days = buildDayOptions(matches);
-  const canCreate = hasPermission(user, 'match:create');
+  const now = new Date();
+  const days = buildDayOptions(dayValues);
+  const activeFilters = buildActiveFilters(query, modalities, days);
   const newMatchHref = query.categoryId
     ? newMatchPath(query.categoryId)
     : CHOOSE_CATEGORY_FOR_MATCH_PATH;
   return (
     <MatchListView
       query={query}
-      {...buildMatchListData(matches, query, new Date())}
+      page={{ ...page, items: page.items.map((match) => toMatchListRow(match, now)) }}
+      counts={toStatusCounts(counts)}
       modalities={modalities}
       days={days}
-      activeFilters={buildActiveFilters(query, modalities, days)}
-      hasAnyMatch={matches.length > 0}
-      newMatchHref={canCreate ? newMatchHref : null}
+      activeFilters={activeFilters}
+      hasAnyMatch={page.total > 0 || activeFilters.length > 0}
+      newMatchHref={hasPermission(user, 'match:create') ? newMatchHref : null}
     />
   );
 }

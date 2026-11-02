@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import type { StatusCounts } from '../../lib/match-list-filter';
 import {
   buildMatchListHref,
   type MatchListQuery,
+  type StatusCounts,
   type StatusFilter,
 } from '../../lib/match-list-query';
 
@@ -31,7 +31,10 @@ function toneFor(isActive: boolean, needsAttention: boolean): string {
 
 export function StatusCounters({ query, counts }: StatusCountersProps): ReactElement {
   return (
-    <nav aria-label="Situação das partidas" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+    <nav
+      aria-label="Situação das partidas"
+      className="-mx-1 flex gap-2 overflow-x-auto scrollbar-hidden px-1 pb-1"
+    >
       {STATUS_LABELS.map(([status, label]) => {
         const isActive = query.status === status;
         const needsAttention = status === 'atrasadas' && counts[status] > 0;
