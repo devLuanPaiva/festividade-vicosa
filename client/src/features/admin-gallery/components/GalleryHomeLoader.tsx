@@ -18,9 +18,7 @@ export async function GalleryHomeLoader(): Promise<ReactElement> {
   return (
     <>
       <GalleryBreadcrumb title="Galeria de fotos" />
-      <p className="text-sm text-admin-muted">
-        Escolha o sub-evento para ver os dias e enviar fotos.
-      </p>
+      <p className="text-sm text-admin-muted">Escolha o evento para enviar fotos.</p>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {subEvents.map((subEvent) => (
           <li key={subEvent.id}>

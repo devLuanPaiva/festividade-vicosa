@@ -4,12 +4,20 @@ export function matchResultPath(matchId: string): string {
   return `${ADMIN_MATCHES_PATH}/${matchId}`;
 }
 
-export function matchPhotosPath(matchId: string): string {
-  return `${matchResultPath(matchId)}/fotos`;
-}
-
 export function subEventGalleryPath(subEventId: string): string {
   return `${ADMIN_GALLERY_PATH}/${subEventId}`;
+}
+
+export function subEventDaysPath(subEventId: string): string {
+  return `${subEventGalleryPath(subEventId)}/dias`;
+}
+
+export function subEventMatchesPath(subEventId: string): string {
+  return `${subEventGalleryPath(subEventId)}/partidas`;
+}
+
+export function matchGalleryPath(subEventId: string, matchId: string): string {
+  return `${subEventMatchesPath(subEventId)}/${matchId}`;
 }
 
 export function dayGalleryPath(subEventId: string, date: string): string {
