@@ -10,6 +10,7 @@ import { MatchListingController } from './controllers/match-listing.controller';
 import { MatchSuggestionController } from './controllers/match-suggestion.controller';
 import { Match } from './entities/match.entity';
 import { MatchRepository } from './repository/match.repository';
+import { MatchSearchRepository } from './repository/match-search.repository';
 import { BestPlayerPhotoService } from './services/best-player-photo.service';
 import { BracketSuggestionService } from './services/bracket-suggestion.service';
 import { GroupFixtureSuggestionService } from './services/group-fixture-suggestion.service';
@@ -45,6 +46,7 @@ import { MatchService } from './services/match.service';
     MatchFixtureValidator,
     MatchMediaService,
     MatchRepository,
+    MatchSearchRepository,
   ],
   exports: [MatchService, MatchMediaService],
 })

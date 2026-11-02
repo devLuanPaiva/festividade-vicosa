@@ -19,7 +19,7 @@ export interface PaginatedResponse {
   results: unknown[];
 }
 
-const DEFAULT_LIMIT = 100;
+export const DEFAULT_PAGE_LIMIT = 100;
 
 function parsePositiveInteger(value: unknown, fallback: number, minimum: number): number {
   const parsed = typeof value === 'string' ? Number.parseInt(value, 10) : Number.NaN;
@@ -29,7 +29,7 @@ function parsePositiveInteger(value: unknown, fallback: number, minimum: number)
 export function parsePageWindow(query: Record<string, unknown>): PageWindow {
   return {
     offset: parsePositiveInteger(query.offset, 0, 0),
-    limit: parsePositiveInteger(query.limit, DEFAULT_LIMIT, 1),
+    limit: parsePositiveInteger(query.limit, DEFAULT_PAGE_LIMIT, 1),
   };
 }
 

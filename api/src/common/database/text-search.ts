@@ -7,6 +7,10 @@ function escapeLikeCharacters(text: string): string {
   return text.replace(LIKE_SPECIAL_CHARACTERS, ESCAPED_MATCH);
 }
 
+export function escapeLikeText(text: string): string {
+  return escapeLikeCharacters(text);
+}
+
 export function containsText(text: string): FindOperator<string> {
   const escaped = escapeLikeCharacters(text.trim());
   return ILike(`%${escaped}%`);
