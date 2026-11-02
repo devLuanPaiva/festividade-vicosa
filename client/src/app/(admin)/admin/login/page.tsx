@@ -15,7 +15,7 @@ export default function AdminLoginPage({ searchParams }: AdminLoginPageProps): R
   return (
     <main className="grid min-h-dvh lg:grid-cols-2">
       <LoginBrandPanel />
-      <section className="-mt-8 flex flex-1 items-start justify-center rounded-t-3xl bg-admin-canvas px-4 pb-10 pt-8 lg:mt-0 lg:items-center lg:rounded-none lg:px-10 lg:py-16">
+      <section className="-mt-8 flex flex-1 items-start justify-center rounded-t-3xl bg-admin-canvas px-4 pb-10 pt-14 lg:mt-0 lg:items-center lg:rounded-none lg:px-10 lg:py-16">
         <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl border border-admin-line bg-admin-surface p-6 shadow-sm sm:p-8">
           <header className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
