@@ -1,119 +1,151 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { RoleCode } from '../../role/enums/role-code.enum';
-import type { RoleRepository } from '../../role/repository/role.repository';
+import type { UserRoleRepository } from '../../role/repository/user-role.repository';
 import type { UserRepository } from '../repository/user.repository';
 import type { PasswordHasher } from './password-hasher';
 import { UserService } from './user.service';
 
+const USER_ID = '00000000-0000-4000-8000-000000000008';
+const OTHER_USER_ID = '00000000-0000-4000-8000-000000000009';
+const ROLE_ID = '00000000-0000-4000-8000-000000000003';
+
 type UserRepositoryMock = Record<
-  | 'findAll'
-  | 'findById'
-  | 'findByEmail'
-  | 'findActiveByEmail'
-  | 'findActiveById'
-  | 'create'
-  | 'updateAccount',
+  'findAll' | 'findById' | 'findByEmail' | 'create' | 'update',
   jest.Mock
 >;
 
-const storedUser = {
-  id: '00000000-0000-4000-8000-000000000008',
-  name: 'Ana',
-  roleId: '00000000-0000-4000-8000-000000000003',
-};
+const storedUser = { id: USER_ID, name: 'Ana', email: 'ana@example.com' };
 
 function createFixture(): {
   service: UserService;
   userRepository: UserRepositoryMock;
-  roleRepository: Record<'findByCodeOrFail', jest.Mock>;
+  userRoleRepository: Record<'findByUserIds' | 'findUserIdsByRoleId', jest.Mock>;
 } {
   const userRepository: UserRepositoryMock = {
-    findAll: jest.fn(),
+    findAll: jest.fn().mockResolvedValue([storedUser]),
     findById: jest.fn().mockResolvedValue(storedUser),
     findByEmail: jest.fn().mockResolvedValue(null),
-    findActiveByEmail: jest.fn(),
-    findActiveById: jest.fn(),
-    create: jest.fn((record: object) =>
-      Promise.resolve({ id: '00000000-0000-4000-8000-000000000008', ...record }),
-    ),
-    updateAccount: jest.fn().mockResolvedValue(undefined),
+    create: jest.fn().mockResolvedValue(storedUser),
+    update: jest.fn().mockResolvedValue(undefined),
   };
-  const roleRepository = {
-    findByCodeOrFail: jest
-      .fn()
-      .mockResolvedValue({ id: '00000000-0000-4000-8000-000000000003', code: RoleCode.ADMIN }),
+  const userRoleRepository = {
+    findByUserIds: jest.fn().mockResolvedValue([{ userId: USER_ID, roleId: ROLE_ID }]),
+    findUserIdsByRoleId: jest.fn().mockResolvedValue([USER_ID]),
   };
-  const passwordHasher = { hash: jest.fn().mockResolvedValue('hashed-password') };
   const service = new UserService(
     userRepository as unknown as UserRepository,
-    roleRepository as unknown as RoleRepository,
-    passwordHasher as unknown as PasswordHasher,
+    userRoleRepository as unknown as UserRoleRepository,
+    { hash: jest.fn().mockResolvedValue('hashed-password') } as unknown as PasswordHasher,
   );
-  return { service, userRepository, roleRepository };
+  return { service, userRepository, userRoleRepository };
 }
 
-const newUser = { name: 'Ana', email: 'ana@example.com', password: 'a-long-password' };
+const newUser = { name: 'Ana', email: 'Ana@Example.com', password: 'a-long-password' };
 
 describe('UserService queries', () => {
   it('throws not found when the user does not exist', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(
-      service.findByIdOrFail('00000000-0000-4000-8000-000000000099'),
-    ).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.findByIdOrFail(OTHER_USER_ID)).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('lists each user with the groups of that user only', async () => {
+    const { service, userRepository, userRoleRepository } = createFixture();
+    userRepository.findAll.mockResolvedValue([storedUser, { id: OTHER_USER_ID }]);
+    userRoleRepository.findByUserIds.mockResolvedValue([
+      { userId: OTHER_USER_ID, roleId: ROLE_ID },
+    ]);
+
+    const [first, second] = await service.list({});
+
+    expect(first?.userRoles).toEqual([]);
+    expect(second?.userRoles).toHaveLength(1);
+  });
+
+  it('filters the list by group through the ids of the users in it', async () => {
+    const { service, userRepository } = createFixture();
+
+    await service.list({ roleId: ROLE_ID, active: true });
+
+    expect(userRepository.findAll).toHaveBeenCalledWith({ active: true, ids: [USER_ID] });
   });
 });
 
-describe('UserService commands', () => {
-  it('creates a user with a hashed password and the id of the requested role', async () => {
-    const { service, roleRepository, userRepository } = createFixture();
+describe('UserService.create', () => {
+  it('creates the user with a hashed password and the group as the primary one', async () => {
+    const { service, userRepository } = createFixture();
 
-    await service.createWithRole(RoleCode.ADMIN, newUser);
+    await service.create(ROLE_ID, newUser);
 
-    expect(roleRepository.findByCodeOrFail).toHaveBeenCalledWith(RoleCode.ADMIN);
     expect(userRepository.create).toHaveBeenCalledWith({
       name: 'Ana',
-      email: 'ana@example.com',
+      email: 'Ana@Example.com',
       passwordHash: 'hashed-password',
-      roleId: '00000000-0000-4000-8000-000000000003',
+      roleId: ROLE_ID,
     });
   });
 
-  it('creates a user and returns it reloaded with the role', async () => {
-    const { service } = createFixture();
+  it('refuses an email that is already registered', async () => {
+    const { service, userRepository } = createFixture();
+    userRepository.findByEmail.mockResolvedValue({ id: OTHER_USER_ID });
 
-    await expect(service.create(RoleCode.MANAGER, newUser)).resolves.toBe(storedUser);
+    await expect(service.create(ROLE_ID, newUser)).rejects.toBeInstanceOf(ConflictException);
+    expect(userRepository.create).not.toHaveBeenCalled();
+  });
+});
+
+describe('UserService.update', () => {
+  it('changes only the fields that were sent', async () => {
+    const { service, userRepository } = createFixture();
+
+    await service.update(USER_ID, { name: 'Ana Maria', password: 'new-password' });
+
+    expect(userRepository.update).toHaveBeenCalledWith(USER_ID, {
+      name: 'Ana Maria',
+      passwordHash: 'hashed-password',
+    });
   });
 
-  it('refuses to create a user whose email is already registered', async () => {
+  it('stores the email in lower case', async () => {
+    const { service, userRepository } = createFixture();
+
+    await service.update(USER_ID, { email: 'ANA@Example.com' });
+
+    expect(userRepository.update).toHaveBeenCalledWith(USER_ID, { email: 'ana@example.com' });
+  });
+
+  it('lets the user keep their own email', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findByEmail.mockResolvedValue(storedUser);
 
-    await expect(service.create(RoleCode.MANAGER, newUser)).rejects.toBeInstanceOf(
-      ConflictException,
-    );
-    expect(userRepository.create).not.toHaveBeenCalled();
+    await expect(service.update(USER_ID, { email: 'ana@example.com' })).resolves.toBeDefined();
   });
 
-  it('changes the active flag of an existing user', async () => {
+  it('refuses the email of another user', async () => {
+    const { service, userRepository } = createFixture();
+    userRepository.findByEmail.mockResolvedValue({ id: OTHER_USER_ID });
+
+    await expect(service.update(USER_ID, { email: 'bia@example.com' })).rejects.toBeInstanceOf(
+      ConflictException,
+    );
+    expect(userRepository.update).not.toHaveBeenCalled();
+  });
+
+  it('does not write anything when no field was sent', async () => {
     const { service, userRepository } = createFixture();
 
-    await service.setActive('00000000-0000-4000-8000-000000000008', false);
+    await service.update(USER_ID, {});
 
-    expect(userRepository.updateAccount).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000008',
-      { active: false },
-    );
+    expect(userRepository.update).not.toHaveBeenCalled();
   });
 
   it('does not update a user that does not exist', async () => {
     const { service, userRepository } = createFixture();
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(
-      service.setActive('00000000-0000-4000-8000-000000000099', false),
-    ).rejects.toBeInstanceOf(NotFoundException);
-    expect(userRepository.updateAccount).not.toHaveBeenCalled();
+    await expect(service.update(OTHER_USER_ID, { name: 'Bia' })).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
+    expect(userRepository.update).not.toHaveBeenCalled();
   });
 });

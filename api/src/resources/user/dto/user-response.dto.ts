@@ -1,10 +1,14 @@
-import type { RoleCode } from '../../role/enums/role-code.enum';
+export interface UserRoleResponseDto {
+  id: string;
+  name: string;
+  primary: boolean;
+}
 
 export interface UserResponseDto {
   id: string;
   name: string;
   email: string;
   active: boolean;
-  roleCode: RoleCode;
+  roles: UserRoleResponseDto[];
   createdAt: Date;
 }

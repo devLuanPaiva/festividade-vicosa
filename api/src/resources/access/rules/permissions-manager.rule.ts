@@ -4,7 +4,7 @@ import type { AccessSnapshot, AccessUser } from './access-snapshot';
 
 function hasPermissionsManagement(snapshot: AccessSnapshot, user: AccessUser): boolean {
   const rolePermissions = snapshot.rolePermissions
-    .filter((rolePermission) => rolePermission.roleId === user.roleId)
+    .filter((rolePermission) => user.roleIds.includes(rolePermission.roleId))
     .map((rolePermission) => rolePermission.permission);
   const overrides = snapshot.overrides.filter((override) => override.userId === user.id);
 

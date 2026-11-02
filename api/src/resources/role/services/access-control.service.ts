@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { Permission } from '../enums/permission.enum';
 import { RolePermissionRepository } from '../repository/role-permission.repository';
 import { UserPermissionOverrideRepository } from '../repository/user-permission-override.repository';
+import { UserRoleRepository } from '../repository/user-role.repository';
 import {
   resolveEffectivePermissions,
   type PermissionOverride,
@@ -9,7 +10,6 @@ import {
 
 export interface PermissionSubject {
   id: string;
-  roleId: string;
 }
 
 export interface AccessDescription {
@@ -22,11 +22,13 @@ export class AccessControlService {
   public constructor(
     private readonly rolePermissionRepository: RolePermissionRepository,
     private readonly overrideRepository: UserPermissionOverrideRepository,
+    private readonly userRoleRepository: UserRoleRepository,
   ) {}
 
   public async describeAccess(subject: PermissionSubject): Promise<AccessDescription> {
+    const roleIds = await this.userRoleRepository.findRoleIdsByUserId(subject.id);
     const [rolePermissions, overrides] = await Promise.all([
-      this.rolePermissionRepository.findPermissionsByRoleId(subject.roleId),
+      this.rolePermissionRepository.findPermissionsByRoleIds(roleIds),
       this.overrideRepository.findByUserId(subject.id),
     ]);
 

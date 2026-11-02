@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { UserPermissionOverrideRepository } from '../../role/repository/user-permission-override.repository';
 import type { Permission } from '../../role/enums/permission.enum';
-import { removeOverride, setOverride } from '../rules/access-changes';
-import type { AccessOverride } from '../rules/access-snapshot';
-import { AccessPolicyService } from './access-policy.service';
+import { removeOverride, setOverride } from '../../access/rules/access-changes';
+import type { AccessOverride } from '../../access/rules/access-snapshot';
+import { AccessPolicyService } from '../../access/services/access-policy.service';
 import { UserService } from './user.service';
 
 @Injectable()

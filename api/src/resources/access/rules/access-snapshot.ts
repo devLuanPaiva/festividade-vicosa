@@ -4,7 +4,7 @@ import type { Permission } from '../../role/enums/permission.enum';
 export interface AccessUser {
   id: string;
   active: boolean;
-  roleId: string;
+  roleIds: string[];
 }
 
 export interface AccessRolePermission {

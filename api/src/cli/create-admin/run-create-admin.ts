@@ -2,6 +2,7 @@ import type { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../../app.module';
 import { RoleCode } from '../../resources/role/enums/role-code.enum';
+import { RoleRepository } from '../../resources/role/repository/role.repository';
 import { UserRepository } from '../../resources/user/repository/user.repository';
 import { UserService } from '../../resources/user/services/user.service';
 import { isAffirmative, type AdminAnswers } from './admin-answers';
@@ -17,11 +18,20 @@ function summarize({ name, email }: AdminAnswers): string {
   );
 }
 
+async function createAdministratorUser(
+  app: INestApplicationContext,
+  answers: AdminAnswers,
+): Promise<void> {
+  const adminRole = await app
+    .get(RoleRepository, { strict: false })
+    .findByCodeOrFail(RoleCode.ADMIN);
+  await app.get(UserService, { strict: false }).create(adminRole.id, answers);
+}
+
 async function createAdministrator(
   app: INestApplicationContext,
   prompter: Prompter,
 ): Promise<void> {
-  const users = app.get(UserService, { strict: false });
   const repository = app.get(UserRepository, { strict: false });
   const answers = await collectAdminAnswers(
     prompter,
@@ -32,7 +42,7 @@ async function createAdministrator(
     prompter.show('Nada foi criado.');
     return;
   }
-  await users.create(RoleCode.ADMIN, answers);
+  await createAdministratorUser(app, answers);
   prompter.show(`Administrador criado: ${answers.email}`);
 }
 

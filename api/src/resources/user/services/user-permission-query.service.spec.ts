@@ -16,7 +16,6 @@ describe('UserPermissionQueryService', () => {
       {
         findByIdOrFail: jest.fn().mockResolvedValue({
           id: '00000000-0000-4000-8000-000000000007',
-          roleId: '00000000-0000-4000-8000-000000000003',
         }),
       } as unknown as UserService,
       { describeAccess } as unknown as AccessControlService,
@@ -27,7 +26,6 @@ describe('UserPermissionQueryService', () => {
     );
     expect(describeAccess).toHaveBeenCalledWith({
       id: '00000000-0000-4000-8000-000000000007',
-      roleId: '00000000-0000-4000-8000-000000000003',
     });
   });
 

@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { PermissionEffect } from '../../role/enums/permission-effect.enum';
 import { Permission } from '../../role/enums/permission.enum';
 import type { UserPermissionOverrideRepository } from '../../role/repository/user-permission-override.repository';
-import type { AccessPolicyService } from './access-policy.service';
+import type { AccessPolicyService } from '../../access/services/access-policy.service';
 import { UserPermissionService } from './user-permission.service';
 import type { UserService } from './user.service';
 

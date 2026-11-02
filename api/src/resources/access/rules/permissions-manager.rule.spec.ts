@@ -5,11 +5,13 @@ import { countPermissionsManagers } from './permissions-manager.rule';
 
 const MANAGER_ROLE = '00000000-0000-4000-8000-000000000001';
 const ASSISTANT_ROLE = '00000000-0000-4000-8000-000000000002';
+const MANAGER = '00000000-0000-4000-8000-000000000001';
+const ASSISTANT = '00000000-0000-4000-8000-000000000002';
 
 const baseSnapshot: AccessSnapshot = {
   users: [
-    { id: '00000000-0000-4000-8000-000000000001', active: true, roleId: MANAGER_ROLE },
-    { id: '00000000-0000-4000-8000-000000000002', active: true, roleId: ASSISTANT_ROLE },
+    { id: MANAGER, active: true, roleIds: [MANAGER_ROLE] },
+    { id: ASSISTANT, active: true, roleIds: [ASSISTANT_ROLE] },
   ],
   rolePermissions: [
     { roleId: MANAGER_ROLE, permission: Permission.USER_MANAGE_PERMISSIONS },
@@ -26,12 +28,18 @@ describe('countPermissionsManagers', () => {
       expected: 1,
     },
     {
+      scenario: 'counts a user whose permission comes from a secondary role',
+      snapshot: {
+        ...baseSnapshot,
+        users: [{ id: ASSISTANT, active: true, roleIds: [ASSISTANT_ROLE, MANAGER_ROLE] }],
+      },
+      expected: 1,
+    },
+    {
       scenario: 'ignores inactive users',
       snapshot: {
         ...baseSnapshot,
-        users: [
-          { id: '00000000-0000-4000-8000-000000000001', active: false, roleId: MANAGER_ROLE },
-        ],
+        users: [{ id: MANAGER, active: false, roleIds: [MANAGER_ROLE] }],
       },
       expected: 0,
     },
@@ -41,7 +49,7 @@ describe('countPermissionsManagers', () => {
         ...baseSnapshot,
         overrides: [
           {
-            userId: '00000000-0000-4000-8000-000000000002',
+            userId: ASSISTANT,
             permission: Permission.USER_MANAGE_PERMISSIONS,
             effect: PermissionEffect.GRANTED,
           },
@@ -55,7 +63,7 @@ describe('countPermissionsManagers', () => {
         ...baseSnapshot,
         overrides: [
           {
-            userId: '00000000-0000-4000-8000-000000000001',
+            userId: MANAGER,
             permission: Permission.USER_MANAGE_PERMISSIONS,
             effect: PermissionEffect.REVOKED,
           },

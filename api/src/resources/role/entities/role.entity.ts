@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { RoleCode } from '../enums/role-code.enum';
 
 @Entity('role')
 export class Role {
@@ -7,8 +6,11 @@ export class Role {
   public id!: string;
 
   @Column({ type: 'varchar', unique: true })
-  public code!: RoleCode;
+  public code!: string;
 
   @Column({ type: 'varchar' })
   public name!: string;
+
+  @Column({ type: 'boolean', default: false })
+  public system!: boolean;
 }
