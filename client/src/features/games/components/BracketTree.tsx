@@ -14,7 +14,7 @@ const FINAL_LINES =
 export function BracketTree({ tree }: BracketTreeProps): ReactElement {
   const hasSides = tree.sideA.length > 0;
   return (
-    <div className="-mx-[5%] mt-8 overflow-x-auto px-[5%] pb-4">
+    <div className="-mx-[5%] mt-8 overflow-x-auto scrollbar-hidden px-[5%] pb-4">
       <div className="mx-auto flex w-max items-stretch">
         {tree.sideA.map((column, index) => (
           <BracketColumn key={column.round} column={column} side="A" hasIncoming={index > 0} />
