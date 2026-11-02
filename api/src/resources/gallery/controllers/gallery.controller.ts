@@ -35,6 +35,15 @@ export class GalleryController {
     return (await this.galleryService.listEventDayPhotos(subEventId, date)).map(toPhotoResponse);
   }
 
+  @Public()
+  @Get(':date/uploads')
+  public async listUploads(
+    @Param('subEventId', ParseIdPipe) subEventId: string,
+    @Param('date', ParseDayPipe) date: string,
+  ): Promise<PhotoResponseDto[]> {
+    return (await this.galleryService.listEventDayUploads(subEventId, date)).map(toPhotoResponse);
+  }
+
   @Post(':date/photos')
   @RequirePermission(Permission.PHOTO_UPLOAD)
   @ImageUploadEndpoint()
