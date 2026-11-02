@@ -3,6 +3,7 @@ export type Permission =
   | 'match:create'
   | 'team:manage'
   | 'user:manage'
+  | 'user:manage-permissions'
   | 'photo:upload'
   | 'photo:delete';
 

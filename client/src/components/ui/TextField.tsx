@@ -9,7 +9,7 @@ interface TextFieldProps {
   errorMessage: string | null;
   isOptional?: boolean;
   maxLength?: number;
-  type?: 'text' | 'date' | 'time';
+  type?: 'text' | 'date' | 'time' | 'email' | 'password';
   autoComplete?: string;
   onInput: () => void;
 }

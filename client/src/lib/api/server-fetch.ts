@@ -54,8 +54,11 @@ export interface CountedPage<T> {
   count: number;
 }
 
-export async function fetchApiCountedPage<T>(path: string): Promise<CountedPage<T>> {
-  const body = (await requestJson(path, {})) as ApiPage<T>;
+export async function fetchApiCountedPage<T>(
+  path: string,
+  token?: string,
+): Promise<CountedPage<T>> {
+  const body = (await requestJson(path, { token })) as ApiPage<T>;
   return { items: body.results, count: body.count };
 }
 
