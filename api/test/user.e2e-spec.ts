@@ -1,22 +1,17 @@
-import { ConflictException, UnauthorizedException, type INestApplication } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { Test } from '@nestjs/testing';
+import { ConflictException, type INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
-import { configureApp } from '../src/app.setup';
 import { apiError } from '../src/common/errors/api-error';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
-import { JwtAuthGuard } from '../src/resources/auth/guards/jwt-auth.guard';
-import { PermissionsGuard } from '../src/resources/auth/guards/permissions.guard';
-import { AuthenticationService } from '../src/resources/auth/services/authentication.service';
 import { Permission } from '../src/resources/role/enums/permission.enum';
-import { RoleCode } from '../src/resources/role/enums/role-code.enum';
 import { UserPermissionController } from '../src/resources/user/controllers/user-permission.controller';
 import { UserController } from '../src/resources/user/controllers/user.controller';
 import { UserAccountService } from '../src/resources/user/services/user-account.service';
 import { UserPermissionQueryService } from '../src/resources/user/services/user-permission-query.service';
+import { UserRegistrationService } from '../src/resources/user/services/user-registration.service';
 import { UserPermissionService } from '../src/resources/user/services/user-permission.service';
 import { UserService } from '../src/resources/user/services/user.service';
+import { createE2eApp } from './support/e2e-app';
 
 const users: Record<string, AuthenticatedUser> = {
   'admin-token': {
@@ -33,48 +28,44 @@ const users: Record<string, AuthenticatedUser> = {
   },
 };
 
+const MANAGER_ROLE_ID = '00000000-0000-4000-8000-000000000020';
+
 const storedUser = {
-  id: '00000000-0000-4000-8000-000000000009',
-  name: 'Ana',
-  email: 'ana@example.com',
-  passwordHash: 'secret-hash',
-  active: true,
-  role: { code: RoleCode.MANAGER },
-  createdAt: new Date('2026-10-22T12:00:00Z'),
+  user: {
+    id: '00000000-0000-4000-8000-000000000009',
+    name: 'Ana',
+    email: 'ana@example.com',
+    passwordHash: 'secret-hash',
+    active: true,
+    createdAt: new Date('2026-10-22T12:00:00Z'),
+  },
+  userRoles: [{ roleId: MANAGER_ROLE_ID, isPrimary: true, role: { name: 'Gerente' } }],
 };
 
 const validNewUser = {
   name: 'Ana',
   email: 'ana@example.com',
   password: 'a-long-password',
-  roleCode: RoleCode.MANAGER,
+  roleId: MANAGER_ROLE_ID,
 };
 
-function authenticate(token: string): Promise<AuthenticatedUser> {
-  const user = users[token];
-  return user ? Promise.resolve(user) : Promise.reject(new UnauthorizedException());
-}
-
-const userService = { list: jest.fn(), create: jest.fn() };
-const accountService = { activate: jest.fn(), deactivate: jest.fn(), changeRole: jest.fn() };
+const userService = { list: jest.fn(), getDetails: jest.fn(), update: jest.fn() };
+const registrationService = { create: jest.fn() };
+const accountService = { activate: jest.fn(), deactivate: jest.fn(), remove: jest.fn() };
 const permissionService = { setOverride: jest.fn(), removeOverride: jest.fn() };
 
-async function createApp(): Promise<INestApplication> {
-  const moduleFixture = await Test.createTestingModule({
-    controllers: [UserController, UserPermissionController],
-    providers: [
+function createApp(): Promise<INestApplication> {
+  return createE2eApp(
+    [UserController, UserPermissionController],
+    [
       { provide: UserService, useValue: userService },
+      { provide: UserRegistrationService, useValue: registrationService },
       { provide: UserAccountService, useValue: accountService },
       { provide: UserPermissionService, useValue: permissionService },
       { provide: UserPermissionQueryService, useValue: { getPermissions: jest.fn() } },
-      { provide: AuthenticationService, useValue: { authenticate } },
-      { provide: APP_GUARD, useClass: JwtAuthGuard },
-      { provide: APP_GUARD, useClass: PermissionsGuard },
     ],
-  }).compile();
-  const app = moduleFixture.createNestApplication();
-  configureApp(app, 'http://localhost:3001');
-  return app.init();
+    users,
+  );
 }
 
 describe('User management (e2e)', () => {
@@ -93,7 +84,7 @@ describe('User management (e2e)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    userService.create.mockResolvedValue(storedUser);
+    registrationService.create.mockResolvedValue(storedUser);
     userService.list.mockResolvedValue([storedUser]);
   });
 
@@ -113,10 +104,47 @@ describe('User management (e2e)', () => {
     expect(JSON.stringify(response.body)).not.toContain('passwordHash');
   });
 
-  it('creates a user with a valid body and answers 201', async () => {
+  it('creates a user with a valid body and answers 201 with the groups', async () => {
     const response = await asAdmin(request(server()).post('/users').send(validNewUser));
 
     expect(response.status).toBe(201);
+    expect(response.body).toMatchObject({
+      result: { roles: [{ id: MANAGER_ROLE_ID, name: 'Gerente', primary: true }] },
+    });
+  });
+
+  it('updates part of a user and never returns the password hash', async () => {
+    userService.update.mockResolvedValue(storedUser);
+
+    const response = await asAdmin(
+      request(server()).patch(`/users/${storedUser.user.id}`).send({ name: 'Ana Maria' }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(JSON.stringify(response.body)).not.toContain('passwordHash');
+  });
+
+  it('rejects a short password when editing a user', async () => {
+    const response = await asAdmin(
+      request(server()).patch(`/users/${storedUser.user.id}`).send({ password: '123' }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      errors: { code: 'VALIDATION_ERROR', field: 'password' },
+    });
+  });
+
+  it('deletes a user and answers 204', async () => {
+    accountService.remove.mockResolvedValue(undefined);
+
+    const response = await asAdmin(request(server()).delete(`/users/${storedUser.user.id}`));
+
+    expect(response.status).toBe(204);
+    expect(accountService.remove).toHaveBeenCalledWith(
+      users['admin-token']?.id,
+      storedUser.user.id,
+    );
   });
 
   it.each([
@@ -136,11 +164,11 @@ describe('User management (e2e)', () => {
       data: null,
       errors: { code: 'VALIDATION_ERROR', field, detail },
     });
-    expect(userService.create).not.toHaveBeenCalled();
+    expect(registrationService.create).not.toHaveBeenCalled();
   });
 
   it('answers 409 when the service reports a conflict', async () => {
-    userService.create.mockRejectedValue(
+    registrationService.create.mockRejectedValue(
       new ConflictException(
         apiError('EMAIL_ALREADY_EXISTS', 'Já existe um usuário com este e-mail.', 'email'),
       ),
