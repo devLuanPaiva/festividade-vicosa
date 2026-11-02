@@ -60,6 +60,10 @@ export class MatchService {
     return this.findByIdOrFail(id);
   }
 
+  public async setBestPlayerPhoto(id: string, photoKey: string | null): Promise<void> {
+    await this.matchRepository.updateBestPlayerPhoto(id, photoKey);
+  }
+
   public async remove(id: string): Promise<void> {
     await this.findByIdOrFail(id);
     await runUnlessReferenced(

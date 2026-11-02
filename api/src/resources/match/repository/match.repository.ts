@@ -146,6 +146,10 @@ export class MatchRepository {
     return this.repository.update({ id }, { ...result, status: MatchStatus.FINALIZED });
   }
 
+  public updateBestPlayerPhoto(id: string, photoKey: string | null): Promise<unknown> {
+    return this.repository.update({ id }, { bestPlayerPhotoKey: photoKey });
+  }
+
   public remove(id: string): Promise<unknown> {
     return this.repository.delete({ id });
   }
