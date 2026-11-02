@@ -1,4 +1,4 @@
-import { useActionState } from 'react';
+﻿import { useActionState } from 'react';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
 import { ImageResizeError, resizeForUpload } from '@/lib/images/resize-for-upload';
 
@@ -22,12 +22,12 @@ async function resizeChosenPhoto(formData: FormData): Promise<FormErrorState | n
   }
 }
 
-interface TeamPhotoUpload {
+interface PhotoUpload {
   state: FormErrorState;
   formAction: (formData: FormData) => void;
 }
 
-export function useTeamPhotoUpload(action: UploadAction): TeamPhotoUpload {
+export function usePhotoUpload(action: UploadAction): PhotoUpload {
   const [state, formAction] = useActionState(
     async (previous: FormErrorState, formData: FormData) => {
       const resizeFailure = await resizeChosenPhoto(formData);
