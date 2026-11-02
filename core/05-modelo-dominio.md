@@ -96,6 +96,10 @@ classDiagram
   class Role {
     +id
     +name
+    +system
+  }
+  class UserRole {
+    +primary
   }
   class Permission {
     +code
@@ -153,7 +157,8 @@ classDiagram
   BestPlayer "*" --> "1" Team : plays for
   Match "1" o-- "0..1" Album : gallery
 
-  User "*" --> "1" Role
+  User "1" *-- "1..*" UserRole
+  UserRole "*" --> "1" Role
   Role "*" --> "*" Permission : pacote padrão
   User "1" *-- "*" UserPermissionOverride
   UserPermissionOverride "*" --> "1" Permission
@@ -179,7 +184,7 @@ classDiagram
 
 ## Permissões
 
-**Efetivas = (papel + concessões) − revogações** (RN-43). Calculadas no login/requisição, nunca gravadas.
+**Efetivas = (grupos + concessões) − revogações** (RN-43). Calculadas no login/requisição, nunca gravadas.
 
 Catálogo inicial (formato `recurso:ação`; o sistema define, ninguém cria novas):
 
