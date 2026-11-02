@@ -3,12 +3,24 @@ import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { formatDateRange } from '@/features/schedule/lib/format-date-range';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
-import { dayGalleryPath } from '../lib/admin-gallery-paths';
+import { dayGalleryPath, subEventGalleryPath } from '../lib/admin-gallery-paths';
+import { isChampionshipSubEvent } from '../lib/championship-sub-event';
 import { eachDay } from '../lib/each-day';
 import { photoCountLabel } from '@/features/gallery/lib/photo-count-label';
 import { getGalleryDays, getSubEvent } from '../services/get-gallery-data';
-import { GalleryBreadcrumb } from './GalleryBreadcrumb';
+import type { SubEvent } from '@/features/schedule/types';
+import { GalleryBreadcrumb, type Crumb } from './GalleryBreadcrumb';
 import { GalleryLink } from './GalleryLink';
+
+function crumbsOf(subEvent: SubEvent): Crumb[] {
+  return isChampionshipSubEvent(subEvent)
+    ? [{ label: subEvent.name, href: subEventGalleryPath(subEvent.id) }]
+    : [];
+}
+
+function titleOf(subEvent: SubEvent): string {
+  return isChampionshipSubEvent(subEvent) ? 'Por dia' : subEvent.name;
+}
 
 interface SubEventDaysLoaderProps {
   params: Promise<{ subEventId: string }>;
@@ -26,7 +38,7 @@ export async function SubEventDaysLoader({
   const counts = new Map(days.map((day) => [day.date, day.photoCount]));
   return (
     <>
-      <GalleryBreadcrumb title={subEvent.name} />
+      <GalleryBreadcrumb crumbs={crumbsOf(subEvent)} title={titleOf(subEvent)} />
       <p className="text-sm text-admin-muted">Cada dia tem o seu álbum. Escolha o dia.</p>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {eachDay(subEvent.startDate, subEvent.endDate).map((date) => (

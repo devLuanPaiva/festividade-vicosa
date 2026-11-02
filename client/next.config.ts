@@ -1,6 +1,14 @@
 import type { NextConfig } from 'next';
+import type { RemotePattern } from 'next/dist/shared/lib/image-config';
 
 const LAN_DEV_ORIGINS = ['192.168.*.*', '10.*.*.*', '172.*.*.*'];
+
+const DEFAULT_MEDIA_PUBLIC_URL = 'https://cdn.jocevs.com.br';
+
+function mediaRemotePattern(): RemotePattern {
+  const { protocol, hostname } = new URL(process.env.MEDIA_PUBLIC_URL || DEFAULT_MEDIA_PUBLIC_URL);
+  return { protocol: protocol === 'http:' ? 'http' : 'https', hostname };
+}
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: LAN_DEV_ORIGINS,
@@ -15,7 +23,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'thumb.wikimedia.org' },
       { protocol: 'https', hostname: 'api.dicebear.com' },
-      { protocol: 'https', hostname: 'cdn.jocevs.com.br' },
+      mediaRemotePattern(),
     ],
   },
   turbopack: {

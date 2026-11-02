@@ -17,6 +17,10 @@ export class AlbumService {
     return this.albumRepository.listEventDays(subEventId);
   }
 
+  public async assertSubEventExists(subEventId: string): Promise<void> {
+    await this.subEventService.findByIdOrFail(subEventId);
+  }
+
   public async findForEventDay(subEventId: string, day: string): Promise<Album | null> {
     await this.subEventService.findByIdOrFail(subEventId);
     return this.albumRepository.findByEventDay(subEventId, day);

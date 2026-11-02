@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { AdminLinksSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
-import { SubEventDaysLoader } from '@/features/admin-gallery/components/SubEventDaysLoader';
+import { SubEventGalleryLoader } from '@/features/admin-gallery/components/SubEventGalleryLoader';
 
-export const metadata: Metadata = { title: 'Galeria do sub-evento' };
+export const metadata: Metadata = { title: 'Galeria do evento' };
 
 interface SubEventGalleryRouteProps {
   params: Promise<{ subEventId: string }>;
@@ -11,8 +11,8 @@ interface SubEventGalleryRouteProps {
 
 export default function SubEventGalleryRoute({ params }: SubEventGalleryRouteProps): ReactElement {
   return (
-    <Suspense fallback={<AdminLinksSkeleton label="Carregando os dias" />}>
-      <SubEventDaysLoader params={params} />
+    <Suspense fallback={<AdminLinksSkeleton label="Carregando a galeria" />}>
+      <SubEventGalleryLoader params={params} />
     </Suspense>
   );
 }

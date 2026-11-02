@@ -1,6 +1,7 @@
-import type { ReactElement } from 'react';
+﻿import type { ReactElement } from 'react';
 import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
+import { PhotoSection } from '@/features/admin-shell/components/PhotoSection';
 import { categoryLabel } from '@/features/games/lib/match-labels';
 import { resolvePhotoUrl } from '@/features/games/lib/photo-url';
 import { orNotFound } from '@/lib/api/missing-resource';
@@ -11,7 +12,6 @@ import { deleteTeamAction, updateTeamAction } from '../actions/team-actions';
 import { categoryPath } from '../lib/admin-team-paths';
 import { getTeamWithGroups } from '../services/get-team-form-data';
 import { TeamForm } from './TeamForm';
-import { TeamPhotoSection } from './TeamPhotoSection';
 import { CategoryPageHeader } from './CategoryPageHeader';
 
 interface EditTeamLoaderProps {
@@ -33,8 +33,9 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
         categoryTitle={categoryLabel(category)}
         title={team.name}
       />
-      <TeamPhotoSection
-        teamName={team.name}
+      <PhotoSection
+        title="Foto do time"
+        alt={`Foto do time ${team.name}`}
         photoUrl={resolvePhotoUrl(team.photoKey, 'medium')}
         uploadAction={uploadTeamPhotoAction.bind(null, team.id)}
         removeAction={removeTeamPhotoAction.bind(null, team.id)}
@@ -49,7 +50,7 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
         }}
         groups={groups}
         cancelHref={categoryPath(category.id)}
-        submitLabel="Salvar alterações"
+        submitLabel="Salvar alteraÃ§Ãµes"
       />
       <section
         aria-labelledby="delete-team-title"
@@ -60,13 +61,13 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
             Excluir time
           </h2>
           <p className="text-sm text-admin-muted">
-            Times com partidas não podem ser excluídos: apague as partidas antes.
+            Times com partidas nÃ£o podem ser excluÃ­dos: apague as partidas antes.
           </p>
         </div>
         <ConfirmDeleteDialog
           triggerLabel="Excluir time"
           title={`Excluir o time '${team.name}'?`}
-          description="Esta ação não pode ser desfeita."
+          description="Esta aÃ§Ã£o nÃ£o pode ser desfeita."
           confirmLabel="Excluir time"
           action={deleteTeamAction.bind(null, target)}
         />

@@ -1,8 +1,10 @@
 import { ADMIN_MATCHES_PATH } from '@/features/admin-shell/lib/admin-sections';
+import { parsePageNumber, parsePageSize, DEFAULT_PAGE_SIZE } from '@/lib/pagination/page-size';
 
 export type StatusFilter = 'todas' | 'hoje' | 'atrasadas' | 'agendadas' | 'finalizadas';
 export type StageFilter = 'todas' | 'grupos' | 'mata-mata';
 export type ViewMode = 'auto' | 'tabela' | 'cards';
+export type StatusCounts = Record<StatusFilter, number>;
 export type SortOrder = 'asc' | 'desc';
 
 export interface MatchListQuery {
@@ -14,6 +16,7 @@ export interface MatchListQuery {
   view: ViewMode;
   order: SortOrder;
   page: number;
+  pageSize: number;
 }
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -27,6 +30,7 @@ export const DEFAULT_MATCH_LIST_QUERY: MatchListQuery = {
   view: 'auto',
   order: 'asc',
   page: 1,
+  pageSize: DEFAULT_PAGE_SIZE,
 };
 
 const STATUSES: StatusFilter[] = ['todas', 'hoje', 'atrasadas', 'agendadas', 'finalizadas'];
@@ -44,11 +48,6 @@ function pick<T extends string>(options: T[], value: string, fallback: T): T {
   return options.find((option) => option === value) ?? fallback;
 }
 
-function parsePage(value: string): number {
-  const page = Number.parseInt(value, 10);
-  return Number.isInteger(page) && page >= 1 ? page : 1;
-}
-
 export function parseMatchListQuery(raw: RawSearchParams): MatchListQuery {
   const day = readFirst(raw, 'dia');
   return {
@@ -59,7 +58,8 @@ export function parseMatchListQuery(raw: RawSearchParams): MatchListQuery {
     day: DAY_PATTERN.test(day) ? day : '',
     view: pick(VIEWS, readFirst(raw, 'visao'), 'auto'),
     order: readFirst(raw, 'ordem') === 'desc' ? 'desc' : 'asc',
-    page: parsePage(readFirst(raw, 'pagina')),
+    page: parsePageNumber(readFirst(raw, 'pagina')),
+    pageSize: parsePageSize(readFirst(raw, 'itens')),
   };
 }
 
@@ -77,6 +77,7 @@ const PARAM_NAMES: Record<keyof MatchListQuery, string> = {
   view: 'visao',
   order: 'ordem',
   page: 'pagina',
+  pageSize: 'itens',
 };
 
 export function buildMatchListHref(

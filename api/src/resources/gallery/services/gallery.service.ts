@@ -17,6 +17,11 @@ export class GalleryService {
   }
 
   public async listEventDayPhotos(subEventId: string, day: string): Promise<Photo[]> {
+    await this.albumService.assertSubEventExists(subEventId);
+    return this.photoRepository.findByEventDay(subEventId, day);
+  }
+
+  public async listEventDayUploads(subEventId: string, day: string): Promise<Photo[]> {
     return this.photosOf(await this.albumService.findForEventDay(subEventId, day));
   }
 

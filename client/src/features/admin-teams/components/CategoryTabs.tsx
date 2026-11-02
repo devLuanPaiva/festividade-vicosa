@@ -34,7 +34,7 @@ export function CategoryTabs({
   return (
     <nav
       aria-label="Seções da categoria"
-      className="flex gap-2 overflow-x-auto border-b border-admin-line"
+      className="flex gap-2 overflow-x-auto scrollbar-hidden border-b border-admin-line"
     >
       {tabs.map(({ tab, label }) => (
         <Link

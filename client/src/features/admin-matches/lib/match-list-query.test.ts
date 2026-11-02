@@ -21,6 +21,7 @@ describe('parseMatchListQuery', () => {
       visao: 'cards',
       ordem: 'desc',
       pagina: '3',
+      itens: '50',
     });
 
     expect(query).toEqual({
@@ -32,6 +33,7 @@ describe('parseMatchListQuery', () => {
       view: 'cards',
       order: 'desc',
       page: 3,
+      pageSize: 50,
     });
   });
 
@@ -46,6 +48,12 @@ describe('parseMatchListQuery', () => {
     { name: 'a badly written day', raw: { dia: '04/12/2026' }, field: 'day', expected: '' },
     { name: 'an unknown view', raw: { visao: 'grade' }, field: 'view', expected: 'auto' },
     { name: 'a page of zero', raw: { pagina: '0' }, field: 'page', expected: 1 },
+    {
+      name: 'a page size that is not offered',
+      raw: { itens: '7' },
+      field: 'pageSize',
+      expected: 25,
+    },
     { name: 'a page that is not a number', raw: { pagina: 'abc' }, field: 'page', expected: 1 },
   ])('ignores $name', ({ raw, field, expected }) => {
     expect(parseMatchListQuery(raw)[field as keyof typeof DEFAULT_MATCH_LIST_QUERY]).toBe(expected);

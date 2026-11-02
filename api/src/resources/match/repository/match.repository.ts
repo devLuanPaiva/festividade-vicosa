@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
-  In,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -103,17 +102,6 @@ export class MatchRepository {
     });
   }
 
-  public findInCategories(
-    categoryIds: string[] | undefined,
-    filters: MatchFilters,
-  ): Promise<Match[]> {
-    const scope = categoryIds ? { categoryId: In(categoryIds) } : {};
-    return this.repository.find({
-      where: buildWhere(scope, filters),
-      order: { scheduledAt: 'ASC', id: 'ASC' },
-    });
-  }
-
   public findById(id: string): Promise<Match | null> {
     return this.repository.findOneBy({ id });
   }
@@ -144,6 +132,10 @@ export class MatchRepository {
 
   public saveResult(id: string, result: MatchResultRecord): Promise<unknown> {
     return this.repository.update({ id }, { ...result, status: MatchStatus.FINALIZED });
+  }
+
+  public updateBestPlayerPhoto(id: string, photoKey: string | null): Promise<unknown> {
+    return this.repository.update({ id }, { bestPlayerPhotoKey: photoKey });
   }
 
   public remove(id: string): Promise<unknown> {

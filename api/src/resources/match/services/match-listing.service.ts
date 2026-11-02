@@ -4,18 +4,23 @@ import { CategoryService } from '../../category/services/category.service';
 import type { Team } from '../../team/entities/team.entity';
 import { TeamService } from '../../team/services/team.service';
 import type { Match } from '../entities/match.entity';
-import { MatchRepository, type MatchFilters } from '../repository/match.repository';
-
-export interface MatchListFilters extends MatchFilters {
-  categoryId?: string;
-  subEventId?: string;
-}
+import {
+  MatchSearchRepository,
+  type MatchScope,
+  type MatchSearchCriteria,
+} from '../repository/match-search.repository';
+import type { SituationCounts } from '../rules/match-situation.rule';
 
 export interface MatchListEntry {
   match: Match;
   teamA: Team;
   teamB: Team;
   category: Category;
+}
+
+export interface MatchListPage {
+  entries: MatchListEntry[];
+  total: number;
 }
 
 function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
@@ -37,35 +42,22 @@ function uniqueIds(ids: string[]): string[] {
 @Injectable()
 export class MatchListingService {
   public constructor(
-    private readonly matchRepository: MatchRepository,
+    private readonly matchSearchRepository: MatchSearchRepository,
     private readonly categoryService: CategoryService,
     private readonly teamService: TeamService,
   ) {}
 
-  public async list(filters: MatchListFilters): Promise<MatchListEntry[]> {
-    const { categoryId, subEventId, ...matchFilters } = filters;
-    const categoryIds = await this.resolveCategoryIds(categoryId, subEventId);
-    if (categoryIds?.length === 0) {
-      return [];
-    }
-    const matches = await this.matchRepository.findInCategories(categoryIds, matchFilters);
-    return this.attachDetails(matches);
+  public async list(criteria: MatchSearchCriteria, now: Date): Promise<MatchListPage> {
+    const { matches, total } = await this.matchSearchRepository.search(criteria, now);
+    return { entries: await this.attachDetails(matches), total };
   }
 
-  private async resolveCategoryIds(
-    categoryId?: string,
-    subEventId?: string,
-  ): Promise<string[] | undefined> {
-    if (subEventId) {
-      const categories = await this.categoryService.listBySubEvent(subEventId, {});
-      const ids = categories.map((category) => category.id);
-      return categoryId ? ids.filter((id) => id === categoryId) : ids;
-    }
-    if (categoryId) {
-      await this.categoryService.findByIdOrFail(categoryId);
-      return [categoryId];
-    }
-    return undefined;
+  public countSituations(scope: MatchScope, now: Date): Promise<SituationCounts> {
+    return this.matchSearchRepository.countSituations(scope, now);
+  }
+
+  public listDays(scope: MatchScope): Promise<string[]> {
+    return this.matchSearchRepository.listDays(scope);
   }
 
   private async attachDetails(matches: Match[]): Promise<MatchListEntry[]> {

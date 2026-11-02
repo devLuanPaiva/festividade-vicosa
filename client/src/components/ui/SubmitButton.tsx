@@ -19,6 +19,7 @@ interface SubmitButtonProps {
   pendingLabel: string;
   variant?: SubmitButtonVariant;
   className?: string;
+  disabled?: boolean;
 }
 
 export function SubmitButton({
@@ -26,12 +27,13 @@ export function SubmitButton({
   pendingLabel,
   variant = 'primary',
   className = 'min-h-12 px-6',
+  disabled = false,
 }: SubmitButtonProps): ReactElement {
   const { pending } = useFormStatus();
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       aria-busy={pending}
       className={`${BASE_CLASS} ${VARIANT_CLASSES[variant]} ${className}`}
     >

@@ -34,6 +34,10 @@ export const VALIDATION_MESSAGES = {
   resultType:
     'Informe o tipo de resultado: jogado (PLAYED), W.O. (WALKOVER) ou W.O. dos dois times (DOUBLE_WALKOVER).',
   matchStatus: 'Selecione um status de partida válido.',
+  day: 'Informe o dia no formato AAAA-MM-DD, como 2026-12-09.',
+  situation:
+    'Selecione a situação da partida: hoje (today), sem resultado (overdue), agendada (scheduled) ou finalizada (finalized).',
+  order: 'Informe a ordem da lista: asc (mais antigas primeiro) ou desc (mais recentes primeiro).',
   dateTime: 'Informe uma data e hora válidas, como 2026-12-09T19:00:00-03:00.',
   teamId: 'Informe o identificador de um time válido.',
   categoryId: 'Informe o identificador de uma categoria válida.',

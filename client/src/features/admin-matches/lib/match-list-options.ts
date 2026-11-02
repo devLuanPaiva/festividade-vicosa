@@ -1,26 +1,18 @@
 import type { ModalityCategories } from '@/features/admin-teams/types';
-import { formatDayMonth, formatShortWeekday, toDayKey } from '@/features/games/lib/match-dates';
-import type { MatchListItem } from '@/features/games/types';
+import { formatDayMonth, formatShortWeekday } from '@/features/games/lib/match-dates';
+
+const NOON_IN_FORTALEZA = 'T12:00:00-03:00';
 
 export interface DayOption {
   value: string;
   label: string;
 }
 
-export function buildDayOptions(matches: MatchListItem[]): DayOption[] {
-  const firstMatchOfDay = new Map<string, string>();
-  for (const { scheduledAt } of matches) {
-    const day = toDayKey(scheduledAt);
-    if (!firstMatchOfDay.has(day)) {
-      firstMatchOfDay.set(day, scheduledAt);
-    }
-  }
-  return [...firstMatchOfDay.entries()]
-    .sort(([first], [second]) => first.localeCompare(second))
-    .map(([value, scheduledAt]) => ({
-      value,
-      label: `${formatShortWeekday(scheduledAt)} ${formatDayMonth(scheduledAt)}`,
-    }));
+export function buildDayOptions(days: string[]): DayOption[] {
+  return days.map((value) => {
+    const noon = new Date(`${value}${NOON_IN_FORTALEZA}`).toISOString();
+    return { value, label: `${formatShortWeekday(noon)} ${formatDayMonth(noon)}` };
+  });
 }
 
 export function findCategoryLabel(modalities: ModalityCategories[], categoryId: string): string {

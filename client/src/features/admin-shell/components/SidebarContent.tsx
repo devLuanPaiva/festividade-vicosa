@@ -21,7 +21,7 @@ function Brand({ isCollapsed }: { isCollapsed: boolean }): ReactElement {
   return (
     <Link
       href={ADMIN_HOME_PATH}
-      className="flex min-h-14 min-w-0 flex-1 items-center gap-3 px-3 text-white"
+      className="mt-4 flex min-h-14 min-w-0 flex-1 items-center gap-3 px-3 text-white"
       aria-label="Painel da Festividade, ir para o início"
     >
       <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-sun text-brand-900">

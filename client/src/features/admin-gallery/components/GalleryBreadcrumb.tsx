@@ -1,35 +1,38 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { ADMIN_GALLERY_PATH } from '@/features/admin-shell/lib/admin-sections';
-import { subEventGalleryPath } from '../lib/admin-gallery-paths';
+
+export interface Crumb {
+  label: string;
+  href: string;
+}
 
 interface GalleryBreadcrumbProps {
-  subEvent?: { id: string; name: string };
+  crumbs?: Crumb[];
   title: string;
 }
 
-export function GalleryBreadcrumb({ subEvent, title }: GalleryBreadcrumbProps): ReactElement {
+const GALLERY_CRUMB: Crumb = { label: 'Galeria', href: ADMIN_GALLERY_PATH };
+
+export function GalleryBreadcrumb({ crumbs = [], title }: GalleryBreadcrumbProps): ReactElement {
   return (
     <header className="flex flex-col gap-2">
-      <nav aria-label="Você está em" className="text-sm text-admin-muted">
-        <Link
-          href={ADMIN_GALLERY_PATH}
-          className="inline-flex min-h-11 items-center font-semibold text-brand-700"
-        >
-          Galeria
-        </Link>
-        {subEvent ? (
-          <>
-            {' '}
-            <span aria-hidden="true">›</span>{' '}
+      <nav aria-label="Você está em" className="flex flex-wrap items-center text-sm">
+        {[GALLERY_CRUMB, ...crumbs].map((crumb, index) => (
+          <span key={crumb.href} className="flex items-center">
+            {index > 0 ? (
+              <span aria-hidden="true" className="px-1 text-admin-muted">
+                ›
+              </span>
+            ) : null}
             <Link
-              href={subEventGalleryPath(subEvent.id)}
+              href={crumb.href}
               className="inline-flex min-h-11 items-center font-semibold text-brand-700"
             >
-              {subEvent.name}
+              {crumb.label}
             </Link>
-          </>
-        ) : null}
+          </span>
+        ))}
       </nav>
       <h1 className="text-2xl font-bold">{title}</h1>
     </header>

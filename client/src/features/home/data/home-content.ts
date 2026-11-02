@@ -1,3 +1,5 @@
+import type { SubEventType } from '@/features/schedule/types';
+
 export interface Stat {
   value: number;
   label: string;
@@ -7,6 +9,7 @@ export interface Modality {
   name: string;
   dates: string;
   detail: string;
+  type: SubEventType;
 }
 
 export const marqueeTopItems = [
@@ -34,8 +37,18 @@ export const stats: Stat[] = [
 ];
 
 export const modalities: Modality[] = [
-  { name: 'Handebol', dates: '4 a 6 de dezembro', detail: '7 categorias' },
-  { name: 'Festival Cultural', dates: '8 de dezembro', detail: 'Música, dança e artes' },
-  { name: 'Futsal', dates: '9 a 19 de dezembro', detail: '4 categorias' },
-  { name: 'Vôlei de Areia', dates: '13 de dezembro', detail: 'Um dia de disputa' },
+  { name: 'Handebol', dates: '4 a 6 de dezembro', detail: '7 categorias', type: 'JOCEV_HANDBALL' },
+  {
+    name: 'Festival Cultural',
+    dates: '8 de dezembro',
+    detail: 'Música, dança e artes',
+    type: 'CULTURAL_FESTIVAL',
+  },
+  { name: 'Futsal', dates: '9 a 19 de dezembro', detail: '4 categorias', type: 'JOCEV_FUTSAL' },
+  {
+    name: 'Vôlei de Areia',
+    dates: '13 de dezembro',
+    detail: 'Um dia de disputa',
+    type: 'JOCEV_BEACH_VOLLEYBALL',
+  },
 ];

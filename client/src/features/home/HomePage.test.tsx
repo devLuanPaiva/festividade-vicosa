@@ -1,10 +1,16 @@
 import { render, screen, within } from '@testing-library/react';
 import type { SubEvent } from '@/features/schedule/types';
+import { ModalityGrid } from './components/modalities/ModalityGrid';
 import { SubEventGrid } from './components/program/SubEventGrid';
 import { HomePage } from './HomePage';
 
 function renderHome(subEvents: SubEvent[]): void {
-  render(<HomePage programContent={<SubEventGrid subEvents={subEvents} />} />);
+  render(
+    <HomePage
+      modalitiesContent={<ModalityGrid subEvents={subEvents} />}
+      programContent={<SubEventGrid subEvents={subEvents} />}
+    />,
+  );
 }
 
 const futsal: SubEvent = {
