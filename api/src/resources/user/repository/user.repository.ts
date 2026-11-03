@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, type FindOptionsWhere } from 'typeorm';
+import { In, Repository, type FindOptionsWhere } from 'typeorm';
 import { containsText } from '../../../common/database/text-search';
-import type { RoleCode } from '../../role/enums/role-code.enum';
+import { UserRole } from '../../role/entities/user-role.entity';
 import { User } from '../entities/user.entity';
-import type { AccessUser } from '../rules/access-snapshot';
 
 export interface NewUserRecord {
   name: string;
@@ -15,14 +14,16 @@ export interface NewUserRecord {
 
 export interface UserFilters {
   active?: boolean;
-  roleCode?: RoleCode;
+  ids?: string[];
   search?: string;
 }
+
+export type UserChanges = Partial<Pick<User, 'name' | 'email' | 'passwordHash' | 'active'>>;
 
 function buildWhere(filters: UserFilters): FindOptionsWhere<User>[] {
   const base: FindOptionsWhere<User> = {
     ...(filters.active !== undefined && { active: filters.active }),
-    ...(filters.roleCode && { role: { code: filters.roleCode } }),
+    ...(filters.ids && { id: In(filters.ids) }),
   };
   if (!filters.search) {
     return [base];
@@ -40,13 +41,12 @@ export class UserRepository {
   public findAll(filters: UserFilters): Promise<User[]> {
     return this.repository.find({
       where: buildWhere(filters),
-      relations: { role: true },
       order: { name: 'ASC', id: 'ASC' },
     });
   }
 
   public findById(id: string): Promise<User | null> {
-    return this.repository.findOne({ where: { id }, relations: { role: true } });
+    return this.repository.findOneBy({ id });
   }
 
   public findByEmail(email: string): Promise<User | null> {
@@ -61,20 +61,22 @@ export class UserRepository {
     return this.repository.findOneBy({ id, active: true });
   }
 
-  public findAccessUsers(): Promise<AccessUser[]> {
-    return this.repository.find({ select: { id: true, active: true, roleId: true } });
+  public create({ roleId, ...record }: NewUserRecord): Promise<User> {
+    return this.repository.manager.transaction(async (manager) => {
+      const user = await manager.save(
+        User,
+        manager.create(User, { ...record, email: record.email.toLowerCase() }),
+      );
+      await manager.insert(UserRole, { userId: user.id, roleId, isPrimary: true });
+      return user;
+    });
   }
 
-  public create(record: NewUserRecord): Promise<User> {
-    return this.repository.save(
-      this.repository.create({ ...record, email: record.email.toLowerCase() }),
-    );
-  }
-
-  public updateAccount(
-    id: string,
-    changes: Partial<Pick<User, 'active' | 'roleId'>>,
-  ): Promise<unknown> {
+  public update(id: string, changes: UserChanges): Promise<unknown> {
     return this.repository.update({ id }, changes);
+  }
+
+  public remove(id: string): Promise<unknown> {
+    return this.repository.delete({ id });
   }
 }

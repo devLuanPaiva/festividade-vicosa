@@ -10,7 +10,6 @@ const user = {
   id: '00000000-0000-4000-8000-000000000009',
   name: 'Ana',
   email: 'ana@example.com',
-  roleId: '00000000-0000-4000-8000-000000000003',
 } as User;
 
 interface FixtureOptions {

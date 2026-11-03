@@ -1,57 +1,51 @@
 import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { RoleCode } from '../../role/enums/role-code.enum';
-import type { RoleRepository } from '../../role/repository/role.repository';
-import type { AccessPolicyService } from './access-policy.service';
+import { QueryFailedError } from 'typeorm';
+import type { AccessPolicyService } from '../../access/services/access-policy.service';
 import { UserAccountService } from './user-account.service';
 import type { UserService } from './user.service';
 
+const ACTOR_ID = '00000000-0000-4000-8000-000000000001';
+const TARGET_ID = '00000000-0000-4000-8000-000000000005';
+
 function createFixture(): {
   service: UserAccountService;
-  userService: Record<'findByIdOrFail' | 'setActive' | 'setRole', jest.Mock>;
-  accessPolicy: Record<'assertNotSelf' | 'assertPermissionsManagerRemains', jest.Mock>;
+  userService: Record<'findByIdOrFail' | 'setActive' | 'remove', jest.Mock>;
+  accessPolicy: Record<'assertPermissionsManagerRemains', jest.Mock>;
 } {
   const userService = {
-    findByIdOrFail: jest.fn().mockResolvedValue({ id: '00000000-0000-4000-8000-000000000005' }),
-    setActive: jest.fn().mockResolvedValue({ id: '00000000-0000-4000-8000-000000000005' }),
-    setRole: jest.fn().mockResolvedValue({ id: '00000000-0000-4000-8000-000000000005' }),
+    findByIdOrFail: jest.fn().mockResolvedValue({ id: TARGET_ID }),
+    setActive: jest.fn().mockResolvedValue({ id: TARGET_ID }),
+    remove: jest.fn().mockResolvedValue(undefined),
   };
   const accessPolicy = {
-    assertNotSelf: jest.fn(),
     assertPermissionsManagerRemains: jest.fn().mockResolvedValue(undefined),
-  };
-  const roleRepository = {
-    findByCodeOrFail: jest
-      .fn()
-      .mockResolvedValue({ id: '00000000-0000-4000-8000-000000000002', code: RoleCode.MANAGER }),
   };
   const service = new UserAccountService(
     userService as unknown as UserService,
-    roleRepository as unknown as RoleRepository,
     accessPolicy as unknown as AccessPolicyService,
   );
   return { service, userService, accessPolicy };
 }
 
-describe('UserAccountService', () => {
+function foreignKeyViolation(): QueryFailedError {
+  return new QueryFailedError('DELETE', [], Object.assign(new Error('fk'), { code: '23503' }));
+}
+
+describe('UserAccountService.deactivate', () => {
   it('deactivates a user after checking that a permissions manager remains', async () => {
     const { service, userService, accessPolicy } = createFixture();
 
-    await service.deactivate('00000000-0000-4000-8000-000000000005');
+    await service.deactivate(TARGET_ID);
 
     expect(accessPolicy.assertPermissionsManagerRemains).toHaveBeenCalledTimes(1);
-    expect(userService.setActive).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000005',
-      false,
-    );
+    expect(userService.setActive).toHaveBeenCalledWith(TARGET_ID, false);
   });
 
   it('does not deactivate the last permissions manager', async () => {
     const { service, userService, accessPolicy } = createFixture();
     accessPolicy.assertPermissionsManagerRemains.mockRejectedValue(new ConflictException());
 
-    await expect(service.deactivate('00000000-0000-4000-8000-000000000005')).rejects.toBeInstanceOf(
-      ConflictException,
-    );
+    await expect(service.deactivate(TARGET_ID)).rejects.toBeInstanceOf(ConflictException);
     expect(userService.setActive).not.toHaveBeenCalled();
   });
 
@@ -59,53 +53,40 @@ describe('UserAccountService', () => {
     const { service, userService } = createFixture();
     userService.findByIdOrFail.mockRejectedValue(new NotFoundException());
 
-    await expect(service.deactivate('00000000-0000-4000-8000-000000000099')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(service.deactivate(TARGET_ID)).rejects.toBeInstanceOf(NotFoundException);
   });
+});
 
-  it('changes the role of another user to the id of the requested role', async () => {
+describe('UserAccountService.remove', () => {
+  it('deletes another user', async () => {
     const { service, userService } = createFixture();
 
-    await service.changeRole(
-      '00000000-0000-4000-8000-000000000001',
-      '00000000-0000-4000-8000-000000000005',
-      RoleCode.MANAGER,
-    );
+    await service.remove(ACTOR_ID, TARGET_ID);
 
-    expect(userService.setRole).toHaveBeenCalledWith(
-      '00000000-0000-4000-8000-000000000005',
-      '00000000-0000-4000-8000-000000000002',
-    );
+    expect(userService.remove).toHaveBeenCalledWith(TARGET_ID);
   });
 
-  it('forbids changing the own role', async () => {
-    const { service, userService, accessPolicy } = createFixture();
-    accessPolicy.assertNotSelf.mockImplementation(() => {
-      throw new ForbiddenException();
-    });
+  it('forbids deleting the own user', async () => {
+    const { service, userService } = createFixture();
 
-    await expect(
-      service.changeRole(
-        '00000000-0000-4000-8000-000000000005',
-        '00000000-0000-4000-8000-000000000005',
-        RoleCode.MANAGER,
-      ),
-    ).rejects.toBeInstanceOf(ForbiddenException);
-    expect(userService.setRole).not.toHaveBeenCalled();
+    await expect(service.remove(ACTOR_ID, ACTOR_ID)).rejects.toBeInstanceOf(ForbiddenException);
+    expect(userService.remove).not.toHaveBeenCalled();
   });
 
-  it('does not change the role of the last permissions manager', async () => {
+  it('does not delete the last permissions manager', async () => {
     const { service, userService, accessPolicy } = createFixture();
     accessPolicy.assertPermissionsManagerRemains.mockRejectedValue(new ConflictException());
 
-    await expect(
-      service.changeRole(
-        '00000000-0000-4000-8000-000000000001',
-        '00000000-0000-4000-8000-000000000005',
-        RoleCode.ASSISTANT,
-      ),
-    ).rejects.toBeInstanceOf(ConflictException);
-    expect(userService.setRole).not.toHaveBeenCalled();
+    await expect(service.remove(ACTOR_ID, TARGET_ID)).rejects.toBeInstanceOf(ConflictException);
+    expect(userService.remove).not.toHaveBeenCalled();
+  });
+
+  it('keeps the user that launched results or photos and says to deactivate instead', async () => {
+    const { service, userService } = createFixture();
+    userService.remove.mockRejectedValue(foreignKeyViolation());
+
+    await expect(service.remove(ACTOR_ID, TARGET_ID)).rejects.toMatchObject({
+      response: { code: 'USER_HAS_HISTORY' },
+    });
   });
 });

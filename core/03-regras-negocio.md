@@ -41,14 +41,15 @@ Itens **(a confirmar)** dependem de resposta do cliente (ver [99-perguntas-abert
 - **RN-33** Excluir um time com partidas é bloqueado (as partidas devem ser removidas antes).
 
 ## Usuários, papéis e permissões
-O controle de acesso é baseado em **permissões**; o papel é só um pacote padrão delas.
+O controle de acesso é baseado em **permissões**; o grupo (papel) é só um pacote padrão delas.
 
 - **RN-40** Existem **permissões** atômicas (ex.: `match:record-score`). O sistema as define; o administrador não cria permissões novas.
-- **RN-41** Um **papel** (Admin, Gerente, Assistente) agrupa permissões. Cada usuário tem **um papel**.
+- **RN-41** Um **grupo** (papel) agrupa permissões. Os grupos padrão são Administrador, Gerente e Assistente; quem gerencia permissões pode criar, renomear e excluir outros grupos. Um usuário pertence a **um ou mais grupos** e um deles é o **principal**; as permissões do grupo somam-se.
 - **RN-42** Além do papel, o usuário pode ter **concessões** (permissão extra) e **revogações** (permissão removida) individuais.
-- **RN-43** **Permissões efetivas = (permissões do papel + concessões) − revogações.** A revogação prevalece sobre a concessão.
-- **RN-44** Mudar as permissões de um papel vale para todos os usuários dele, sem apagar concessões/revogações individuais.
-- **RN-45** Só quem tem `user:manage-permissions` atribui ou remove permissões. Ninguém altera as próprias permissões.
+- **RN-43** **Permissões efetivas = (permissões de todos os grupos + concessões) − revogações.** A revogação prevalece sobre a concessão.
+- **RN-44** Mudar as permissões de um grupo vale para todos os usuários dele, sem apagar concessões/revogações individuais.
+- **RN-45** Só quem tem `user:manage-permissions` atribui ou remove permissões e grupos. Ninguém altera as próprias permissões, nem os próprios grupos, nem as permissões de um grupo a que pertence.
 - **RN-46** Deve existir sempre pelo menos **um usuário ativo** com `user:manage-permissions` (bloqueia remover o último).
-- **RN-47** Usuário é **desativado**, não excluído, para preservar o histórico de quem lançou cada resultado.
+- **RN-47** Usuário que já lançou resultado ou enviou foto é **desativado**, não excluído, para preservar o histórico. Só é possível excluir um usuário sem histórico, e nunca a si mesmo.
+- **RN-49** Os grupos padrão do sistema não podem ser excluídos. Um grupo só é excluído quando não tem mais usuários.
 - **RN-48** As permissões de cada papel **(a confirmar com o cliente)**; ver rascunho em [05-modelo-dominio.md](05-modelo-dominio.md).

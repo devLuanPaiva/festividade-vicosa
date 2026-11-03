@@ -56,7 +56,7 @@ Toda resposta segue o padrão definido por `ResponseInterceptor` e `HttpExceptio
 | `GET /sub-events/:subEventId/categories` | `gender` (`MALE`/`FEMALE`), `search` |
 | `GET /categories/:categoryId/groups` | `search` |
 | `GET /categories/:categoryId/teams` | `groupId`, `city` (parcial), `search` |
-| `GET /users` | `active` (`true`/`false`), `roleCode`, `search` |
+| `GET /users` | `active` (`true`/`false`), `roleId`, `search` |
 | `GET /matches` | `categoryId`, `subEventId` e todos os filtros da linha abaixo |
 | `GET /categories/:categoryId/matches` | `stage`, `groupId`, `round`, `status`, `teamId` (time de qualquer lado), `scheduledFrom`, `scheduledTo` (data e hora ISO 8601) |
 
@@ -75,11 +75,14 @@ Exemplo: `GET /categories/<id>/teams?city=viçosa&search=cen&limit=20`.
 ## Usuários (RF-30)
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
-| GET | `/users` | `user:manage` | Lista usuários (nunca devolve a senha) |
-| POST | `/users` | `user:manage` | Cria usuário: `name`, `email`, `password` (mínimo de 6 caracteres), `roleCode`. 409 se o e-mail já existe |
+| GET | `/users` | `user:manage` | Lista usuários com `roles` (`id`, `name`, `primary`); nunca devolve a senha |
+| GET | `/users/:id` | `user:manage` | Um usuário. 404 `USER_NOT_FOUND` |
+| POST | `/users` | `user:manage` | Cria usuário: `name`, `email`, `password` (mínimo de 6 caracteres), `roleId` (vira o grupo principal). 409 se o e-mail já existe |
+| PATCH | `/users/:id` | `user:manage` | Edita parcialmente `name`, `email` e `password` (todos opcionais). 409 se o e-mail é de outro usuário |
+| DELETE | `/users/:id` | `user:manage` | Exclui (204). 403 `CANNOT_DELETE_SELF`; 409 `LAST_PERMISSIONS_MANAGER` (RN-46); 409 `USER_HAS_HISTORY` se já lançou resultado ou enviou foto (RN-47: desative em vez de excluir) |
 | PATCH | `/users/:id/activate` | `user:manage` | Reativa o usuário |
-| PATCH | `/users/:id/deactivate` | `user:manage` | Desativa (RN-47: nunca exclui). 409 se for o último gestor de permissões (RN-46) |
-| PATCH | `/users/:id/role` | `user:manage-permissions` | Troca o papel. 403 se for o próprio usuário (RN-45); 409 pela RN-46 |
+| PATCH | `/users/:id/deactivate` | `user:manage` | Desativa. 409 se for o último gestor de permissões (RN-46) |
+| PUT | `/users/:id/roles` | `user:manage-permissions` | Troca todos os grupos: `{ "roleIds": [...], "primaryRoleId": "..." }`. 400 `PRIMARY_ROLE_NOT_ASSIGNED` se o principal não está na lista; 404 `ROLE_NOT_FOUND`; 403 se for o próprio usuário (RN-45); 409 pela RN-46 |
 
 ## Permissões individuais (RF-31)
 | Método | Rota | Permissão | Descrição |
@@ -185,10 +188,13 @@ Cada foto vem como `{ id, albumId, photoKey, sortOrder, createdAt }`; a URL é `
 
 Os indicadores são calculados na hora a partir das partidas, sem gravar nada. O dia de "hoje" e o agrupamento por dia usam o horário de Fortaleza (UTC-3). `completionRate` é a porcentagem inteira de partidas finalizadas; `perMatch` e `goalsPerMatch` são a média de gols por partida **jogada** (W.O. não entra), com duas casas. `overdue` conta partidas ainda `SCHEDULED` cujo horário já passou.
 
-## Papéis
+## Grupos e catálogo de permissões
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
-| GET | `/roles` | `user:manage` | Papéis com o pacote padrão de permissões de cada um |
-
-## Ainda não implementado
-- Alterar o pacote de permissões de um **papel** (RN-44). Hoje o pacote vem do seed da migration.
+| GET | `/permissions` | `user:manage` | Catálogo fixo de permissões: `code` e `description` (RN-40) |
+| GET | `/roles` | `user:manage` | Grupos com `permissions`, `userCount` e `system` |
+| GET | `/roles/:id` | `user:manage` | Um grupo. 404 `ROLE_NOT_FOUND` |
+| POST | `/roles` | `user:manage-permissions` | Cria grupo: `name` e `permissions`. 409 `ROLE_NAME_ALREADY_EXISTS` |
+| PATCH | `/roles/:id` | `user:manage-permissions` | Renomeia: `name` |
+| PUT | `/roles/:id/permissions` | `user:manage-permissions` | Troca o pacote de permissões do grupo (RN-44): `{ "permissions": [...] }`. 403 se o usuário logado pertence ao grupo (RN-45); 409 pela RN-46 |
+| DELETE | `/roles/:id` | `user:manage-permissions` | Exclui (204). 409 `SYSTEM_ROLE_PROTECTED` nos grupos padrão; 409 `ROLE_IN_USE` se ainda tem usuários (RN-49) |

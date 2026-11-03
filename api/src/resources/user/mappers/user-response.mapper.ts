@@ -1,13 +1,17 @@
 import type { UserResponseDto } from '../dto/user-response.dto';
-import type { User } from '../entities/user.entity';
+import type { UserWithRoles } from '../rules/user-roles';
 
-export function toUserResponse(user: User): UserResponseDto {
+export function toUserResponse({ user, userRoles }: UserWithRoles): UserResponseDto {
   return {
     id: user.id,
     name: user.name,
     email: user.email,
     active: user.active,
-    roleCode: user.role.code,
+    roles: userRoles.map((userRole) => ({
+      id: userRole.roleId,
+      name: userRole.role.name,
+      primary: userRole.isPrimary,
+    })),
     createdAt: user.createdAt,
   };
 }

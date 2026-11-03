@@ -75,8 +75,8 @@ flowchart LR
 
 ### UC-19 Gerir permissões
 - **Ator:** Usuário com `user:manage-permissions` (hoje, o Admin)
-- **Fluxo A (papel):** escolhe um papel → marca/desmarca permissões → salva; vale para todos os usuários do papel (RN-44).
-- **Fluxo B (usuário):** escolhe um usuário → vê as permissões efetivas, com a origem de cada uma (papel, concessão) → concede ou revoga uma permissão → salva.
+- **Fluxo A (grupo):** escolhe um grupo (ou cria um novo) → marca/desmarca permissões → salva; vale para todos os usuários do grupo (RN-44).
+- **Fluxo B (usuário):** escolhe um usuário → define os grupos e o principal → vê as permissões efetivas, com a origem de cada uma (grupo, concessão) → concede ou revoga uma permissão → salva.
 - **Regras:** RN-42, RN-43, RN-45, RN-46.
 - **Alternativo:** tentativa de remover a permissão do último gestor de permissões é bloqueada.
 

@@ -114,14 +114,15 @@ Restrições da `match`:
 ### Usuários e permissões
 | Tabela | Colunas principais | Restrições |
 |--------|-------------------|-----------|
-| `users` | `id`, `name`, `email`, `password_hash`, `active`, `role_id`, `created_at` | `UNIQUE(lower(email))`; nunca excluído (RN-47) |
-| `role` | `id`, `code`, `name` | `UNIQUE(code)`; seed: `ADMIN`, `MANAGER`, `ASSISTANT` |
+| `users` | `id`, `name`, `email`, `password_hash`, `active`, `created_at` | `UNIQUE(lower(email))`; só é excluído sem histórico (RN-47) |
+| `role` | `id`, `code`, `name`, `system` | `UNIQUE(code)`; seed (`system = true`): `ADMIN`, `MANAGER`, `ASSISTANT`; grupos criados no painel têm `code` derivado do nome |
+| `user_roles` | `user_id`, `role_id`, `is_primary` | PK composta; índice único parcial garante no máximo um `is_primary` por usuário; apaga junto com o usuário |
 | `permission` | `code` (PK), `description` | catálogo fixo, criado por migration (RN-40) |
 | `role_permissions` | `role_id`, `permission_code` | PK composta |
 | `refresh_token` | `id`, `user_id`, `family_id`, `token_hash`, `expires_at`, `rotated_at`, `created_at` | `UNIQUE(token_hash)`; guarda só o hash; `family_id` agrupa os tokens de uma mesma sessão |
 | `user_permission_overrides` | `user_id`, `permission_code`, `effect` (`GRANTED`/`REVOKED`) | PK composta `(user_id, permission_code)`: no máximo um efeito por permissão |
 
-- Permissões efetivas = (papel + concedidas) − revogadas (RN-43), calculadas na API e **nunca gravadas**.
+- Permissões efetivas = (grupos + concedidas) − revogadas (RN-43), calculadas na API e **nunca gravadas**.
 - **RN-45** (ninguém altera as próprias permissões) e **RN-46** (sempre existe um gestor de permissões ativo) são regras do serviço, não do banco, porque dependem de quem está logado e do estado de outros registros.
 - **Primeiro Admin:** criado por um script interativo da API (`npm run create:admin`), que pergunta nome, e-mail e senha no terminal. Nenhuma senha passa por arquivo, variável de ambiente ou repositório. Detalhes em `08-ambiente-e-deploy.md`.
 

@@ -5,6 +5,7 @@ import {
   GALLERY_SECTION,
   HOME_SECTION,
   MATCHES_SECTION,
+  USERS_SECTION,
   activeSectionLabel,
   isActiveSection,
   visibleSections,
@@ -19,6 +20,7 @@ describe('admin sections', () => {
     expect(labelsFor([])).toEqual(['Início']);
     expect(labelsFor(['photo:upload'])).toEqual(['Início', 'Galeria']);
     expect(labelsFor(['match:record-score'])).toEqual(['Início', 'Partidas']);
+    expect(labelsFor(['user:manage'])).toEqual(['Início', 'Usuários']);
     expect(labelsFor(['team:manage', 'match:record-score'])).toEqual([
       'Início',
       'Partidas',
@@ -31,6 +33,7 @@ describe('admin sections', () => {
     expect(isActiveSection('/admin/categorias/abc/times/novo', CATEGORIES_SECTION)).toBe(true);
     expect(isActiveSection('/admin/times/abc', CATEGORIES_SECTION)).toBe(true);
     expect(isActiveSection('/admin/galeria/abc/2026-12-09', GALLERY_SECTION)).toBe(true);
+    expect(isActiveSection('/admin/usuarios/grupos/abc', USERS_SECTION)).toBe(true);
   });
 
   it('highlights the home only on the home itself', () => {
