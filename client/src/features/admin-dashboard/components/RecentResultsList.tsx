@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
+import { displayCategoryName } from '@/features/games/lib/match-labels';
 import { ADMIN_MATCHES_PATH } from '@/features/admin-shell/lib/admin-sections';
 import { describeElapsed } from '../lib/elapsed-time';
 import { describeScore } from '../lib/result-line';
@@ -25,7 +26,7 @@ function ResultRow({ result, now }: { result: RecentResult; now: Date }): ReactE
           <span className="shrink-0 font-bold tabular-nums">{describeScore(result)}</span>
         </span>
         <span className="truncate text-sm text-admin-muted">
-          {result.categoryName} · {describeElapsed(result.finalizedAt, now)}
+          {displayCategoryName(result.categoryName)} ·{describeElapsed(result.finalizedAt, now)}
           {author}
         </span>
       </Link>
