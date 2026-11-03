@@ -13,7 +13,7 @@ export function HeaderBrand(): ReactElement {
       <Image
         src={jocevLogo}
         alt="JOCEV’S, Jornada Cultural e Esportiva de Viçosa, 25 anos de emoções"
-        className="h-12 w-auto"
+        className="h-16 w-auto"
         priority
       />
     </Link>

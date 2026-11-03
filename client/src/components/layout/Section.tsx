@@ -20,7 +20,7 @@ export function Section({
   children,
 }: SectionProps): ReactElement {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={`surface-${tone} scroll-mt-16`}>
+    <section id={id} aria-labelledby={labelledBy} className={`surface-${tone} scroll-mt-20`}>
       {withWave ? <WaveEdge /> : null}
       <Container className="relative py-20 md:py-28">{children}</Container>
     </section>

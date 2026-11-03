@@ -12,7 +12,7 @@ export function TrajectorySection(): ReactElement {
     <section
       id="trajetoria"
       aria-labelledby="trajectory-title"
-      className="surface-paper scroll-mt-16"
+      className="surface-paper scroll-mt-20"
     >
       <WaveEdge />
       <Container className="py-20 md:py-28">

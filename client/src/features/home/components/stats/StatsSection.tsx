@@ -13,7 +13,7 @@ export function StatsSection(): ReactElement {
     <section
       id="estatisticas"
       aria-labelledby="stats-title"
-      className="surface-deep scroll-mt-16 overflow-hidden"
+      className="surface-deep scroll-mt-20 overflow-hidden"
     >
       <WaveEdge />
       <PointerSpotlight>

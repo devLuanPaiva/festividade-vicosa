@@ -31,7 +31,7 @@ export function PublicHeader(): ReactElement {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${surfaceClassName}`}
     >
-      <Container className="flex h-16 items-center justify-between">
+      <Container className="flex h-20 items-center justify-between">
         <HeaderBrand />
         <nav aria-label="Principal" className="hidden md:block">
           <ul className="flex items-center gap-1">

@@ -9,7 +9,7 @@ interface ProgramSectionProps {
 
 export function ProgramSection({ children }: ProgramSectionProps): ReactElement {
   return (
-    <section id="programacao" aria-labelledby="program-title" className="surface-deep scroll-mt-16">
+    <section id="programacao" aria-labelledby="program-title" className="surface-deep scroll-mt-20">
       <WaveEdge />
       <Container className="py-20 md:py-28">
         <RevealText
