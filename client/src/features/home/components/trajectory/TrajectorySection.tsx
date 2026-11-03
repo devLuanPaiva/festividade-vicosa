@@ -2,6 +2,8 @@ import type { ReactElement } from 'react';
 import { Container } from '@/components/layout/Container';
 import { RevealText } from '@/components/motion/RevealText';
 import { WaveEdge } from '@/components/ui/WaveEdge';
+import { distributePhotos } from '@/features/history/lib/distribute-photos';
+import { listHistoryPhotos } from '@/features/history/lib/history-photos';
 import { milestones } from '../../data/milestones.mock';
 import { TrajectoryTimeline } from './TrajectoryTimeline';
 
@@ -22,7 +24,10 @@ export function TrajectorySection(): ReactElement {
         <p className="mt-3 max-w-xl text-lg text-ink-soft">
           Uma jornada que começou na quadra e hoje movimenta a cidade inteira.
         </p>
-        <TrajectoryTimeline milestones={milestones} />
+        <TrajectoryTimeline
+          milestones={milestones}
+          photosByMilestone={distributePhotos(listHistoryPhotos(), milestones.length)}
+        />
       </Container>
     </section>
   );

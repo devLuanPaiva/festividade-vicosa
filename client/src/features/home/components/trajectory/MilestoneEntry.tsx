@@ -2,19 +2,22 @@
 
 import { motion } from 'motion/react';
 import type { ReactElement } from 'react';
-import { Parallax } from '@/components/motion/Parallax';
+import Link from 'next/link';
 import { Sparkle } from '@/components/ui/Sparkle';
+import { PhotoCarousel } from '@/features/history/components/PhotoCarousel';
+import { HISTORY_PATH } from '@/features/history/lib/history-paths';
+import type { HistoryPhoto } from '@/features/history/types';
 import type { Milestone } from '../../data/milestones.mock';
 
 interface MilestoneEntryProps {
   milestone: Milestone;
-  photoTone: string;
+  photos: HistoryPhoto[];
   onActivate: () => void;
 }
 
 export function MilestoneEntry({
   milestone,
-  photoTone,
+  photos,
   onActivate,
 }: MilestoneEntryProps): ReactElement {
   return (
@@ -29,19 +32,21 @@ export function MilestoneEntry({
       </p>
       <h3 className="mt-2 text-2xl font-semibold text-brand-900 lg:mt-0">{milestone.title}</h3>
       <p className="mt-2 max-w-lg text-ink-soft">{milestone.description}</p>
-      <figure className="mt-6 overflow-hidden rounded-3xl bg-brand-900 shadow-[0_12px_40px_rgba(7,59,134,0.2)]">
-        <Parallax distance={30} className={`${photoTone} aspect-[16/9]`}>
-          <span className="block h-[140%] w-full" />
-        </Parallax>
-        <figcaption className="flex items-center justify-between px-5 py-3 text-sm text-white/85">
+      <Link
+        href={HISTORY_PATH}
+        aria-label={`Ver todas as fotos dos 25 anos de história, a partir de ${milestone.title}, ${milestone.year}`}
+        className="group mt-6 block overflow-hidden rounded-3xl bg-brand-900 shadow-[0_12px_40px_rgba(7,59,134,0.2)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sun"
+      >
+        <PhotoCarousel photos={photos} />
+        <div className="flex items-center justify-between px-5 py-3 text-sm text-white/85">
           <span>
             {milestone.title}, {milestone.year}
           </span>
-          <span className="rounded-full bg-sun px-3 py-1 text-xs font-semibold text-brand-900">
-            Foto em breve
+          <span className="rounded-full bg-sun px-3 py-1 text-xs font-semibold text-brand-900 transition-transform group-hover:translate-x-1">
+            Ver galeria →
           </span>
-        </figcaption>
-      </figure>
+        </div>
+      </Link>
     </motion.li>
   );
 }
