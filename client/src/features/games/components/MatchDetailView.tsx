@@ -51,7 +51,11 @@ export function MatchDetailView({
         <Container className="flex flex-col gap-8 py-16 md:py-24">
           <MatchFacts detail={detail} />
           {match.bestPlayer ? (
-            <BestPlayerCard player={match.bestPlayer} team={bestPlayerTeam} />
+            <BestPlayerCard
+              player={match.bestPlayer}
+              team={bestPlayerTeam}
+              gender={category.gender}
+            />
           ) : null}
           <MatchPhotoWall
             images={images}
