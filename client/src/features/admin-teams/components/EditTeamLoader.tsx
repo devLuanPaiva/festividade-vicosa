@@ -50,7 +50,7 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
         }}
         groups={groups}
         cancelHref={categoryPath(category.id)}
-        submitLabel="Salvar alteraÃ§Ãµes"
+        submitLabel="Salvar alterações"
       />
       <section
         aria-labelledby="delete-team-title"
@@ -61,13 +61,13 @@ export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<R
             Excluir time
           </h2>
           <p className="text-sm text-admin-muted">
-            Times com partidas nÃ£o podem ser excluÃ­dos: apague as partidas antes.
+            Times com partidas não podem ser excluídos: apague as partidas antes.
           </p>
         </div>
         <ConfirmDeleteDialog
           triggerLabel="Excluir time"
           title={`Excluir o time '${team.name}'?`}
-          description="Esta aÃ§Ã£o nÃ£o pode ser desfeita."
+          description="Esta ação não pode ser desfeita."
           confirmLabel="Excluir time"
           action={deleteTeamAction.bind(null, target)}
         />

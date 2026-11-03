@@ -9,7 +9,7 @@ export const milestones: Milestone[] = [
     year: 2001,
     title: 'A primeira jornada',
     description:
-      'A JOCEV nasce como um torneio entre bairros e comunidades e reúne a cidade pela primeira vez em torno do esporte.',
+      'A JOCEV’S nasce como um torneio entre bairros e comunidades e reúne a cidade pela primeira vez em torno do esporte.',
   },
   {
     year: 2006,
