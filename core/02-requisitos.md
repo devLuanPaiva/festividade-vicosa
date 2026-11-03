@@ -7,9 +7,9 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 |----|-----------|------|
 | RF-01 | Landing page com identidade visual do evento e linha do tempo/história (fatos históricos + fotos) | P1 |
 | RF-02 | Listar a programação por sub-evento e por data | P1 |
-| RF-03 | Galeria de fotos separada por sub-evento e data | P1 |
+| RF-03 | Galeria de fotos por sub-evento (fotos esporádicas, sem separação por dia nem por partida) | P1 |
 | RF-04 | Listar jogos de futsal e handebol, filtrando por modalidade, categoria, fase, grupo, status e data | P1 |
-| RF-05 | Exibir partida: times, placar, fase, horário/local, **melhor jogador (nome + foto)** e mural de fotos da partida | P1 |
+| RF-05 | Exibir partida: times, placar, fase, horário/local (Praça 1, Praça 2 ou Ginásio) e **melhor jogador (nome + foto, ou avatar padrão quando não há foto)** | P1 |
 | RF-06 | Exibir classificação de cada grupo (calculada a partir dos resultados) | P1 |
 | RF-07 | Exibir chaveamento do mata-mata por categoria, em formato de chave: lado A e lado B diminuindo até a final no centro | P1 |
 | RF-08 | Exibir página do time: nome, categoria, foto, grupo e partidas | P1 |
@@ -18,7 +18,8 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-11 | Compartilhar partida ou foto por link (WhatsApp): botão de compartilhar na partida e em cada foto; o link mostra uma prévia com título, descrição e imagem (cartão do placar ou a própria foto) | P2 |
 | RF-12 | Favoritar time e ver "meus times" (sem login, salvo no aparelho) | P3 |
 | RF-13 | Interações com o público (a definir: enquete, palpite…). Envio de fotos pelo público está fora de escopo. | P3 |
-| RF-14 | Baixar as fotos da galeria e do mural da partida, uma a uma (no visualizador) ou várias de uma vez (selecionar e baixar); o arquivo baixado leva um nome legível | P1 |
+| RF-14 | Baixar as fotos da galeria, uma a uma (no visualizador) ou várias de uma vez (selecionar e baixar); o arquivo baixado leva um nome legível | P1 |
+| RF-15 | Seção de **transmissão ao vivo** na landing page, com moldura no estilo do site: arte de preview e contagem regressiva até o início, e o player do YouTube sempre disponível enquanto a seção estiver ligada; o visitante pode expandir o player | P1 |
 
 ## Funcionais — painel administrativo
 | ID | Requisito | Prio |
@@ -29,13 +30,14 @@ Prioridade: **P1** = MVP (no ar antes de 4/12) · **P2** = desejável · **P3** 
 | RF-23 | Cadastrar partidas da fase de grupos e do mata-mata | P1 |
 | RF-24 | Lançar/corrigir o placar final e finalizar partida (fluxo rápido no celular); no mata-mata empatado, registrar pênaltis | P1 |
 | RF-25 | Definir melhor jogador da partida (nome + foto) | P1 |
-| RF-26 | Upload de fotos para sub-evento/data e para partida; remover/reordenar | P1 |
+| RF-26 | Upload de fotos para o sub-evento; remover/reordenar. Feito por Admin, Gerente ou Fotógrafo | P1 |
 | RF-27 | CRUD da história (itens da linha do tempo com fotos) | P1 |
 | RF-28 | Sugerir as partidas da fase de grupos (todos contra todos) para a organização revisar, ajustar e confirmar; nada é criado sem confirmação | P2 |
 | RF-29 | Sugerir o chaveamento (a partir dos 16 avos de final) e as partidas das rodadas seguintes para a organização revisar, ajustar e confirmar; nada é criado sem confirmação | P2 |
-| RF-30 | Gerir usuários (criar, desativar, definir papel: Admin, Gerente, Assistente) | P1 |
+| RF-30 | Gerir usuários (criar, desativar, definir papel: Admin, Gerente, Assistente, Fotógrafo) | P1 |
 | RF-31 | Gerir permissões: ajustar as permissões de um papel e conceder/revogar permissões para um usuário específico | P1 |
 | RF-32 | Toda ação do painel e toda tela respeitam as permissões efetivas do usuário (API e interface) | P1 |
+| RF-33 | Gerir a transmissão ao vivo: cadastrar lives (link não listado do YouTube, arte de preview, data e hora de início), escolher a ativa e ligar/desligar a seção. Só o Admin | P1 |
 
 ## Não funcionais
 | ID | Requisito |
