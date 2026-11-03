@@ -2,17 +2,20 @@
 
 import { motion, useScroll, useSpring } from 'motion/react';
 import { useRef, useState, type ReactElement } from 'react';
+import type { HistoryPhoto } from '@/features/history/types';
 import type { Milestone } from '../../data/milestones.mock';
 import { MilestoneEntry } from './MilestoneEntry';
 import { StickyYear } from './StickyYear';
 
-const PHOTO_TONES = ['surface-sky', 'surface-arena', 'surface-splash'];
-
 interface TrajectoryTimelineProps {
   milestones: Milestone[];
+  photosByMilestone: HistoryPhoto[][];
 }
 
-export function TrajectoryTimeline({ milestones }: TrajectoryTimelineProps): ReactElement {
+export function TrajectoryTimeline({
+  milestones,
+  photosByMilestone,
+}: TrajectoryTimelineProps): ReactElement {
   const listRef = useRef<HTMLOListElement>(null);
   const [activeMilestone, setActiveMilestone] = useState<Milestone | undefined>(milestones[0]);
   const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 65%', 'end 55%'] });
@@ -36,7 +39,7 @@ export function TrajectoryTimeline({ milestones }: TrajectoryTimelineProps): Rea
             <MilestoneEntry
               key={milestone.year}
               milestone={milestone}
-              photoTone={PHOTO_TONES[index % PHOTO_TONES.length] ?? 'surface-sky'}
+              photos={photosByMilestone[index] ?? []}
               onActivate={() => setActiveMilestone(milestone)}
             />
           ))}
