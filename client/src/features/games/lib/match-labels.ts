@@ -29,9 +29,14 @@ export function stageLabel(match: Pick<Match, 'stage' | 'round'>, groupName?: st
   return groupName ? `Grupo ${groupName}` : 'Fase de grupos';
 }
 
+const HYPHENATED_AGE_PREFIX = /\bsub-(?=\d)/gi;
+
+export function displayCategoryName(name: string): string {
+  return name.replace(HYPHENATED_AGE_PREFIX, (prefix) => `${prefix.slice(0, -1)} `);
+}
+
 export function categoryLabel(category: { name: string; gender: Gender }): string {
   const gender = genderLabel(category.gender);
-  return category.name.toLowerCase().includes(gender.toLowerCase())
-    ? category.name
-    : `${category.name} ${gender}`;
+  const name = displayCategoryName(category.name);
+  return name.toLowerCase().includes(gender.toLowerCase()) ? name : `${name} ${gender}`;
 }
