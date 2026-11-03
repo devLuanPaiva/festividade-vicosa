@@ -37,7 +37,7 @@ manter tudo atualizado em tempo real.
 (mais o festival cultural). Abre a festividade.
 
 ## Escopo (rascunho)
-**Dentro:** landing com identidade visual e história do evento (fotos e fatos); jogos (agendados e finalizados, com placar, melhor jogador e mural de fotos por partida); programação por sub-evento e data, com galeria separada; painel admin.
+**Dentro:** landing com identidade visual e história do evento (fotos e fatos); jogos (agendados e finalizados, com placar e melhor jogador); programação por sub-evento e data, com galeria de fotos por sub-evento; transmissão ao vivo (YouTube) na landing; painel admin.
 **Fora:** venda de ingressos, pagamentos, inscrições online (Corrida e Ecopedal são só divulgação e galeria), súmula, artilharia e cartões (só placar). Interação com o público: futura.
 
 ## Premissas e riscos

@@ -20,7 +20,8 @@ erDiagram
   edition ||--o{ history_item : tem
   sub_event ||--o{ schedule_item : tem
   sub_event ||--o{ category : "só futsal/handebol"
-  sub_event ||--o{ album : "galeria por data"
+  sub_event ||--o{ photo : "galeria"
+  edition ||--o{ live_stream : tem
   category ||--o{ match_group : tem
   category ||--o{ team : tem
   category ||--o{ match : tem
@@ -29,11 +30,7 @@ erDiagram
   match_group ||--o{ qualified_team : "classificados confirmados"
   team ||--o{ qualified_team : classifica
   team ||--o{ match : "team_a / team_b"
-  match |o--o| album : gallery
-  history_item |o--o| album : fotos
-  album ||--o{ photo : tem
-  photo |o--o{ team : "photo do team"
-  photo |o--o{ match : "photo do melhor jogador"
+  history_item ||--o{ photo : fotos
   role ||--o{ users : tem
   role ||--o{ role_permissions : tem
   permission ||--o{ role_permissions : em
@@ -77,7 +74,7 @@ erDiagram
 | `group_id` | int, nulo | só na fase de grupos |
 | `round` | varchar, nulo | só no mata-mata: `ROUND_OF_32` (16 avos), `ROUND_OF_16`, `QUARTER_FINAL`, `SEMI_FINAL`, `THIRD_PLACE`, `FINAL` |
 | `bracket_position` | smallint, nulo | só no mata-mata do chaveamento (RN-27): posição da partida na rodada, de 0 em diante; as posições `2n` e `2n+1` alimentam a posição `n` da rodada seguinte. `UNIQUE(category_id, round, bracket_position)` quando preenchido |
-| `scheduled_at`, `location` | timestamptz, varchar | |
+| `scheduled_at`, `location` | timestamptz, varchar (nulo) | `location` ∈ `SQUARE_1`, `SQUARE_2`, `GYMNASIUM` (RN-50), via `CHECK`; opcional, sem valor padrão |
 | `status` | varchar | `SCHEDULED` ou `FINALIZED` (`POSTPONED`/`CANCELED` só se o cliente confirmar, RN-16) |
 | `team_a_id`, `team_b_id` | int | |
 | `score_a`, `score_b` | smallint, nulo | preenchidos ao finalizar |
@@ -102,12 +99,23 @@ Restrições da `match`:
 ### Fotos
 | Tabela | Colunas principais | Restrições |
 |--------|-------------------|-----------|
-| `album` | `id`, `sub_event_id` (nulo), `event_date` (nulo), `match_id` (nulo) | **`CHECK` de exatamente um dono**: sub-evento + dia, ou partida; `UNIQUE(sub_event_id, event_date)`, `UNIQUE(match_id)`. O álbum nasce no primeiro envio e não tem título (o nome vem do sub-evento e do dia). O álbum da história entra junto com o item da história |
-| `photo` | `id`, `album_id`, `storage_key` (único), `sort_order`, `uploaded_by_id`, `created_at` | `ON DELETE CASCADE` a partir do álbum; índice `(album_id, sort_order)`. Sem legenda nem dimensões por enquanto |
+| `photo` | `id`, `sub_event_id` (nulo), `history_item_id` (nulo), `storage_key` (único), `sort_order`, `uploaded_by_id`, `created_at` | **`CHECK` de exatamente um dono**: sub-evento ou item da história; `ON DELETE CASCADE` a partir do dono; índices `(sub_event_id, sort_order)` e `(history_item_id, sort_order)`. Sem legenda nem dimensões por enquanto |
+
+A tabela `album` deixa de existir (decisão de 03/11/2026): a galeria é só por sub-evento, sem dia nem partida. As fotos de demonstração existentes são descartadas pela migration.
+
+**`live_stream`** (RN-51, RN-52)
+| Coluna | Tipo | Nota |
+|--------|------|------|
+| `id`, `edition_id` | uuid | |
+| `title` | varchar | |
+| `video_id` | varchar | identificador do vídeo do YouTube, extraído do link informado |
+| `preview_key` | varchar (nulo) | chave da arte de preview, como o `storage_key` |
+| `starts_at` | timestamptz | alimenta a contagem regressiva |
+| `active` | boolean | índice único parcial `WHERE active` garante no máximo uma live ativa |
+| `created_at`, `updated_at` | timestamptz | |
 
 - **`storage_key`** guarda a chave do arquivo no S3, já com a extensão (por exemplo `matches/{categoria}/{time-a}-x-{time-b}-{data}-{hora}/photos/photo-{chave}.webp`; as pastas de cada tipo estão no ADR-06). A URL pública é `https://cdn.jocevs.com.br/{storage_key}` (ADR-06). Não se grava URL completa, para poder trocar o domínio.
 - Foto de time e de melhor jogador não usam a tabela `photo`: a chave do arquivo fica direto em `team.photo_key` e `match.best_player_photo_key`.
-- A partida com álbum de fotos não pode ser excluída (409 `MATCH_HAS_PHOTOS`): exclua as fotos antes.
 - Ao excluir foto, a API apaga o arquivo do S3 (ou os três arquivos, no caso das fotos antigas em três tamanhos).
 - Ao trocar a foto do time, a API grava o arquivo novo, atualiza `team.photo_key` e apaga o antigo (a chave muda, então não há cache velho, ADR-01). Valores antigos que são endereço completo (os da demonstração) são tratados como externos e nunca apagados.
 
@@ -115,7 +123,7 @@ Restrições da `match`:
 | Tabela | Colunas principais | Restrições |
 |--------|-------------------|-----------|
 | `users` | `id`, `name`, `email`, `password_hash`, `active`, `created_at` | `UNIQUE(lower(email))`; só é excluído sem histórico (RN-47) |
-| `role` | `id`, `code`, `name`, `system` | `UNIQUE(code)`; seed (`system = true`): `ADMIN`, `MANAGER`, `ASSISTANT`; grupos criados no painel têm `code` derivado do nome |
+| `role` | `id`, `code`, `name`, `system` | `UNIQUE(code)`; seed (`system = true`): `ADMIN`, `MANAGER`, `ASSISTANT`, `PHOTOGRAPHER`; grupos criados no painel têm `code` derivado do nome |
 | `user_roles` | `user_id`, `role_id`, `is_primary` | PK composta; índice único parcial garante no máximo um `is_primary` por usuário; apaga junto com o usuário |
 | `permission` | `code` (PK), `description` | catálogo fixo, criado por migration (RN-40) |
 | `role_permissions` | `role_id`, `permission_code` | PK composta |
@@ -134,7 +142,7 @@ Restrições da `match`:
 | `match(team_a_id)`, `match(team_b_id)` | página do time |
 | `match(group_id)` | classificação do grupo |
 | `team(category_id, group_id)` | montar grupos |
-| `photo(album_id, sort_order)` | galeria ordenada |
+| `photo(sub_event_id, sort_order)` | galeria ordenada |
 
 Com algumas centenas de partidas, nada disso é gargalo; os índices existem por serem baratos.
 
