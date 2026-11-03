@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import prefectureLogo from '@/assets/LOGOTIPOS/logotipo-prefeitura/logo-prefeitura-de-vicosa-branco-oficial.png';
+import footerLogos from '@/assets/LOGOTIPOS/jocevs-2026/logos_tudo_branco.png';
 import { WaveEdge } from '@/components/ui/WaveEdge';
 import { Container } from './Container';
 import { publicNavigation } from './navigation';
@@ -12,7 +12,11 @@ export function PublicFooter(): ReactElement {
       <WaveEdge />
       <Container className="grid gap-10 py-16 md:grid-cols-[1.2fr_1fr]">
         <div>
-          <Image src={prefectureLogo} alt="Prefeitura de Viçosa" className="h-12 w-auto" />
+          <Image
+            src={footerLogos}
+            alt="JOCEV’S 25 anos de emoções, Secretaria de Cultura, Turismo, Esporte e Lazer e Prefeitura de Viçosa"
+            className="h-14 w-auto max-w-full"
+          />
           <p className="mt-5 max-w-md text-sm text-white/70">
             Festividade de Emancipação Política de Viçosa/RN. Realização da Prefeitura Municipal e
             da Secretaria de Cultura, Turismo, Esporte e Lazer.
