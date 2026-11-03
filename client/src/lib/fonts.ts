@@ -16,7 +16,7 @@ export const bebasNeue = Bebas_Neue({
 });
 
 export const fortQuinsy = localFont({
-  src: '../assets/FONTES/Fort Quinsy/FORTQUINSY.otf',
+  src: '../assets/FONTES/Fort Quinsy/FORTQUINSY-pt-BR.otf',
   variable: '--font-quinsy',
   display: 'swap',
 });
