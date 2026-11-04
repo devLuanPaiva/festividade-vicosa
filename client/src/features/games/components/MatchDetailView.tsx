@@ -4,8 +4,6 @@ import { PageHero } from '@/components/layout/PageHero';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { ShareButton } from '@/components/ui/ShareButton';
 import { WaveEdge } from '@/components/ui/WaveEdge';
-import { MatchPhotoWall } from '@/features/gallery/components/MatchPhotoWall';
-import type { GalleryImage } from '@/features/gallery/types';
 import { buildGamesHref, scopeOfStatus } from '../lib/game-filters';
 import { buildMatchShare } from '../lib/match-share';
 import { getMatchOutcome } from '../lib/match-outcome';
@@ -19,15 +17,9 @@ const UPCOMING_NOTE = 'Em breve';
 
 interface MatchDetailViewProps {
   detail: MatchDetail;
-  images: GalleryImage[];
-  sharedPhotoId: string | null;
 }
 
-export function MatchDetailView({
-  detail,
-  images,
-  sharedPhotoId,
-}: MatchDetailViewProps): ReactElement {
+export function MatchDetailView({ detail }: MatchDetailViewProps): ReactElement {
   const { match, teamA, teamB, category } = detail;
   const outcome = getMatchOutcome(match);
   const share = buildMatchShare(detail);
@@ -57,11 +49,6 @@ export function MatchDetailView({
               gender={category.gender}
             />
           ) : null}
-          <MatchPhotoWall
-            images={images}
-            shareText={`Foto da partida ${share.title}`}
-            initialPhotoId={sharedPhotoId}
-          />
           <div className="flex flex-col gap-4 sm:flex-row">
             <ShareButton
               title={share.title}

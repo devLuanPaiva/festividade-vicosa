@@ -4,8 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import { copyFileField } from '@/lib/forms/form-data';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
-import { albumUploadPath } from '../lib/album-target';
-import type { AlbumTarget } from '../types';
+import { subEventPhotosApiPath } from '../lib/photos-api-path';
 
 const PHOTO_FIELD = 'file';
 
@@ -17,12 +16,12 @@ async function finishRequest(failure: FormErrorState | null): Promise<FormErrorS
   return INITIAL_FORM_ERROR_STATE;
 }
 
-export async function uploadAlbumPhotoAction(
-  target: AlbumTarget,
+export async function uploadSubEventPhotoAction(
+  subEventId: string,
   formData: FormData,
 ): Promise<FormErrorState> {
   return finishRequest(
-    await submitAdminRequest(albumUploadPath(target), {
+    await submitAdminRequest(subEventPhotosApiPath(subEventId), {
       method: 'POST',
       body: copyFileField(formData, PHOTO_FIELD),
     }),

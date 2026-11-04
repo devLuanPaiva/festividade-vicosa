@@ -1,18 +1,16 @@
 import type { Metadata } from 'next';
-import { formatDateRange } from '@/features/schedule/lib/format-date-range';
 import { getEditionSubEvents } from '@/features/schedule/services/get-edition-sub-events';
 import { FESTIVAL_YEAR } from '@/lib/config/festival';
 import { buildShareMetadata } from '@/lib/share/build-share-metadata';
-import { getDayImages } from './get-gallery';
+import { getSubEventImages } from './get-gallery';
 
 const FALLBACK: Metadata = {
-  title: 'Álbum do dia',
-  description: 'Fotos do dia na festividade de Viçosa.',
+  title: 'Galeria do evento',
+  description: 'Fotos da festividade de Viçosa.',
 };
 
-export async function getDayAlbumMetadata(
+export async function getSubEventGalleryMetadata(
   subEventId: string,
-  date: string,
   photoId: string | null,
 ): Promise<Metadata> {
   const subEvents = await getEditionSubEvents(FESTIVAL_YEAR);
@@ -20,9 +18,9 @@ export async function getDayAlbumMetadata(
   if (!subEvent) {
     return FALLBACK;
   }
-  const images = photoId === null ? [] : await getDayImages(subEventId, date);
+  const images = photoId === null ? [] : await getSubEventImages(subEventId);
   return buildShareMetadata({
-    title: `${subEvent.name} · ${formatDateRange(date, date)}`,
+    title: subEvent.name,
     description: 'Fotos da festividade de Viçosa.',
     imageUrl: images.find((image) => image.id === photoId)?.largeUrl,
   });

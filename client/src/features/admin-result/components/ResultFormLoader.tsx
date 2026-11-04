@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import type { ReactElement } from 'react';
-import { matchGalleryPath } from '@/features/admin-gallery/lib/admin-gallery-paths';
 import { NoPermission } from '@/features/admin-shell/components/NoPermission';
 import { formatMatchTime } from '@/features/games/lib/match-dates';
 import { categoryLabel, stageLabel } from '@/features/games/lib/match-labels';
@@ -8,6 +6,7 @@ import { fetchMatchDetail } from '@/features/games/services/get-match-detail';
 import { orNotFound } from '@/lib/api/missing-resource';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { hasPermission } from '@/lib/auth/permissions';
+import { BestPlayerPhotoSection } from './BestPlayerPhotoSection';
 import { ResultForm } from './ResultForm';
 
 interface ResultFormLoaderProps {
@@ -32,16 +31,9 @@ export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promi
         <h1 className="text-2xl font-bold">
           {teamA.name} x {teamB.name}
         </h1>
-        {hasPermission(user, 'photo:upload') ? (
-          <Link
-            href={matchGalleryPath(category.subEventId, match.id)}
-            className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-700"
-          >
-            Fotos e melhor jogador ›
-          </Link>
-        ) : null}
       </header>
       <ResultForm detail={detail} />
+      <BestPlayerPhotoSection match={match} />
     </>
   );
 }
