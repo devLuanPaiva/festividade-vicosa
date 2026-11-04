@@ -12,7 +12,7 @@ const NO_DEFAULTS: SuggestionDefaults = { date: '', time: '', location: '' };
 const DEFAULTS: SuggestionDefaults = {
   date: '2026-12-12',
   time: '15:00',
-  location: 'Ginásio Municipal',
+  location: 'GYMNASIUM',
 };
 
 function row(overrides: Partial<SuggestionRow> = {}): SuggestionRow {
@@ -41,7 +41,7 @@ describe('toBatchMatch', () => {
       round: 'ROUND_OF_16',
       bracketPosition: 3,
       scheduledAt: '2026-12-12T15:00:00-03:00',
-      location: 'Ginásio Municipal',
+      location: 'GYMNASIUM',
       teamAId: 'a',
       teamBId: 'b',
     });
@@ -49,14 +49,14 @@ describe('toBatchMatch', () => {
 
   it('prefers the schedule typed in the row and keeps position 0', () => {
     const payload = toBatchMatch(
-      row({ bracketPosition: '0', date: '2026-12-13', time: '19:30', location: 'Quadra' }),
+      row({ bracketPosition: '0', date: '2026-12-13', time: '19:30', location: 'SQUARE_1' }),
       DEFAULTS,
     );
 
     expect(payload).toMatchObject({
       bracketPosition: 0,
       scheduledAt: '2026-12-13T19:30:00-03:00',
-      location: 'Quadra',
+      location: 'SQUARE_1',
     });
   });
 
@@ -76,7 +76,7 @@ describe('toMatchUpdate', () => {
   it('sends the reviewed teams with the resolved schedule', () => {
     expect(toMatchUpdate(row({ matchId: 'm' }), DEFAULTS)).toEqual({
       scheduledAt: '2026-12-12T15:00:00-03:00',
-      location: 'Ginásio Municipal',
+      location: 'GYMNASIUM',
       teamAId: 'a',
       teamBId: 'b',
     });

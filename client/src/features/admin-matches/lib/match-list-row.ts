@@ -3,6 +3,7 @@ import {
   formatMatchTime,
   formatShortWeekday,
 } from '@/features/games/lib/match-dates';
+import { courtLocationLabel, UNDEFINED_LOCATION_LABEL } from '@/features/games/lib/court-location';
 import { categoryLabel, stageLabel } from '@/features/games/lib/match-labels';
 import type { MatchListItem } from '@/features/games/types';
 import { resultSummary } from './admin-match-labels';
@@ -29,8 +30,6 @@ const STATUS_LABELS: Record<RowStatus, string> = {
   scheduled: 'Agendada',
 };
 
-const NO_LOCATION_LABEL = 'A definir';
-
 function toRowStatus(match: MatchListItem, now: Date): RowStatus {
   if (match.status === 'FINALIZED') {
     return 'finalized';
@@ -53,7 +52,7 @@ export function toMatchListRow(match: MatchListItem, now: Date): MatchListRow {
     category: categoryLabel(match.category),
     stage: stageLabel(match),
     when: formatWhen(match.scheduledAt),
-    location: match.location ?? NO_LOCATION_LABEL,
+    location: courtLocationLabel(match.location) ?? UNDEFINED_LOCATION_LABEL,
     status,
     statusLabel: STATUS_LABELS[status],
     result: status === 'finalized' ? resultSummary(match) : null,

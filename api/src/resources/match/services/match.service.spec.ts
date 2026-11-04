@@ -1,5 +1,6 @@
 import { QueryFailedError } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { CourtLocation } from '../enums/court-location.enum';
 import { MatchStatus } from '../enums/match.enums';
 import {
   CATEGORY_ID,
@@ -65,22 +66,14 @@ describe('MatchService.update', () => {
 
     await service.update(MATCH_ID, {
       scheduledAt: '2026-12-18T20:00:00-03:00',
-      location: 'Ginásio',
+      location: CourtLocation.GYMNASIUM,
     });
 
     expect(validator.assertValid).not.toHaveBeenCalled();
     expect(repository.update).toHaveBeenCalledWith(MATCH_ID, {
       scheduledAt: new Date('2026-12-18T23:00:00.000Z'),
-      location: 'Ginásio',
+      location: CourtLocation.GYMNASIUM,
     });
-  });
-
-  it('clears the location when it is sent blank', async () => {
-    const { service, repository } = createFixture();
-
-    await service.update(MATCH_ID, { location: '   ' });
-
-    expect(repository.update).toHaveBeenCalledWith(MATCH_ID, { location: null });
   });
 
   it('revalidates the whole fixture when a team changes', async () => {

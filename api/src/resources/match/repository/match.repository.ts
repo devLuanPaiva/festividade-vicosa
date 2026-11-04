@@ -9,6 +9,7 @@ import {
   type FindOptionsWhere,
 } from 'typeorm';
 import { Match } from '../entities/match.entity';
+import type { CourtLocation } from '../enums/court-location.enum';
 import {
   MatchStatus,
   type MatchResultType,
@@ -23,7 +24,7 @@ export interface MatchRecord {
   round: MatchRound | null;
   bracketPosition: number | null;
   scheduledAt: Date;
-  location: string | null;
+  location: CourtLocation | null;
   teamAId: string;
   teamBId: string;
 }

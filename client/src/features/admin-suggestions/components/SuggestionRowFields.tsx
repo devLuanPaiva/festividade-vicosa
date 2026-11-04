@@ -1,11 +1,10 @@
 import type { ReactElement } from 'react';
 import { SelectField, type SelectOption } from '@/components/ui/SelectField';
 import { TextField } from '@/components/ui/TextField';
+import { COURT_LOCATION_OPTIONS } from '@/features/games/lib/court-location';
 import type { SuggestionFormControls } from '../hooks/use-suggestion-form';
 import { rowFieldName } from '../lib/parse-suggestion-form';
 import type { SuggestionRow } from '../types';
-
-const MAX_LOCATION_LENGTH = 200;
 
 interface SuggestionRowFieldsProps {
   index: number;
@@ -75,12 +74,12 @@ export function SuggestionScheduleFields({
         onInput={touch(time)}
       />
       <div className="col-span-2 sm:col-span-1">
-        <TextField
+        <SelectField
           name={location}
           label="Local"
           defaultValue={row.location}
+          options={COURT_LOCATION_OPTIONS}
           errorMessage={errorFor(location)}
-          maxLength={MAX_LOCATION_LENGTH}
           isOptional
           onInput={touch(location)}
         />

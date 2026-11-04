@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
+import { SelectField } from '@/components/ui/SelectField';
 import { TextField } from '@/components/ui/TextField';
+import { COURT_LOCATION_OPTIONS } from '@/features/games/lib/court-location';
 import type { MatchFormControls } from '../hooks/use-match-form';
-
-const MAX_LOCATION_LENGTH = 200;
 
 interface MatchScheduleFieldsProps {
   form: MatchFormControls;
@@ -30,12 +30,12 @@ export function MatchScheduleFields({ form }: MatchScheduleFieldsProps): ReactEl
           onInput={touch('scheduledAt')}
         />
       </div>
-      <TextField
+      <SelectField
         name="location"
         label="Local"
         defaultValue={state.values.location}
+        options={COURT_LOCATION_OPTIONS}
         errorMessage={errorFor('location')}
-        maxLength={MAX_LOCATION_LENGTH}
         isOptional
         onInput={touch('location')}
       />

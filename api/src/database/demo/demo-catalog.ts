@@ -1,3 +1,4 @@
+import { CourtLocation } from '../../resources/match/enums/court-location.enum';
 import type { DemoSport } from './demo-photos';
 
 export interface TeamTemplate {
@@ -93,9 +94,9 @@ export const SURNAMES = [
   'Xavier',
 ];
 
-export const VENUES: Record<DemoSport, string[]> = {
-  HANDBALL: ['Ginásio Municipal', 'Quadra da Escola Municipal', 'Quadra do Centro Esportivo'],
-  FUTSAL: ['Ginásio Municipal', 'Quadra do Centro Esportivo'],
+export const VENUES: Record<DemoSport, CourtLocation[]> = {
+  HANDBALL: [CourtLocation.GYMNASIUM, CourtLocation.SQUARE_1],
+  FUTSAL: [CourtLocation.GYMNASIUM, CourtLocation.SQUARE_1, CourtLocation.SQUARE_2],
 };
 
 export function buildAvatarUrl(seed: string): string {

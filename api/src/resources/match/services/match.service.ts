@@ -51,11 +51,10 @@ export class MatchService {
     if (changes.teamAId !== undefined || changes.teamBId !== undefined) {
       await this.assertTeamsCanChange(current, changes);
     }
-    const { scheduledAt, location, ...rest } = changes;
+    const { scheduledAt, ...rest } = changes;
     await this.matchRepository.update(id, {
       ...rest,
       ...(scheduledAt && { scheduledAt: new Date(scheduledAt) }),
-      ...(location !== undefined && { location: location.trim() || null }),
     });
     return this.findByIdOrFail(id);
   }
