@@ -10,7 +10,7 @@ const GROUP_MATCH: MatchFormValues = {
   teamBId: 'team-2',
   date: '2026-12-18',
   time: '20:00',
-  location: 'Ginásio',
+  location: 'GYMNASIUM',
 };
 
 describe('toCreateMatchPayload', () => {
@@ -23,7 +23,7 @@ describe('toCreateMatchPayload', () => {
       scheduledAt: '2026-12-18T20:00:00-03:00',
       teamAId: 'team-1',
       teamBId: 'team-2',
-      location: 'Ginásio',
+      location: 'GYMNASIUM',
     });
   });
 
@@ -43,11 +43,11 @@ describe('toUpdateMatchPayload', () => {
   it('keeps the teams out of the change when the match is already finalized', () => {
     const payload = toUpdateMatchPayload(GROUP_MATCH, false);
 
-    expect(payload).toEqual({ scheduledAt: '2026-12-18T20:00:00-03:00', location: 'Ginásio' });
+    expect(payload).toEqual({ scheduledAt: '2026-12-18T20:00:00-03:00', location: 'GYMNASIUM' });
   });
 
-  it('sends a blank location so the API clears it', () => {
-    expect(toUpdateMatchPayload({ ...GROUP_MATCH, location: '' }, true).location).toBe('');
+  it('sends a null location so the API clears it', () => {
+    expect(toUpdateMatchPayload({ ...GROUP_MATCH, location: '' }, true).location).toBeNull();
   });
 
   it('sends the teams while the match is still scheduled', () => {

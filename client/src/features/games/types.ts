@@ -1,3 +1,5 @@
+import type { CourtLocation } from './lib/court-location';
+
 export type MatchStage = 'GROUP' | 'KNOCKOUT';
 
 export type MatchRound =
@@ -42,7 +44,7 @@ export interface Match {
   round: MatchRound | null;
   bracketPosition: number | null;
   scheduledAt: string;
-  location: string | null;
+  location: CourtLocation | null;
   status: MatchStatus;
   teamAId: string;
   teamBId: string;

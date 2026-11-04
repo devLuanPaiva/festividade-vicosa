@@ -11,7 +11,7 @@ function detail(match: Partial<MatchDetail['match']>): MatchDetail {
       status: 'FINALIZED',
       resultType: 'PLAYED',
       scheduledAt: '2026-12-19T22:00:00.000Z',
-      location: 'Ginásio Municipal',
+      location: 'GYMNASIUM',
       scoreA: 2,
       scoreB: 1,
       penaltiesA: null,
@@ -48,7 +48,7 @@ describe('buildMatchShare', () => {
 
     expect(share.title).toBe('Centro x Bairro Novo');
     expect(share.description).toContain('19:00');
-    expect(share.description).toContain('Ginásio Municipal');
+    expect(share.description).toContain('Ginásio');
   });
 
   it('flags a walkover in the description', () => {

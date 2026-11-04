@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
+import { SelectField } from '@/components/ui/SelectField';
 import { TextField } from '@/components/ui/TextField';
+import { COURT_LOCATION_OPTIONS } from '@/features/games/lib/court-location';
 import type { SuggestionDefaults } from '../types';
-
-const MAX_LOCATION_LENGTH = 200;
 
 interface SuggestionDefaultFieldsProps {
   defaults: SuggestionDefaults;
@@ -33,12 +33,12 @@ export function SuggestionDefaultFields({
         isOptional
         onInput={touch('defaultTime')}
       />
-      <TextField
+      <SelectField
         name="defaultLocation"
         label="Local padrão"
         defaultValue={defaults.location}
+        options={COURT_LOCATION_OPTIONS}
         errorMessage={null}
-        maxLength={MAX_LOCATION_LENGTH}
         isOptional
         onInput={touch('defaultLocation')}
       />

@@ -1,3 +1,4 @@
+import { parseCourtLocation, type CourtLocation } from '@/features/games/lib/court-location';
 import type { MatchRound, MatchStage } from '@/features/games/types';
 import { readText } from '@/lib/forms/form-data';
 import type { MatchFormValues } from '../types';
@@ -9,14 +10,14 @@ export interface CreateMatchPayload {
   scheduledAt: string;
   teamAId: string;
   teamBId: string;
-  location?: string;
+  location?: CourtLocation;
   groupId?: string;
   round?: MatchRound;
 }
 
 export interface UpdateMatchPayload {
   scheduledAt: string;
-  location: string;
+  location: CourtLocation | null;
   teamAId?: string;
   teamBId?: string;
 }
@@ -38,17 +39,18 @@ export function parseMatchForm(formData: FormData): MatchFormValues {
     teamBId: readText(formData, 'teamBId'),
     date: readText(formData, 'date'),
     time: readText(formData, 'time'),
-    location: readText(formData, 'location'),
+    location: parseCourtLocation(readText(formData, 'location')) ?? '',
   };
 }
 
 export function toCreateMatchPayload(values: MatchFormValues): CreateMatchPayload {
+  const location = parseCourtLocation(values.location);
   const payload: CreateMatchPayload = {
     stage: values.stage,
     scheduledAt: toScheduledAt(values.date, values.time),
     teamAId: values.teamAId,
     teamBId: values.teamBId,
-    ...(values.location && { location: values.location }),
+    ...(location && { location }),
   };
   return values.stage === 'GROUP'
     ? { ...payload, groupId: values.groupId }
@@ -61,7 +63,7 @@ export function toUpdateMatchPayload(
 ): UpdateMatchPayload {
   const payload: UpdateMatchPayload = {
     scheduledAt: toScheduledAt(values.date, values.time),
-    location: values.location,
+    location: parseCourtLocation(values.location),
   };
   return canChangeTeams
     ? { ...payload, teamAId: values.teamAId, teamBId: values.teamBId }

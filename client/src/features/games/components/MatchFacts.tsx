@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { courtLocationLabel, UNDEFINED_LOCATION_LABEL } from '../lib/court-location';
 import { formatDayHeading, formatMatchTime } from '../lib/match-dates';
 import { categoryLabel, stageLabel } from '../lib/match-labels';
 import type { MatchDetail } from '../services/get-match-detail';
@@ -31,7 +32,7 @@ export function MatchFacts({ detail }: MatchFactsProps): ReactElement {
         label="Data e hora"
         value={`${formatDayHeading(match.scheduledAt)}, ${formatMatchTime(match.scheduledAt)}`}
       />
-      <Fact label="Local" value={match.location ?? 'A definir'} />
+      <Fact label="Local" value={courtLocationLabel(match.location) ?? UNDEFINED_LOCATION_LABEL} />
     </dl>
   );
 }
