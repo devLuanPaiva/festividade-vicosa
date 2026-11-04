@@ -114,8 +114,9 @@ flowchart LR
 - O client usa a lista de permissões só para **esconder botões**; quem barra é sempre a API (RF-32).
 
 ### ADR-08 — PWA
-- Manifesto + service worker (ex.: Serwist) com ícones e splash da identidade visual (ainda não fornecida).
-- Estratégia: cache da casca do app e assets estáticos; **dados de jogos sempre da rede** (rede primeiro, com fallback "sem conexão"). Evita mostrar resultado desatualizado.
+- Manifesto (`app/manifest.ts`) e service worker escrito à mão em `public/sw.js`, sem biblioteca: ele é pequeno e a regra principal é *não* guardar páginas. Ícones gerados do emblema do JOCEV'S sobre fundo branco (192, 512 e maskable); a abertura do app usa esse fundo e o azul da marca como cor do tema.
+- Estratégia: **páginas nunca são guardadas** (cada visita pede à rede; sem internet, mostra `public/offline.html`). Arquivos do build (`/_next/static/`) vão para o cache e saem de lá; imagens da marca (`/brand/`, `/icons/`) aparecem do cache e são atualizadas em segundo plano. Requisições que não são GET, de outro domínio ou de dados da página passam direto. Evita mostrar resultado desatualizado.
+- O registro só acontece em produção, e `/sw.js` é servido sem cache (`next.config.ts`).
 - Notificações push ficam **fora do MVP**.
 
 ### ADR-09 — Compartilhamento por link (RF-11)
