@@ -175,6 +175,22 @@ A classificação é **calculada na hora** a partir das partidas `FINALIZED` da 
 
 Cada foto vem como `{ id, subEventId, photoKey, sortOrder, createdAt }`; a URL é `https://cdn.jocevs.com.br/{photoKey}`. A galeria é só por sub-evento: não há foto por dia nem por partida (decisão de 03/11/2026). A foto do melhor jogador continua na partida (`/matches/:id/best-player/photo`).
 
+## Transmissão ao vivo (RF-15, RF-33)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/live-streams/active` | pública | A transmissão ligada na home: `{ id, title, videoId, previewKey, startsAt }`. 404 `NO_ACTIVE_LIVE_STREAM` quando não há nenhuma |
+| GET | `/live-streams` | `live:manage` | Todas as transmissões, a mais recente primeiro |
+| GET | `/live-streams/:id` | `live:manage` | Uma transmissão. 404 `LIVE_STREAM_NOT_FOUND` |
+| POST | `/live-streams` | `live:manage` | Cria (sempre desligada): `title`, `url` (link do YouTube ou o identificador do vídeo) e `startsAt` (data e hora ISO 8601). 400 `YOUTUBE_URL_INVALID` (campo `url`) se o link não for de um vídeo do YouTube |
+| PATCH | `/live-streams/:id` | `live:manage` | Altera `title`, `url` e `startsAt`; só o que for enviado muda |
+| PATCH | `/live-streams/:id/activate` | `live:manage` | Liga na home e desliga a que estava ligada (no máximo uma ligada, RN-51) |
+| PATCH | `/live-streams/:id/deactivate` | `live:manage` | Desliga; a seção some da home |
+| PUT | `/live-streams/:id/preview` | `live:manage` | Troca a arte de preview (`multipart/form-data`, campo `file`, mesmas regras da foto do time); apaga a arte antiga |
+| DELETE | `/live-streams/:id/preview` | `live:manage` | Remove a arte de preview |
+| DELETE | `/live-streams/:id` | `live:manage` | Exclui a transmissão e a arte de preview. 204 |
+
+O site embute o vídeo pelo domínio `youtube-nocookie.com`. Para a transmissão aparecer no player, a live precisa permitir a incorporação no YouTube Studio.
+
 ## Indicadores (painel)
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|

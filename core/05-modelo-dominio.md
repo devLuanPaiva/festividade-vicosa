@@ -147,7 +147,6 @@ classDiagram
   Edition "1" *-- "*" HistoryItem
   SubEvent "1" *-- "*" ScheduleItem
   SubEvent "1" o-- "*" Photo
-  Edition "1" o-- "*" LiveStream
   SubEvent "0..1" -- "0..1" Modality : campeonato de (só futsal e handebol)
 
   Modality "1" *-- "*" Category
