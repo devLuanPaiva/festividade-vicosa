@@ -7,6 +7,7 @@ const PANEL_LABEL = 'Painel';
 export const ADMIN_MATCHES_PATH = '/admin/partidas';
 export const ADMIN_CATEGORIES_PATH = '/admin/categorias';
 export const ADMIN_GALLERY_PATH = '/admin/galeria';
+export const ADMIN_LIVE_PATH = '/admin/transmissao';
 export const ADMIN_USERS_PATH = '/admin/usuarios';
 
 export interface AdminSection {
@@ -54,6 +55,15 @@ export const GALLERY_SECTION: AdminSection = {
   pathPrefixes: [ADMIN_GALLERY_PATH],
 };
 
+export const LIVE_SECTION: AdminSection = {
+  label: 'Transmissão',
+  icon: 'eye',
+  href: ADMIN_LIVE_PATH,
+  permission: 'live:manage',
+  exactPaths: [],
+  pathPrefixes: [ADMIN_LIVE_PATH],
+};
+
 export const USERS_SECTION: AdminSection = {
   label: 'Usuários',
   icon: 'users',
@@ -68,6 +78,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   MATCHES_SECTION,
   CATEGORIES_SECTION,
   GALLERY_SECTION,
+  LIVE_SECTION,
   USERS_SECTION,
 ];
 
