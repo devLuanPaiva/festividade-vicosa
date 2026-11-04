@@ -4,11 +4,17 @@ import { ModalityList } from '@/features/home/components/modalities/ModalityList
 import { SubEventList } from '@/features/home/components/program/SubEventList';
 import { SubEventSkeleton } from '@/features/home/components/program/SubEventSkeleton';
 import { HomePage } from '@/features/home/HomePage';
+import { LiveLoader } from '@/features/live/components/LiveLoader';
 import { FESTIVAL_YEAR } from '@/lib/config/festival';
 
 export default function Page(): ReactElement {
   return (
     <HomePage
+      liveContent={
+        <Suspense fallback={null}>
+          <LiveLoader />
+        </Suspense>
+      }
       modalitiesContent={
         <Suspense fallback={<ModalityGrid subEvents={[]} />}>
           <ModalityList />
