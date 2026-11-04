@@ -7,6 +7,7 @@ import { HomePage } from './HomePage';
 function renderHome(subEvents: SubEvent[]): void {
   render(
     <HomePage
+      liveContent={null}
       modalitiesContent={<ModalityGrid subEvents={subEvents} />}
       programContent={<SubEventGrid subEvents={subEvents} />}
     />,

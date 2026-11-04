@@ -21,7 +21,6 @@ erDiagram
   sub_event ||--o{ schedule_item : tem
   sub_event ||--o{ category : "só futsal/handebol"
   sub_event ||--o{ photo : "galeria"
-  edition ||--o{ live_stream : tem
   category ||--o{ match_group : tem
   category ||--o{ team : tem
   category ||--o{ match : tem
@@ -105,10 +104,10 @@ A tabela `album` deixou de existir (decisão de 03/11/2026): a galeria é só po
 **`live_stream`** (RN-51, RN-52)
 | Coluna | Tipo | Nota |
 |--------|------|------|
-| `id`, `edition_id` | uuid | |
+| `id` | uuid | |
 | `title` | varchar | |
-| `video_id` | varchar | identificador do vídeo do YouTube, extraído do link informado |
-| `preview_key` | varchar (nulo) | chave da arte de preview, como o `storage_key` |
+| `video_id` | varchar | identificador do vídeo do YouTube, extraído do link informado (a API aceita links `watch`, `youtu.be`, `live`, `embed` e o próprio identificador) |
+| `preview_key` | varchar (nulo) | chave da arte de preview (`live/previews/preview-{chave}.webp`), como o `storage_key` |
 | `starts_at` | timestamptz | alimenta a contagem regressiva |
 | `active` | boolean | índice único parcial `WHERE active` garante no máximo uma live ativa |
 | `created_at`, `updated_at` | timestamptz | |
