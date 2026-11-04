@@ -135,8 +135,8 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 | GET | `/categories/:categoryId/matches` | pública | Partidas da categoria, por data |
 | GET | `/matches` | pública | Partidas de **todas as categorias**, por data, já com `teamA`, `teamB` e `category` embutidos (sem chamadas extras para descobrir nomes). Filtros: os de `/categories/:categoryId/matches` mais `categoryId` e `subEventId` (a modalidade é o sub-evento: futsal ou handebol). `subEventId` e `categoryId` juntos só devolvem partidas se a categoria for do sub-evento. 404 se o sub-evento ou a categoria não existe |
 | GET | `/matches/:id` | pública | Uma partida, com placar, pênaltis, vencedor e melhor jogador quando finalizada |
-| POST | `/categories/:categoryId/matches` | `match:create` | Cria (sempre `SCHEDULED`): `stage` (`GROUP`/`KNOCKOUT`), `scheduledAt`, `teamAId`, `teamBId`, `location?`, `groupId` (fase de grupos) ou `round` (mata-mata) |
-| PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. `location` em branco limpa o local. Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
+| POST | `/categories/:categoryId/matches` | `match:create` | Cria (sempre `SCHEDULED`): `stage` (`GROUP`/`KNOCKOUT`), `scheduledAt`, `teamAId`, `teamBId`, `location?` (`SQUARE_1`, `SQUARE_2` ou `GYMNASIUM`, RN-50), `groupId` (fase de grupos) ou `round` (mata-mata) |
+| PATCH | `/matches/:id` | `match:create` | Altera `scheduledAt`, `location`, `teamAId`, `teamBId`. `location: null` limpa o local; qualquer valor fora do enum devolve 400 (`VALIDATION_ERROR`, campo `location`). Trocar time só em partida `SCHEDULED` (409 `MATCH_ALREADY_FINALIZED`) |
 | PUT | `/matches/:id/result` | `match:record-score` | Lança o resultado (jogado, W.O. ou W.O. dos dois times) e finaliza a partida; chamar de novo **corrige o resultado** (RN-23) |
 | DELETE | `/matches/:id` | `match:create` | Exclui a partida. 204 |
 | GET | `/groups/:groupId/fixture-suggestions` | `match:create` | Sugere os confrontos todos contra todos do grupo que ainda não têm partida (RN-30): `{ round, teamAId, teamBId }`. Não grava nada |
@@ -165,18 +165,31 @@ As 11 categorias da edição 2026 (RN-11: 7 de handebol e 4 de futsal) vêm do s
 
 A classificação é **calculada na hora** a partir das partidas `FINALIZED` da fase de grupos (RN-16, RN-19), nunca gravada. Cada linha traz `position`, `teamId`, `teamName`, `played`, `wins`, `draws`, `losses`, `goalsFor`, `goalsAgainst`, `goalDifference`, `points`, `walkoverLosses`, `tied` (os critérios não separaram o time de outro, RN-21) e `qualifiedPosition` (posição confirmada pela equipe técnica, ou nulo, RN-29). Vitória vale 3, empate 1 e derrota 0 (RN-20); o W.O. dá vitória e vale 2x0 no saldo (RN-25) e o W.O. dos dois times conta derrota para ambos (RN-26). Times sem jogo aparecem zerados. Desempate pelo edital (RN-21). A tabela não calcula quem classifica: a equipe técnica confirma os classificados de cada grupo (RN-29).
 
-## Galeria de fotos (RF-03, RF-05, RF-26)
+## Galeria de fotos (RF-03, RF-26)
 | Método | Rota | Permissão | Descrição |
 |--------|------|-----------|-----------|
-| GET | `/sub-events/:subEventId/gallery` | pública | Dias do sub-evento que têm fotos, por data: `[{ date, photoCount, coverPhotoKey }]` |
-| GET | `/sub-events/:subEventId/gallery/:date` | pública | Fotos do dia (`AAAA-MM-DD`), na ordem do álbum. Lista vazia se o dia não tem álbum |
-| POST | `/sub-events/:subEventId/gallery/:date/photos` | `photo:upload` | Envia uma foto (`multipart/form-data`, campo `file`, mesmas regras da foto do time) para o fim do álbum do dia, criando o álbum se preciso. 400 `DAY_OUTSIDE_SUB_EVENT` (campo `date`) se o dia está fora do período do sub-evento. Limite de 20 envios por minuto |
-| GET | `/matches/:matchId/photos` | pública | Mural de fotos da partida |
-| POST | `/matches/:matchId/photos` | `photo:upload` | Envia uma foto para o mural da partida |
-| PUT | `/photos/order` | `photo:delete` | Reordena um álbum: `{ photoIds }` com **todas** as fotos do álbum, na nova ordem (400 `PHOTO_ORDER_INVALID` se falta, repete ou sobra alguma). Devolve as fotos na nova ordem |
+| GET | `/sub-events/:subEventId/photos` | pública | Fotos do sub-evento, na ordem da galeria. Lista vazia se não há fotos. `count` traz o total (use `?limit=1` para só contar e pegar a capa) |
+| POST | `/sub-events/:subEventId/photos` | `photo:upload` | Envia uma foto (`multipart/form-data`, campo `file`, mesmas regras da foto do time) para o fim da galeria do sub-evento. Limite de 20 envios por minuto |
+| PUT | `/photos/order` | `photo:delete` | Reordena a galeria: `{ photoIds }` com **todas** as fotos do sub-evento, na nova ordem (400 `PHOTO_ORDER_INVALID` se falta, repete ou sobra alguma). Devolve as fotos na nova ordem |
 | DELETE | `/photos/:id` | `photo:delete` | Exclui a foto e apaga o arquivo do S3. 204 |
 
-Cada foto vem como `{ id, albumId, photoKey, sortOrder, createdAt }`; a URL é `https://cdn.jocevs.com.br/{photoKey}`. Um `:date` inválido devolve 400 `INVALID_DATE`. Excluir uma partida que tem fotos devolve 409 `MATCH_HAS_PHOTOS`.
+Cada foto vem como `{ id, subEventId, photoKey, sortOrder, createdAt }`; a URL é `https://cdn.jocevs.com.br/{photoKey}`. A galeria é só por sub-evento: não há foto por dia nem por partida (decisão de 03/11/2026). A foto do melhor jogador continua na partida (`/matches/:id/best-player/photo`).
+
+## Transmissão ao vivo (RF-15, RF-33)
+| Método | Rota | Permissão | Descrição |
+|--------|------|-----------|-----------|
+| GET | `/live-streams/active` | pública | A transmissão ligada na home: `{ id, title, videoId, previewKey, startsAt }`. 404 `NO_ACTIVE_LIVE_STREAM` quando não há nenhuma |
+| GET | `/live-streams` | `live:manage` | Todas as transmissões, a mais recente primeiro |
+| GET | `/live-streams/:id` | `live:manage` | Uma transmissão. 404 `LIVE_STREAM_NOT_FOUND` |
+| POST | `/live-streams` | `live:manage` | Cria (sempre desligada): `title`, `url` (link do YouTube ou o identificador do vídeo) e `startsAt` (data e hora ISO 8601). 400 `YOUTUBE_URL_INVALID` (campo `url`) se o link não for de um vídeo do YouTube |
+| PATCH | `/live-streams/:id` | `live:manage` | Altera `title`, `url` e `startsAt`; só o que for enviado muda |
+| PATCH | `/live-streams/:id/activate` | `live:manage` | Liga na home e desliga a que estava ligada (no máximo uma ligada, RN-51) |
+| PATCH | `/live-streams/:id/deactivate` | `live:manage` | Desliga; a seção some da home |
+| PUT | `/live-streams/:id/preview` | `live:manage` | Troca a arte de preview (`multipart/form-data`, campo `file`, mesmas regras da foto do time); apaga a arte antiga |
+| DELETE | `/live-streams/:id/preview` | `live:manage` | Remove a arte de preview |
+| DELETE | `/live-streams/:id` | `live:manage` | Exclui a transmissão e a arte de preview. 204 |
+
+O site embute o vídeo pelo domínio `youtube-nocookie.com`. Para a transmissão aparecer no player, a live precisa permitir a incorporação no YouTube Studio.
 
 ## Indicadores (painel)
 | Método | Rota | Permissão | Descrição |

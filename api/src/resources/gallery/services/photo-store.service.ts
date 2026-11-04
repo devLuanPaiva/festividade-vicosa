@@ -16,11 +16,11 @@ export class PhotoStoreService {
     private readonly mediaUploadService: MediaUploadService,
   ) {}
 
-  public async save(albumId: string, target: MediaTarget, upload: PhotoUpload): Promise<Photo> {
+  public async save(subEventId: string, target: MediaTarget, upload: PhotoUpload): Promise<Photo> {
     const storageKey = await this.mediaUploadService.upload(target, upload.file);
     try {
       return await this.photoRepository.create({
-        albumId,
+        subEventId,
         storageKey,
         uploadedById: upload.uploadedById,
       });

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AdminLinksSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
+import { AdminAlbumSkeleton } from '@/features/admin-shell/components/loading/AdminSkeletons';
 import { Suspense, type ReactElement } from 'react';
 import { SubEventGalleryLoader } from '@/features/admin-gallery/components/SubEventGalleryLoader';
 
@@ -11,7 +11,7 @@ interface SubEventGalleryRouteProps {
 
 export default function SubEventGalleryRoute({ params }: SubEventGalleryRouteProps): ReactElement {
   return (
-    <Suspense fallback={<AdminLinksSkeleton label="Carregando a galeria" />}>
+    <Suspense fallback={<AdminAlbumSkeleton label="Carregando a galeria" />}>
       <SubEventGalleryLoader params={params} />
     </Suspense>
   );

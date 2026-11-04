@@ -1,4 +1,5 @@
 import type { Match } from '../entities/match.entity';
+import { CourtLocation } from '../enums/court-location.enum';
 import { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 import { toMatchResponse } from './match-response.mapper';
 
@@ -10,7 +11,7 @@ const scheduled: Match = {
   round: MatchRound.FINAL,
   bracketPosition: 0,
   scheduledAt: new Date('2026-12-19T22:00:00.000Z'),
-  location: 'Ginásio',
+  location: CourtLocation.GYMNASIUM,
   status: MatchStatus.SCHEDULED,
   teamAId: '00000000-0000-4000-8000-0000000000a1',
   teamBId: '00000000-0000-4000-8000-0000000000b2',

@@ -10,19 +10,14 @@ describe('buildMediaKey', () => {
       expected: `teams/futsal-sub-15-masculino/centro/team-${KEY}.webp`,
     },
     {
-      folder: MediaFolder.MATCH_PHOTO,
-      segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
-      expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/photos/photo-${KEY}.webp`,
-    },
-    {
       folder: MediaFolder.BEST_PLAYER,
       segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
       expected: `matches/futsal-sub-15-masculino/centro-x-acude-2026-12-09-1930/best-player/best-player-${KEY}.webp`,
     },
     {
       folder: MediaFolder.EVENT_PHOTO,
-      segments: ['jocev-handball', '2026-12-04'],
-      expected: `sub-events/jocev-handball/2026-12-04/photo-${KEY}.webp`,
+      segments: ['jocev-handball'],
+      expected: `sub-events/jocev-handball/photo-${KEY}.webp`,
     },
     {
       folder: MediaFolder.HISTORY_PHOTO,

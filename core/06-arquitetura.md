@@ -92,9 +92,8 @@ flowchart LR
   | Tipo | Pasta e nome (sem a variante) |
   |------|-------------------------------|
   | Foto do time | `teams/{categoria}/{time}/team-{chave}.webp` |
-  | Foto de partida (mural) | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/photos/photo-{chave}.webp` |
   | Foto do melhor jogador | `matches/{categoria}/{time-a}-x-{time-b}-{AAAA-MM-DD}-{HHmm}/best-player/best-player-{chave}.webp` |
-  | Galeria do sub-evento por dia | `sub-events/{sub-evento}/{AAAA-MM-DD}/photo-{chave}.webp` |
+  | Galeria do sub-evento | `sub-events/{sub-evento}/photo-{chave}.webp` |
   | História | `history/{ano}/{item}/photo-{chave}.webp` |
 
 - **Pastas legíveis:** os nomes das pastas são slugs (minúsculas, números e hífens), sem espaços nem acentos. `{categoria}` é modalidade + nome + gênero (`futsal-sub-15-masculino`; o gênero não repete se o nome já o traz), `{time}` é o slug do time, `{sub-evento}` é o tipo (`jocev-futsal`) e o horário da partida é o de Fortaleza no momento do envio. Trocar a data da partida depois não move arquivos já enviados: a chave guardada no banco continua valendo.
@@ -103,7 +102,7 @@ flowchart LR
 - Cada arquivo sobe com `Cache-Control: public, max-age=31536000, immutable`: como a chave muda a cada troca, o cache nunca fica velho.
 - A API lê JPG, PNG ou WebP, corrige a rotação do celular e **descarta os metadados** (EXIF, localização).
 - **Não guardar o original**, só o arquivo reduzido (decisão para economizar disco e custo; avisar a equipe para manter as fotos originais no celular/Drive). Decisão de 25/10/2026: um arquivo só por foto, no lugar de três tamanhos, para simplificar o bucket; a grade da galeria passa a carregar o mesmo arquivo do visualizador.
-- Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos de um álbum em fila, cada uma reduzida no navegador antes do envio.
+- Limites: até 10 MB por foto; processamento com no máximo 2 fotos por vez para não travar a instância pequena; o painel envia as fotos da galeria em fila, cada uma reduzida no navegador antes do envio.
 - **Volume estimado:** ~2.500 fotos × ~0,3 a 0,5 MB (WebP de 1600 px) ≈ **0,8 a 1,3 GB**. Premissa: tamanhos típicos de WebP; confirmar com fotos reais. Ficam folgados no S3 e no tráfego gratuito do CloudFront.
 
 ### ADR-07 — Autenticação e autorização
@@ -120,8 +119,8 @@ flowchart LR
 - Notificações push ficam **fora do MVP**.
 
 ### ADR-09 — Compartilhamento por link (RF-11)
-- A partida (`/jogos/:id`) e o álbum do dia (`/galeria/:subEventId/:data`) têm `generateMetadata` com título, descrição e imagem para a prévia do WhatsApp (Open Graph e Twitter card).
-- Foto: o link leva `?foto=<id>`; a página abre o visualizador nessa foto e usa **a própria foto** como imagem da prévia. Sem `?foto=`, a partida usa o **cartão do placar** gerado em `/jogos/:id/cartao` (imagem 1200x630 com `ImageResponse`, só texto) e o álbum não tem imagem.
+- A partida (`/jogos/:id`) e a galeria do sub-evento (`/galeria/:subEventId`) têm `generateMetadata` com título, descrição e imagem para a prévia do WhatsApp (Open Graph e Twitter card).
+- Foto da galeria: o link leva `?foto=<id>`; a galeria do sub-evento abre o visualizador nessa foto e usa **a própria foto** como imagem da prévia. Sem `?foto=`, a partida usa o **cartão do placar** gerado em `/jogos/:id/cartao` (imagem 1200x630 com `ImageResponse`, só texto) e a galeria não tem imagem.
 - O botão usa o compartilhamento nativo do aparelho (`navigator.share`) e, onde não existe (desktop), abre o WhatsApp com o texto e o link.
 - As URLs absolutas da prévia vêm de `metadataBase`, calculado de `SITE_URL` **no build**: defina `SITE_URL` (domínio público do site) no ambiente de build da Vercel.
 
@@ -130,7 +129,7 @@ flowchart LR
 api/src/
   config/ database/          # variáveis de ambiente, conexão e migrations
   resources/                 # um resource por entidade (ver CLAUDE.md)
-    edition/ sub-event/ category/ team/ match/ album/ photo/ history-item/
+    edition/ sub-event/ category/ team/ match/ photo/ history-item/
     user/ role/ auth/ health/
     <resource>/{controllers,services,repository,dto,entities,...}/ e <resource>.module.ts
 client/src/

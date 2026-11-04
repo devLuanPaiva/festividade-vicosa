@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CourtLocation } from '../enums/court-location.enum';
 import { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 
 @Entity('match')
@@ -25,7 +26,7 @@ export class Match {
   public scheduledAt!: Date;
 
   @Column({ type: 'varchar', nullable: true })
-  public location!: string | null;
+  public location!: CourtLocation | null;
 
   @Column({ type: 'varchar' })
   public status!: MatchStatus;

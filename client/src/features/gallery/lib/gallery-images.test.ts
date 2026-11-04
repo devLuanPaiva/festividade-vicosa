@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { toGalleryImages } from './gallery-images';
 
-const KEY = 'sub-events/s/2026-12-09/photo-aaaaaaaaaaaaaaaaaaaaaaaa';
+const KEY = 'sub-events/s/photo-aaaaaaaaaaaaaaaaaaaaaaaa';
 
 describe('toGalleryImages', () => {
   afterEach(() => {
@@ -11,7 +11,7 @@ describe('toGalleryImages', () => {
   it('gives each photo a small picture for the grid and a large one for the viewer', () => {
     vi.stubEnv('MEDIA_PUBLIC_URL', 'https://cdn.example.com');
 
-    expect(toGalleryImages([{ id: 'p1', albumId: 'a', photoKey: KEY, sortOrder: 0 }])).toEqual([
+    expect(toGalleryImages([{ id: 'p1', subEventId: 's', photoKey: KEY, sortOrder: 0 }])).toEqual([
       {
         id: 'p1',
         storageKey: KEY,
@@ -26,7 +26,7 @@ describe('toGalleryImages', () => {
     const singleFileKey = `${KEY}.webp`;
 
     const [image] = toGalleryImages([
-      { id: 'p1', albumId: 'a', photoKey: singleFileKey, sortOrder: 0 },
+      { id: 'p1', subEventId: 's', photoKey: singleFileKey, sortOrder: 0 },
     ]);
 
     expect(image?.thumbUrl).toBe(`https://cdn.example.com/${singleFileKey}`);
@@ -36,7 +36,7 @@ describe('toGalleryImages', () => {
   it('keeps the order of the album', () => {
     const photos = ['p3', 'p1', 'p2'].map((id, sortOrder) => ({
       id,
-      albumId: 'a',
+      subEventId: 's',
       photoKey: KEY,
       sortOrder,
     }));

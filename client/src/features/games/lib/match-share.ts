@@ -1,4 +1,5 @@
 import type { MatchDetail } from '../services/get-match-detail';
+import { courtLocationLabel } from './court-location';
 import { formatDayHeading, formatMatchTime } from './match-dates';
 import { categoryLabel, stageLabel } from './match-labels';
 import { getMatchOutcome } from './match-outcome';
@@ -28,7 +29,7 @@ function buildStatusLine(detail: MatchDetail): string {
   const { match } = detail;
   if (match.status === 'SCHEDULED') {
     const day = formatDayHeading(match.scheduledAt);
-    return [`${day}, ${formatMatchTime(match.scheduledAt)}`, match.location]
+    return [`${day}, ${formatMatchTime(match.scheduledAt)}`, courtLocationLabel(match.location)]
       .filter(Boolean)
       .join(' · ');
   }

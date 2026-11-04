@@ -1,21 +1,17 @@
 import type { SubEvent } from '@/features/schedule/types';
 import { orNotFound } from '@/lib/api/missing-resource';
 import { fetchApiPage, fetchApiResult } from '@/lib/api/server-fetch';
-import { albumListPath } from '../lib/album-target';
-import type { AlbumPhoto, AlbumTarget, GalleryDay } from '../types';
+import { subEventPhotosApiPath } from '../lib/photos-api-path';
+import type { SubEventPhoto } from '../types';
 
-const MAX_ALBUM_PHOTOS = 500;
+const MAX_GALLERY_PHOTOS = 500;
 
 export function getSubEvent(subEventId: string): Promise<SubEvent> {
   return orNotFound(fetchApiResult<SubEvent>(`/sub-events/${encodeURIComponent(subEventId)}`));
 }
 
-export function getGalleryDays(subEventId: string): Promise<GalleryDay[]> {
+export function getSubEventPhotos(subEventId: string): Promise<SubEventPhoto[]> {
   return orNotFound(
-    fetchApiPage<GalleryDay>(`/sub-events/${encodeURIComponent(subEventId)}/gallery`),
+    fetchApiPage<SubEventPhoto>(`${subEventPhotosApiPath(subEventId)}?limit=${MAX_GALLERY_PHOTOS}`),
   );
-}
-
-export function getAlbumPhotos(target: AlbumTarget): Promise<AlbumPhoto[]> {
-  return orNotFound(fetchApiPage<AlbumPhoto>(`${albumListPath(target)}?limit=${MAX_ALBUM_PHOTOS}`));
 }

@@ -9,7 +9,7 @@ flowchart LR
   subgraph PUB[Portal público]
     UC01(UC-01 Ver landing e história)
     UC02(UC-02 Ver programação)
-    UC03(UC-03 Ver galeria por sub-evento e data)
+    UC03(UC-03 Ver galeria do sub-evento)
     UC04(UC-04 Consultar jogos e filtrar)
     UC05(UC-05 Ver detalhe da partida)
     UC06(UC-06 Ver classificação e chaveamento)
@@ -57,16 +57,26 @@ flowchart LR
 
 ### UC-05 Ver detalhe da partida
 - **Ator:** Visitante
-- **Fluxo:** abre a partida → vê times, placar, fase, data/local → vê melhor jogador (nome + foto) → navega pelo mural de fotos → toca em um time (UC-07).
+- **Fluxo:** abre a partida → vê times, placar, fase, data/local → vê melhor jogador (nome + foto, ou avatar padrão) → toca em um time (UC-07).
 - **Alternativo:** partida `SCHEDULED` mostra só data/local e "Em breve".
 
 ### UC-04 Consultar jogos e filtrar
 - **Ator:** Visitante
 - **Fluxo:** abre "Jogos" → vê abas Próximos / Finalizados → filtra por modalidade, categoria, fase, grupo e data.
 
-### UC-03 Ver galeria por sub-evento e data
+### UC-03 Ver galeria do sub-evento
 - **Ator:** Visitante
-- **Fluxo:** abre "Galeria" → escolhe sub-evento → escolhe data → navega pelas fotos.
+- **Fluxo:** abre "Galeria" → escolhe sub-evento → navega pelas fotos.
+
+### UC-20 Assistir à transmissão ao vivo
+- **Ator:** Visitante
+- **Fluxo:** navega pela landing → chega à seção da live → vê a arte de preview e a contagem regressiva → toca no play do player (pode expandir).
+- **Alternativo:** sem transmissão no momento, o YouTube mostra o aviso dele. Sem live ativa, a seção não aparece (RN-51, RN-52).
+
+### UC-21 Gerir a transmissão ao vivo
+- **Ator:** Administrador (`live:manage`)
+- **Fluxo:** cadastra a live (link não listado, arte de preview, data e hora de início) → ativa → a seção aparece na landing → ao terminar, desativa.
+- **Regra:** só uma live ativa por vez; ativar outra desativa a anterior (RN-51).
 
 ### UC-13 Cadastrar partidas
 - **Ator:** Administrador

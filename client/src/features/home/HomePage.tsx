@@ -9,16 +9,22 @@ import { TrajectorySection } from './components/trajectory/TrajectorySection';
 import { marqueeBottomItems, marqueeTopItems } from './data/home-content';
 
 export interface HomePageProps {
+  liveContent: ReactNode;
   modalitiesContent: ReactNode;
   programContent: ReactNode;
 }
 
-export function HomePage({ modalitiesContent, programContent }: HomePageProps): ReactElement {
+export function HomePage({
+  liveContent,
+  modalitiesContent,
+  programContent,
+}: HomePageProps): ReactElement {
   return (
     <>
       <HeroSection />
       <StatsSection />
       <TrajectorySection />
+      {liveContent}
       <MarqueeBand items={marqueeTopItems} />
       <ModalitiesSection>{modalitiesContent}</ModalitiesSection>
       <ProgramSection>{programContent}</ProgramSection>

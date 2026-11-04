@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { formatMatchTime } from '../lib/match-dates';
+import { courtLocationLabel } from '../lib/court-location';
 import { categoryLabel, stageLabel } from '../lib/match-labels';
 import { getMatchOutcome } from '../lib/match-outcome';
 import type { MatchListItem } from '../types';
@@ -12,7 +13,9 @@ interface MatchCardProps {
 
 export function MatchCard({ match }: MatchCardProps): ReactElement {
   const outcome = getMatchOutcome(match);
-  const details = [stageLabel(match), match.location].filter(Boolean).join(' · ');
+  const details = [stageLabel(match), courtLocationLabel(match.location)]
+    .filter(Boolean)
+    .join(' · ');
   return (
     <Link
       href={`/jogos/${match.id}`}

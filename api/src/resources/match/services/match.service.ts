@@ -1,5 +1,4 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { runUnlessReferenced } from '../../../common/database/foreign-key-violation';
 import { apiError } from '../../../common/errors/api-error';
 import { CategoryService } from '../../category/services/category.service';
 import type { CreateMatchDto } from '../dto/create-match.dto';
@@ -51,11 +50,10 @@ export class MatchService {
     if (changes.teamAId !== undefined || changes.teamBId !== undefined) {
       await this.assertTeamsCanChange(current, changes);
     }
-    const { scheduledAt, location, ...rest } = changes;
+    const { scheduledAt, ...rest } = changes;
     await this.matchRepository.update(id, {
       ...rest,
       ...(scheduledAt && { scheduledAt: new Date(scheduledAt) }),
-      ...(location !== undefined && { location: location.trim() || null }),
     });
     return this.findByIdOrFail(id);
   }
@@ -66,17 +64,7 @@ export class MatchService {
 
   public async remove(id: string): Promise<void> {
     await this.findByIdOrFail(id);
-    await runUnlessReferenced(
-      () => this.matchRepository.remove(id),
-      () =>
-        new ConflictException(
-          apiError(
-            'MATCH_HAS_PHOTOS',
-            'Esta partida tem fotos. Exclua as fotos antes de excluir a partida.',
-            'id',
-          ),
-        ),
-    );
+    await this.matchRepository.remove(id);
   }
 
   private async assertTeamsCanChange(current: Match, changes: UpdateMatchDto): Promise<void> {

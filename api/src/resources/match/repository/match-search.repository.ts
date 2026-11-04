@@ -5,6 +5,7 @@ import { escapeLikeText } from '../../../common/database/text-search';
 import { Category } from '../../category/entities/category.entity';
 import { Team } from '../../team/entities/team.entity';
 import { Match } from '../entities/match.entity';
+import { COURT_LOCATION_LABELS } from '../enums/court-location.enum';
 import { MatchStatus } from '../enums/match.enums';
 import {
   dayWindow,
@@ -49,8 +50,13 @@ const EQUALITY_COLUMNS = {
   subEventId: 'category.subEventId',
 } as const;
 
+const LOCATION_SEARCH_TEXT = Object.entries(COURT_LOCATION_LABELS)
+  .map(([code, label]) => `WHEN '${code}' THEN '${label}'`)
+  .join(' ');
+
 const SEARCHABLE_TEXT = `concat_ws(' ', teamA.name, teamB.name, category.name,
-  CASE category.gender WHEN 'MALE' THEN 'Masculino' ELSE 'Feminino' END, match.location)`;
+  CASE category.gender WHEN 'MALE' THEN 'Masculino' ELSE 'Feminino' END,
+  CASE match.location ${LOCATION_SEARCH_TEXT} END)`;
 
 const SITUATION_CONDITIONS: Record<MatchSituation, string> = {
   [MatchSituation.TODAY]: 'match.scheduledAt >= :todayStart AND match.scheduledAt < :todayEnd',

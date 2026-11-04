@@ -5,7 +5,6 @@ import type { App } from 'supertest/types';
 import { UPLOAD_THROTTLE_OPTIONS } from '../src/storage/upload/image-upload';
 import type { AuthenticatedUser } from '../src/resources/auth/dto/authenticated-user.dto';
 import { GalleryController } from '../src/resources/gallery/controllers/gallery.controller';
-import { MatchPhotoController } from '../src/resources/gallery/controllers/match-photo.controller';
 import { PhotoController } from '../src/resources/gallery/controllers/photo.controller';
 import { GalleryService } from '../src/resources/gallery/services/gallery.service';
 import { PhotoManagementService } from '../src/resources/gallery/services/photo-management.service';
@@ -14,9 +13,8 @@ import { Permission } from '../src/resources/role/enums/permission.enum';
 import { createE2eModuleApp } from './support/e2e-app';
 
 const SUB_EVENT_ID = '00000000-0000-4000-8000-0000000000e1';
-const MATCH_ID = '00000000-0000-4000-8000-0000000000b1';
 const PHOTO_ID = '00000000-0000-4000-8000-0000000000c1';
-const DAY_PATH = `/sub-events/${SUB_EVENT_ID}/gallery/2026-12-09`;
+const PHOTOS_PATH = `/sub-events/${SUB_EVENT_ID}/photos`;
 
 const users: Record<string, AuthenticatedUser> = {
   'uploader-token': {
@@ -35,18 +33,14 @@ const users: Record<string, AuthenticatedUser> = {
 
 const storedPhoto = {
   id: PHOTO_ID,
-  albumId: '00000000-0000-4000-8000-0000000000a1',
-  storageKey: 'matches/m/photos/photo-aaaaaaaaaaaaaaaaaaaaaaaa',
+  subEventId: '00000000-0000-4000-8000-0000000000e1',
+  storageKey: 'sub-events/jocev-futsal/photo-aaaaaaaaaaaaaaaaaaaaaaaa.webp',
   sortOrder: 0,
   createdAt: new Date('2026-12-09T18:00:00Z'),
 };
 
-const galleryService = {
-  listDays: jest.fn(),
-  listEventDayPhotos: jest.fn(),
-  listMatchPhotos: jest.fn(),
-};
-const photoUploadService = { addToEventDay: jest.fn(), addToMatch: jest.fn() };
+const galleryService = { listPhotos: jest.fn() };
+const photoUploadService = { addToSubEvent: jest.fn() };
 const photoManagementService = { remove: jest.fn(), reorder: jest.fn() };
 
 interface ErrorBody {
@@ -62,7 +56,7 @@ describe('Gallery (e2e)', () => {
   beforeAll(async () => {
     app = await createE2eModuleApp(
       {
-        controllers: [GalleryController, MatchPhotoController, PhotoController],
+        controllers: [GalleryController, PhotoController],
         providers: [
           { provide: GalleryService, useValue: galleryService },
           { provide: PhotoUploadService, useValue: photoUploadService },
@@ -80,55 +74,42 @@ describe('Gallery (e2e)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    galleryService.listEventDayPhotos.mockResolvedValue([storedPhoto]);
-    photoUploadService.addToEventDay.mockResolvedValue(storedPhoto);
+    galleryService.listPhotos.mockResolvedValue([storedPhoto]);
+    photoUploadService.addToSubEvent.mockResolvedValue(storedPhoto);
     photoManagementService.reorder.mockResolvedValue([storedPhoto]);
   });
 
-  it('shows the photos of a day to visitors without login', async () => {
-    const response = await request(server()).get(DAY_PATH);
+  it('shows the photos of a sub-event to visitors without login', async () => {
+    const response = await request(server()).get(PHOTOS_PATH);
 
     expect(response.status).toBe(200);
-    expect(galleryService.listEventDayPhotos).toHaveBeenCalledWith(SUB_EVENT_ID, '2026-12-09');
-  });
-
-  it('refuses a day that is not a calendar date', async () => {
-    const response = await request(server()).get(`/sub-events/${SUB_EVENT_ID}/gallery/2026-02-30`);
-
-    expect(response.status).toBe(400);
-    expect((response.body as ErrorBody).errors).toMatchObject({
-      code: 'INVALID_DATE',
-      field: 'date',
-    });
+    expect(galleryService.listPhotos).toHaveBeenCalledWith(SUB_EVENT_ID);
   });
 
   it('requires login to upload a photo', async () => {
     const response = await request(server())
-      .post(`${DAY_PATH}/photos`)
+      .post(PHOTOS_PATH)
       .attach('file', Buffer.from('image'), 'a.jpg');
 
     expect(response.status).toBe(401);
-    expect(photoUploadService.addToEventDay).not.toHaveBeenCalled();
+    expect(photoUploadService.addToSubEvent).not.toHaveBeenCalled();
   });
 
   it('uploads a photo as the logged user', async () => {
     const response = await as(
       'uploader-token',
-      request(server()).post(`${DAY_PATH}/photos`).attach('file', Buffer.from('image'), 'a.jpg'),
+      request(server()).post(PHOTOS_PATH).attach('file', Buffer.from('image'), 'a.jpg'),
     );
 
     expect(response.status).toBe(201);
-    expect(photoUploadService.addToEventDay).toHaveBeenCalledWith(SUB_EVENT_ID, '2026-12-09', {
+    expect(photoUploadService.addToSubEvent).toHaveBeenCalledWith(SUB_EVENT_ID, {
       file: Buffer.from('image'),
       uploadedById: users['uploader-token']?.id,
     });
   });
 
   it('asks for the file when the upload has none', async () => {
-    const response = await as(
-      'uploader-token',
-      request(server()).post(`/matches/${MATCH_ID}/photos`),
-    );
+    const response = await as('uploader-token', request(server()).post(PHOTOS_PATH));
 
     expect(response.status).toBe(400);
     expect((response.body as ErrorBody).errors).toMatchObject({ code: 'FILE_REQUIRED' });

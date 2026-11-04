@@ -5,7 +5,8 @@ export type Permission =
   | 'user:manage'
   | 'user:manage-permissions'
   | 'photo:upload'
-  | 'photo:delete';
+  | 'photo:delete'
+  | 'live:manage';
 
 export interface AuthenticatedUser {
   id: string;

@@ -53,7 +53,7 @@ classDiagram
     +stage : Stage
     +round
     +scheduledAt
-    +location
+    +location : CourtLocation
     +status : MatchStatus
     +scoreA
     +scoreB
@@ -68,10 +68,13 @@ classDiagram
     +teamId
   }
 
-  class Album {
+  class LiveStream {
     +id
     +title
-    +date
+    +videoId
+    +previewKey
+    +startsAt
+    +active
   }
   class Photo {
     +id
@@ -143,7 +146,7 @@ classDiagram
   Edition "1" *-- "*" SubEvent
   Edition "1" *-- "*" HistoryItem
   SubEvent "1" *-- "*" ScheduleItem
-  SubEvent "1" o-- "*" Album
+  SubEvent "1" o-- "*" Photo
   SubEvent "0..1" -- "0..1" Modality : campeonato de (só futsal e handebol)
 
   Modality "1" *-- "*" Category
@@ -155,7 +158,6 @@ classDiagram
   Match "*" --> "1" Team : teamB
   Match "1" *-- "0..1" BestPlayer
   BestPlayer "*" --> "1" Team : plays for
-  Match "1" o-- "0..1" Album : gallery
 
   User "1" *-- "1..*" UserRole
   UserRole "*" --> "1" Role
@@ -164,16 +166,14 @@ classDiagram
   UserPermissionOverride "*" --> "1" Permission
   Match "*" --> "0..1" User : finalizedBy
 
-  Album "1" *-- "*" Photo
-  HistoryItem "1" o-- "0..1" Album
   Team ..> Photo : photoUrl
 ```
 
 ## Decisões de modelagem (para validar)
 1. **`Edition` como raiz**: o evento se repete todo ano; evita refazer a estrutura em 2027.
-2. **`Album` genérico**: uma única entidade de fotos serve a três usos (galeria do sub-evento por data, mural da partida, história). A galeria "por sub-evento e data" vira um álbum por sub-evento + data.
+2. **Sem `Album` (decisão de 03/11/2026)**: a foto pertence direto a um sub-evento (galeria esporádica, sem dia nem partida). Não há mural da partida.
 3. **Placar com pênaltis separados:** `scoreA/B` é o resultado do jogo; `penaltiesA/B` só é preenchido em mata-mata empatado. `winnerId` é derivado (gols; se empate, pênaltis) e guardado para facilitar o chaveamento.
-4. **Vôlei de areia fora do modelo esportivo:** é só `SubEvent` + `Album`. Sem `Modality`, `Team` ou `Match`.
+4. **Vôlei de areia fora do modelo esportivo:** é só `SubEvent` + `Photo`. Sem `Modality`, `Team` ou `Match`.
 5. **Permissões como dados, não como `if (role == ...)`:** o código verifica **permissão**, nunca papel. É isso que permite o admin ajustar um usuário específico sem mexer no código.
 6. **`finalizedById`:** guarda quem lançou o resultado (por isso usuário é desativado, não excluído, RN-47).
 7. **`BestPlayer` é um objeto embutido na `Match`, não uma entidade `Player`.** É opcional e aponta para um dos dois times (validar `teamId` ∈ {teamA, teamB}). O cliente não quer cadastro de elenco. Se um dia vier artilharia ou elenco, ele vira entidade.
@@ -195,24 +195,26 @@ Catálogo inicial (formato `recurso:ação`; o sistema define, ninguém cria nov
 | `match:create` | Criar/editar/excluir partidas |
 | `match:record-score` | Lançar, corrigir e finalizar placar, pênaltis, melhor jogador |
 | `photo:upload` | Enviar fotos |
-| `photo:delete` | Excluir/reordenar fotos de qualquer álbum |
+| `photo:delete` | Excluir/reordenar fotos da galeria |
+| `live:manage` | Cadastrar lives, escolher a ativa e ligar/desligar a seção (só Admin) |
 | `history:manage` | Linha do tempo da história |
 | `user:manage` | Criar/desativar usuários |
 | `user:manage-permissions` | Alterar permissões de papéis e de usuários |
 
 **Proposta inicial por papel (a confirmar com o cliente):**
 
-| Permissão | Admin | Gerente | Assistente |
-|-----------|:-----:|:-------:|:----------:|
-| `schedule:manage` | ✔ | ✔ | |
-| `team:manage` | ✔ | ✔ | |
-| `match:create` | ✔ | ✔ | |
-| `match:record-score` | ✔ | ✔ | ✔ |
-| `photo:upload` | ✔ | ✔ | ✔ |
-| `photo:delete` | ✔ | ✔ | |
-| `history:manage` | ✔ | ✔ | |
-| `user:manage` | ✔ | | |
-| `user:manage-permissions` | ✔ | | |
+| Permissão | Admin | Gerente | Assistente | Fotógrafo |
+|-----------|:-----:|:-------:|:----------:|:---------:|
+| `schedule:manage` | ✔ | ✔ | | |
+| `team:manage` | ✔ | ✔ | | |
+| `match:create` | ✔ | ✔ | | |
+| `match:record-score` | ✔ | ✔ | ✔ | |
+| `photo:upload` | ✔ | ✔ | ✔ | ✔ |
+| `photo:delete` | ✔ | ✔ | | ✔ |
+| `live:manage` | ✔ | | | |
+| `history:manage` | ✔ | ✔ | | |
+| `user:manage` | ✔ | | | |
+| `user:manage-permissions` | ✔ | | | |
 
 ## Volume estimado (ordem de grandeza)
 11 categorias com campeonato (7 handebol + 4 futsal); o vôlei de areia é só galeria. Com grupos e mata-mata, a edição deve ter algumas dezenas a poucas centenas de partidas, volume pequeno para qualquer banco relacional.

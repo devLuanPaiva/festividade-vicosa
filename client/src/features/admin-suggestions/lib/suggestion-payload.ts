@@ -1,4 +1,5 @@
 import { toScheduledAt } from '@/features/admin-matches/lib/match-schedule';
+import { parseCourtLocation, type CourtLocation } from '@/features/games/lib/court-location';
 import type { FormErrorState } from '@/lib/forms/form-errors';
 import { rowFieldName } from './parse-suggestion-form';
 import type { SuggestionDefaults, SuggestionRow } from '../types';
@@ -9,14 +10,14 @@ export interface BatchMatchPayload {
   round?: string;
   bracketPosition?: number;
   scheduledAt: string;
-  location?: string;
+  location?: CourtLocation;
   teamAId: string;
   teamBId: string;
 }
 
 export interface MatchUpdatePayload {
   scheduledAt: string;
-  location: string;
+  location: CourtLocation | null;
   teamAId: string;
   teamBId: string;
 }
@@ -33,8 +34,8 @@ export function scheduleOf(row: SuggestionRow, defaults: SuggestionDefaults): st
   return toScheduledAt(row.date || defaults.date, row.time || defaults.time);
 }
 
-function locationOf(row: SuggestionRow, defaults: SuggestionDefaults): string {
-  return row.location || defaults.location;
+function locationOf(row: SuggestionRow, defaults: SuggestionDefaults): CourtLocation | null {
+  return parseCourtLocation(row.location || defaults.location);
 }
 
 export function toBatchMatch(row: SuggestionRow, defaults: SuggestionDefaults): BatchMatchPayload {

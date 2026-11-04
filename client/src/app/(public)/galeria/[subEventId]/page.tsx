@@ -1,28 +1,37 @@
 import type { Metadata } from 'next';
 import { PublicPageSkeleton } from '@/components/loading/PublicPageSkeleton';
-import { AlbumCardsSkeleton } from '@/features/gallery/components/GallerySkeletons';
+import { GalleryPhotosSkeleton } from '@/features/gallery/components/GallerySkeletons';
 import { Suspense, type ReactElement } from 'react';
-import { SubEventAlbumsLoader } from '@/features/gallery/components/SubEventAlbumsLoader';
+import { SubEventGalleryLoader } from '@/features/gallery/components/SubEventGalleryLoader';
+import { getSubEventGalleryMetadata } from '@/features/gallery/services/get-sub-event-gallery-metadata';
+import { readSharedPhotoId } from '@/lib/share/share-links';
 
-export const metadata: Metadata = {
-  title: 'Galeria do evento',
-  description: 'Álbuns de fotos do evento, por dia.',
-};
-
-interface SubEventAlbumsRouteProps {
+interface SubEventGalleryRouteProps {
   params: Promise<{ subEventId: string }>;
+  searchParams: Promise<{ foto?: string | string[] }>;
 }
 
-export default function SubEventAlbumsRoute({ params }: SubEventAlbumsRouteProps): ReactElement {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: SubEventGalleryRouteProps): Promise<Metadata> {
+  const { subEventId } = await params;
+  return getSubEventGalleryMetadata(subEventId, readSharedPhotoId((await searchParams).foto));
+}
+
+export default function SubEventGalleryRoute({
+  params,
+  searchParams,
+}: SubEventGalleryRouteProps): ReactElement {
   return (
     <Suspense
       fallback={
-        <PublicPageSkeleton label="Carregando os álbuns">
-          <AlbumCardsSkeleton />
+        <PublicPageSkeleton label="Carregando as fotos">
+          <GalleryPhotosSkeleton />
         </PublicPageSkeleton>
       }
     >
-      <SubEventAlbumsLoader params={params} />
+      <SubEventGalleryLoader params={params} searchParams={searchParams} />
     </Suspense>
   );
 }

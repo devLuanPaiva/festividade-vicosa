@@ -6,6 +6,7 @@ import { AuthModule } from './resources/auth/auth.module';
 import { CategoryModule } from './resources/category/category.module';
 import { EditionModule } from './resources/edition/edition.module';
 import { GalleryModule } from './resources/gallery/gallery.module';
+import { LiveStreamModule } from './resources/live-stream/live-stream.module';
 import { HealthModule } from './resources/health/health.module';
 import { IndicatorModule } from './resources/indicator/indicator.module';
 import { MatchModule } from './resources/match/match.module';
@@ -29,6 +30,7 @@ import { TeamModule } from './resources/team/team.module';
     MatchModule,
     StandingModule,
     GalleryModule,
+    LiveStreamModule,
   ],
 })
 export class AppModule {}

@@ -17,10 +17,6 @@ export function AlbumSectionSkeleton(): ReactElement {
   );
 }
 
-export function AlbumCardsSkeleton(): ReactElement {
-  return <CardGridSkeleton withImage />;
-}
-
-export function DayPhotosSkeleton(): ReactElement {
+export function GalleryPhotosSkeleton(): ReactElement {
   return <PhotoGridSkeleton />;
 }

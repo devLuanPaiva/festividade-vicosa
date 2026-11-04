@@ -1,6 +1,6 @@
 import { IsEnum, IsISO8601, IsOptional, IsUUID } from 'class-validator';
-import { OptionalLocation } from '../../../common/validation/field-decorators';
 import { VALIDATION_MESSAGES } from '../../../common/validation/validation-messages';
+import { CourtLocation } from '../enums/court-location.enum';
 import { MatchRound, MatchStage } from '../enums/match.enums';
 
 export class CreateMatchDto {
@@ -18,8 +18,9 @@ export class CreateMatchDto {
   @IsISO8601({ strict: true }, { message: VALIDATION_MESSAGES.dateTime })
   public scheduledAt!: string;
 
-  @OptionalLocation()
-  public location?: string;
+  @IsOptional()
+  @IsEnum(CourtLocation, { message: VALIDATION_MESSAGES.courtLocation })
+  public location?: CourtLocation | null;
 
   @IsUUID('4', { message: VALIDATION_MESSAGES.teamId })
   public teamAId!: string;

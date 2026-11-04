@@ -1,13 +1,7 @@
 export interface PhotoResponseDto {
   id: string;
-  albumId: string;
+  subEventId: string;
   photoKey: string;
   sortOrder: number;
   createdAt: string;
-}
-
-export interface GalleryDayResponseDto {
-  date: string;
-  photoCount: number;
-  coverPhotoKey: string;
 }

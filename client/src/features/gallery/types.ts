@@ -1,14 +1,13 @@
 export interface GalleryPhoto {
   id: string;
-  albumId: string;
+  subEventId: string;
   photoKey: string;
   sortOrder: number;
 }
 
-export interface GalleryDay {
-  date: string;
+export interface GallerySummary {
   photoCount: number;
-  coverPhotoKey: string;
+  coverPhotoKey: string | null;
 }
 
 export interface GalleryImage {

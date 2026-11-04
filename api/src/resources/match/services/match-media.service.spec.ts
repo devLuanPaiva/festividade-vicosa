@@ -27,18 +27,12 @@ function createService(): MatchMediaService {
 }
 
 describe('MatchMediaService.targetFor', () => {
-  it('puts the photos of a game in a folder named after its teams, date and time', async () => {
-    const target = await createService().targetFor('match-1', MediaFolder.MATCH_PHOTO);
-
-    expect(target).toEqual({
-      folder: MediaFolder.MATCH_PHOTO,
-      segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
-    });
-  });
-
-  it('uses the same game folder for the best player photo', async () => {
+  it('puts the best player photo in a folder named after the teams, date and time', async () => {
     const target = await createService().targetFor('match-1', MediaFolder.BEST_PLAYER);
 
-    expect(target.segments).toEqual(['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930']);
+    expect(target).toEqual({
+      folder: MediaFolder.BEST_PLAYER,
+      segments: ['futsal-sub-15-masculino', 'centro-x-acude-2026-12-09-1930'],
+    });
   });
 });
