@@ -3,6 +3,7 @@ export enum MediaFolder {
   BEST_PLAYER = 'BEST_PLAYER',
   EVENT_PHOTO = 'EVENT_PHOTO',
   HISTORY_PHOTO = 'HISTORY_PHOTO',
+  LIVE_PREVIEW = 'LIVE_PREVIEW',
 }
 
 export interface MediaTarget {
@@ -19,6 +20,7 @@ const ROOT_FOLDERS: Record<MediaFolder, string> = {
   [MediaFolder.BEST_PLAYER]: 'matches',
   [MediaFolder.EVENT_PHOTO]: 'sub-events',
   [MediaFolder.HISTORY_PHOTO]: 'history',
+  [MediaFolder.LIVE_PREVIEW]: 'live',
 };
 
 const SUBFOLDERS: Partial<Record<MediaFolder, string>> = {
@@ -30,9 +32,10 @@ const STANDARD_NAMES: Record<MediaFolder, string> = {
   [MediaFolder.BEST_PLAYER]: 'best-player',
   [MediaFolder.EVENT_PHOTO]: 'photo',
   [MediaFolder.HISTORY_PHOTO]: 'photo',
+  [MediaFolder.LIVE_PREVIEW]: 'preview',
 };
 
-const MANAGED_PREFIXES = ['teams/', 'matches/', 'sub-events/', 'history/'];
+const MANAGED_PREFIXES = ['teams/', 'matches/', 'sub-events/', 'history/', 'live/'];
 
 export function buildMediaKey(target: MediaTarget, randomKey: string): string {
   const { folder, segments } = target;
