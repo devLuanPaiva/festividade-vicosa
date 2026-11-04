@@ -174,7 +174,7 @@ describe('Matches (e2e)', () => {
   it('changes only the schedule, location and teams of a match', async () => {
     const allowed = await as(
       'organizer-token',
-      request(server()).patch(`/matches/${MATCH_ID}`).send({ location: 'Ginásio' }),
+      request(server()).patch(`/matches/${MATCH_ID}`).send({ location: 'GYMNASIUM' }),
     );
     const forbiddenField = await as(
       'organizer-token',
@@ -184,6 +184,16 @@ describe('Matches (e2e)', () => {
     expect(allowed.status).toBe(200);
     expect(forbiddenField.status).toBe(400);
     expect(forbiddenField.body).toMatchObject({ errors: { field: 'stage' } });
+  });
+
+  it('rejects a location that is not one of the courts', async () => {
+    const response = await as(
+      'organizer-token',
+      request(server()).patch(`/matches/${MATCH_ID}`).send({ location: 'Ginásio' }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ errors: { field: 'location' } });
   });
 
   it('removes a match with no content in the response', async () => {
