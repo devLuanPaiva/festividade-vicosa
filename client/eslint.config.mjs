@@ -8,7 +8,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   sonarjs.configs.recommended,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts']),
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts', 'public/**']),
   {
     plugins: { 'no-comments': noComments },
     rules: {

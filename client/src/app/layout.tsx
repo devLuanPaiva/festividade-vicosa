@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactElement, ReactNode } from 'react';
+import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { getSiteUrl } from '@/lib/config/server-env';
 import { fontVariableClassNames } from '@/lib/fonts';
 import './globals.css';
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   },
   description:
     'Jogos, placares, fotos, programação e a história da festividade de emancipação política de Viçosa/RN.',
+  appleWebApp: { capable: true, title: 'JOCEV’S 2026', statusBarStyle: 'default' },
 };
 
 export const viewport: Viewport = {
@@ -28,6 +30,7 @@ export default function RootLayout({ children }: RootLayoutProps): ReactElement 
     <html lang="pt-BR" className={fontVariableClassNames}>
       <body className="font-sans antialiased" cz-shortcut-listen="false">
         {children}
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );
