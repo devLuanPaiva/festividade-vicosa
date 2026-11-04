@@ -20,20 +20,20 @@ export class PhotoManagementService {
 
   public async reorder(photoIds: string[]): Promise<Photo[]> {
     const [firstId = ''] = photoIds;
-    const { albumId } = await this.findByIdOrFail(firstId);
-    const albumPhotos = await this.photoRepository.findByAlbum(albumId);
-    const albumPhotoIds = albumPhotos.map((photo) => photo.id);
-    if (!isCompleteOrder(photoIds, albumPhotoIds)) {
+    const { subEventId } = await this.findByIdOrFail(firstId);
+    const galleryPhotos = await this.photoRepository.findBySubEvent(subEventId);
+    const galleryPhotoIds = galleryPhotos.map((photo) => photo.id);
+    if (!isCompleteOrder(photoIds, galleryPhotoIds)) {
       throw new BadRequestException(
         apiError(
           'PHOTO_ORDER_INVALID',
-          'A lista deve conter todas as fotos do álbum, sem repetir nenhuma.',
+          'A lista deve conter todas as fotos da galeria do sub-evento, sem repetir nenhuma.',
           'photoIds',
         ),
       );
     }
     await this.photoRepository.reorder(photoIds);
-    return this.photoRepository.findByAlbum(albumId);
+    return this.photoRepository.findBySubEvent(subEventId);
   }
 
   private async findByIdOrFail(id: string): Promise<Photo> {

@@ -1,17 +1,16 @@
 import { Controller, Get, Param, Post } from '@nestjs/common';
-import { ParseDayPipe } from '../../../common/pipes/parse-day.pipe';
 import { ParseIdPipe } from '../../../common/pipes/parse-id.pipe';
 import { ImageUploadEndpoint } from '../../../storage/upload/upload-decorators';
 import { Public, RequirePermission } from '../../auth/decorators/decorators';
 import { Permission } from '../../role/enums/permission.enum';
 import { UploadedPhoto } from '../decorators/uploaded-photo.decorator';
-import type { GalleryDayResponseDto, PhotoResponseDto } from '../dto/photo-response.dto';
-import { toGalleryDayResponse, toPhotoResponse } from '../mappers/photo-response.mapper';
+import type { PhotoResponseDto } from '../dto/photo-response.dto';
+import { toPhotoResponse } from '../mappers/photo-response.mapper';
 import { GalleryService } from '../services/gallery.service';
 import type { PhotoUpload } from '../services/photo-store.service';
 import { PhotoUploadService } from '../services/photo-upload.service';
 
-@Controller('sub-events/:subEventId/gallery')
+@Controller('sub-events/:subEventId/photos')
 export class GalleryController {
   public constructor(
     private readonly galleryService: GalleryService,
@@ -20,38 +19,19 @@ export class GalleryController {
 
   @Public()
   @Get()
-  public async listDays(
+  public async list(
     @Param('subEventId', ParseIdPipe) subEventId: string,
-  ): Promise<GalleryDayResponseDto[]> {
-    return (await this.galleryService.listDays(subEventId)).map(toGalleryDayResponse);
-  }
-
-  @Public()
-  @Get(':date')
-  public async listPhotos(
-    @Param('subEventId', ParseIdPipe) subEventId: string,
-    @Param('date', ParseDayPipe) date: string,
   ): Promise<PhotoResponseDto[]> {
-    return (await this.galleryService.listEventDayPhotos(subEventId, date)).map(toPhotoResponse);
+    return (await this.galleryService.listPhotos(subEventId)).map(toPhotoResponse);
   }
 
-  @Public()
-  @Get(':date/uploads')
-  public async listUploads(
-    @Param('subEventId', ParseIdPipe) subEventId: string,
-    @Param('date', ParseDayPipe) date: string,
-  ): Promise<PhotoResponseDto[]> {
-    return (await this.galleryService.listEventDayUploads(subEventId, date)).map(toPhotoResponse);
-  }
-
-  @Post(':date/photos')
+  @Post()
   @RequirePermission(Permission.PHOTO_UPLOAD)
   @ImageUploadEndpoint()
   public async upload(
     @Param('subEventId', ParseIdPipe) subEventId: string,
-    @Param('date', ParseDayPipe) date: string,
     @UploadedPhoto() upload: PhotoUpload,
   ): Promise<PhotoResponseDto> {
-    return toPhotoResponse(await this.photoUploadService.addToEventDay(subEventId, date, upload));
+    return toPhotoResponse(await this.photoUploadService.addToSubEvent(subEventId, upload));
   }
 }
