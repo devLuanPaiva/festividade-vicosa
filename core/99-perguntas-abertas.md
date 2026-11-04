@@ -12,7 +12,7 @@ Marque `[x]` quando resolvida e mova a decisão para o doc correspondente.
 - [x] Pênaltis → registra o placar (RN-22, RN-24).
 - [x] Vôlei de areia → só galeria; sem placar nem times.
 - [x] Placar → só resultado final, sem ao vivo.
-- [x] Usuários → vários; papéis Admin, Gerente, Assistente; permissões ajustáveis por usuário (RN-40 a RN-47).
+- [x] Usuários → vários; papéis Admin, Gerente, Assistente e Fotógrafo (só galeria, 03/11/2026); permissões ajustáveis por usuário (RN-40 a RN-47).
 - [x] Corrida e Ecopedal → só divulgação e galeria.
 - [x] Melhor jogador → opcional por partida, vinculado a um time, sem cadastro de elenco (RN-18).
 - [x] Fotos → só a equipe do painel envia (RN-32).
