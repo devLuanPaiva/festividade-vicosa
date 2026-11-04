@@ -10,6 +10,7 @@ export const VALIDATION_MESSAGES = {
   nameTooLong: 'O nome deve ter no máximo 120 caracteres.',
   description: 'A descrição deve ser um texto de até 2000 caracteres.',
   location: 'O local deve ser um texto de até 200 caracteres.',
+  courtLocation: 'Selecione o local: Praça 1, Praça 2 ou Ginásio.',
   year: 'Informe um ano válido entre 2000 e 2100.',
   date: 'Informe uma data válida no formato AAAA-MM-DD.',
   subEventType: 'Selecione um tipo de sub-evento válido.',

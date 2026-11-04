@@ -1,3 +1,4 @@
+import type { CourtLocation } from '../../resources/match/enums/court-location.enum';
 import { requireAt } from './demo-array';
 
 const START_HOUR = 8;
@@ -14,7 +15,7 @@ export interface Pairing {
 
 export interface Slot {
   scheduledAt: string;
-  location: string;
+  location: CourtLocation;
 }
 
 function rotate(teamIds: string[]): string[] {
@@ -71,7 +72,7 @@ export function toBrazilDateTime(isoDate: string, time: string): string {
   return `${isoDate}T${time}${BRAZIL_OFFSET}`;
 }
 
-export function buildSlots(firstDate: string, venues: string[], count: number): Slot[] {
+export function buildSlots(firstDate: string, venues: CourtLocation[], count: number): Slot[] {
   const times = slotTimes();
   const slotsPerDay = times.length * venues.length;
   return Array.from({ length: count }, (_, index) => {

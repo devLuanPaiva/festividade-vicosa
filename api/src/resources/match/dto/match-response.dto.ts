@@ -1,3 +1,4 @@
+import type { CourtLocation } from '../enums/court-location.enum';
 import type { MatchResultType, MatchRound, MatchStage, MatchStatus } from '../enums/match.enums';
 
 export interface BestPlayerResponseDto {
@@ -14,7 +15,7 @@ export interface MatchResponseDto {
   round: MatchRound | null;
   bracketPosition: number | null;
   scheduledAt: string;
-  location: string | null;
+  location: CourtLocation | null;
   status: MatchStatus;
   teamAId: string;
   teamBId: string;
