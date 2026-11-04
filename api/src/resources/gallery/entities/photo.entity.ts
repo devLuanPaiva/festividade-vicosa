@@ -6,7 +6,7 @@ export class Photo {
   public id!: string;
 
   @Column({ type: 'uuid' })
-  public albumId!: string;
+  public subEventId!: string;
 
   @Column({ type: 'varchar' })
   public storageKey!: string;

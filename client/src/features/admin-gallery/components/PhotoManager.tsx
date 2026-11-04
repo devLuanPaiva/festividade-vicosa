@@ -3,33 +3,33 @@ import { resolvePhotoUrl } from '@/features/games/lib/photo-url';
 import {
   deletePhotoAction,
   reorderPhotosAction,
-  uploadAlbumPhotoAction,
+  uploadSubEventPhotoAction,
 } from '../actions/photo-actions';
-import { getAlbumPhotos } from '../services/get-gallery-data';
-import type { AlbumPhoto, AlbumTarget } from '../types';
+import { getSubEventPhotos } from '../services/get-gallery-data';
+import type { SubEventPhoto } from '../types';
 import { PhotoGrid, type GridPhoto } from './PhotoGrid';
 import { PhotoUploader } from './PhotoUploader';
 
-interface AlbumManagerProps {
-  target: AlbumTarget;
+interface PhotoManagerProps {
+  subEventId: string;
   canManage: boolean;
 }
 
-function toGridPhotos(photos: AlbumPhoto[]): GridPhoto[] {
+function toGridPhotos(photos: SubEventPhoto[]): GridPhoto[] {
   return photos.flatMap(({ id, photoKey }) => {
     const url = resolvePhotoUrl(photoKey, 'thumb');
     return url ? [{ id, url }] : [];
   });
 }
 
-export async function AlbumManager({
-  target,
+export async function PhotoManager({
+  subEventId,
   canManage,
-}: AlbumManagerProps): Promise<ReactElement> {
-  const photos = await getAlbumPhotos(target);
+}: PhotoManagerProps): Promise<ReactElement> {
+  const photos = await getSubEventPhotos(subEventId);
   return (
     <>
-      <PhotoUploader upload={uploadAlbumPhotoAction.bind(null, target)} />
+      <PhotoUploader upload={uploadSubEventPhotoAction.bind(null, subEventId)} />
       <PhotoGrid
         photos={toGridPhotos(photos)}
         canManage={canManage}

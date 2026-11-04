@@ -1,6 +1,5 @@
 export enum MediaFolder {
   TEAM_PHOTO = 'TEAM_PHOTO',
-  MATCH_PHOTO = 'MATCH_PHOTO',
   BEST_PLAYER = 'BEST_PLAYER',
   EVENT_PHOTO = 'EVENT_PHOTO',
   HISTORY_PHOTO = 'HISTORY_PHOTO',
@@ -17,20 +16,17 @@ const LEGACY_VARIANTS = ['thumb', 'medium', 'large'];
 
 const ROOT_FOLDERS: Record<MediaFolder, string> = {
   [MediaFolder.TEAM_PHOTO]: 'teams',
-  [MediaFolder.MATCH_PHOTO]: 'matches',
   [MediaFolder.BEST_PLAYER]: 'matches',
   [MediaFolder.EVENT_PHOTO]: 'sub-events',
   [MediaFolder.HISTORY_PHOTO]: 'history',
 };
 
 const SUBFOLDERS: Partial<Record<MediaFolder, string>> = {
-  [MediaFolder.MATCH_PHOTO]: 'photos',
   [MediaFolder.BEST_PLAYER]: 'best-player',
 };
 
 const STANDARD_NAMES: Record<MediaFolder, string> = {
   [MediaFolder.TEAM_PHOTO]: 'team',
-  [MediaFolder.MATCH_PHOTO]: 'photo',
   [MediaFolder.BEST_PLAYER]: 'best-player',
   [MediaFolder.EVENT_PHOTO]: 'photo',
   [MediaFolder.HISTORY_PHOTO]: 'photo',

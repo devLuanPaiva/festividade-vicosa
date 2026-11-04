@@ -3,55 +3,52 @@ import type { ReactElement } from 'react';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { PageHero } from '@/components/layout/PageHero';
 import { ButtonLink } from '@/components/ui/ButtonLink';
-import { formatDateRange } from '@/features/schedule/lib/format-date-range';
 import { getEditionSubEvents } from '@/features/schedule/services/get-edition-sub-events';
 import { FESTIVAL_YEAR } from '@/lib/config/festival';
 import { readSharedPhotoId } from '@/lib/share/share-links';
-import { subEventAlbumsPath } from '../lib/gallery-paths';
-import { getDayImages } from '../services/get-gallery';
+import { GALLERY_PATH } from '../lib/gallery-paths';
+import { getSubEventImages } from '../services/get-gallery';
 import { GallerySection } from './GallerySection';
 import { PhotoGallery } from './PhotoGallery';
 
-const ISO_DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-interface DayAlbumLoaderProps {
-  params: Promise<{ subEventId: string; date: string }>;
+interface SubEventGalleryLoaderProps {
+  params: Promise<{ subEventId: string }>;
   searchParams: Promise<{ foto?: string | string[] }>;
 }
 
-export async function DayAlbumLoader({
+export async function SubEventGalleryLoader({
   params,
   searchParams,
-}: DayAlbumLoaderProps): Promise<ReactElement> {
-  const { subEventId, date } = await params;
+}: SubEventGalleryLoaderProps): Promise<ReactElement> {
+  const { subEventId } = await params;
   const sharedPhotoId = readSharedPhotoId((await searchParams).foto);
   const subEvents = await getEditionSubEvents(FESTIVAL_YEAR);
   const subEvent = subEvents.find((candidate) => candidate.id === subEventId);
-  if (!subEvent || !ISO_DAY_PATTERN.test(date)) {
+  if (!subEvent) {
     notFound();
   }
-  const images = await getDayImages(subEvent.id, date);
+  const images = await getSubEventImages(subEvent.id);
   return (
     <>
-      <PageHero eyebrow={subEvent.name} title={formatDateRange(date, date)} />
-      <GallerySection label={`Fotos de ${formatDateRange(date, date)}`}>
+      <PageHero eyebrow="Galeria" title={subEvent.name} />
+      <GallerySection label={`Fotos de ${subEvent.name}`}>
         {images.length === 0 ? (
           <EmptyState
             icon="image"
-            title="Ainda não há fotos neste dia"
-            description="As fotos deste dia ainda não foram publicadas. Volte em breve!"
+            title="Ainda não há fotos deste evento"
+            description="Assim que a equipe publicar as fotos, elas aparecem aqui."
           />
         ) : (
           <PhotoGallery
             images={images}
-            fileBase={`festividade-vicosa-${date}`}
-            shareText={`Foto de ${subEvent.name}, ${formatDateRange(date, date)}`}
+            fileBase="festividade-vicosa"
+            shareText={`Foto de ${subEvent.name}`}
             initialPhotoId={sharedPhotoId}
           />
         )}
         <div>
-          <ButtonLink href={subEventAlbumsPath(subEvent.id)} variant="brand">
-            Outros dias
+          <ButtonLink href={GALLERY_PATH} variant="brand">
+            Todas as galerias
           </ButtonLink>
         </div>
       </GallerySection>

@@ -1,14 +1,10 @@
 ﻿import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Category } from '../../category/entities/category.entity';
-import { Match } from '../../match/entities/match.entity';
-import { Album } from '../entities/album.entity';
 import { Photo } from '../entities/photo.entity';
-import { EVENT_TIME_ZONE } from './album.repository';
 
 export interface PhotoRecord {
-  albumId: string;
+  subEventId: string;
   storageKey: string;
   uploadedById: string;
 }
@@ -17,29 +13,11 @@ export interface PhotoRecord {
 export class PhotoRepository {
   public constructor(@InjectRepository(Photo) private readonly repository: Repository<Photo>) {}
 
-  public findByAlbum(albumId: string): Promise<Photo[]> {
+  public findBySubEvent(subEventId: string): Promise<Photo[]> {
     return this.repository.find({
-      where: { albumId },
+      where: { subEventId },
       order: { sortOrder: 'ASC', createdAt: 'ASC', id: 'ASC' },
     });
-  }
-
-  public findByEventDay(subEventId: string, day: string): Promise<Photo[]> {
-    return this.repository
-      .createQueryBuilder('photo')
-      .innerJoin(Album, 'album', 'album.id = photo.albumId')
-      .leftJoin(Match, 'game', 'game.id = album.matchId')
-      .leftJoin(Category, 'category', 'category.id = game.categoryId')
-      .where('album.subEventId = :subEventId AND album.eventDate = :day')
-      .orWhere(
-        `category.subEventId = :subEventId AND CAST(game.scheduledAt AT TIME ZONE :timeZone AS date) = :day`,
-      )
-      .setParameters({ subEventId, day, timeZone: EVENT_TIME_ZONE })
-      .orderBy('game.scheduledAt', 'ASC', 'NULLS FIRST')
-      .addOrderBy('photo.sortOrder', 'ASC')
-      .addOrderBy('photo.createdAt', 'ASC')
-      .addOrderBy('photo.id', 'ASC')
-      .getMany();
   }
 
   public findById(id: string): Promise<Photo | null> {
@@ -47,7 +25,7 @@ export class PhotoRepository {
   }
 
   public async create(record: PhotoRecord): Promise<Photo> {
-    const sortOrder = await this.nextSortOrder(record.albumId);
+    const sortOrder = await this.nextSortOrder(record.subEventId);
     return this.repository.save(this.repository.create({ ...record, sortOrder }));
   }
 
@@ -63,11 +41,11 @@ export class PhotoRepository {
     });
   }
 
-  private async nextSortOrder(albumId: string): Promise<number> {
+  private async nextSortOrder(subEventId: string): Promise<number> {
     const { highest } = (await this.repository
       .createQueryBuilder('photo')
       .select('max(photo.sort_order)', 'highest')
-      .where('photo.album_id = :albumId', { albumId })
+      .where('photo.sub_event_id = :subEventId', { subEventId })
       .getRawOne<{ highest: number | null }>()) ?? { highest: null };
     return highest === null ? 0 : highest + 1;
   }

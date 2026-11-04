@@ -6,7 +6,7 @@ import { GalleryIndexLoader } from '@/features/gallery/components/GalleryIndexLo
 
 export const metadata: Metadata = {
   title: 'Galeria',
-  description: 'Fotos da JOCEV’S 2026 e dos eventos da festividade, por dia.',
+  description: 'Fotos da JOCEV’S 2026 e dos eventos da festividade.',
 };
 
 export default function GalleryRoute(): ReactElement {
@@ -15,7 +15,7 @@ export default function GalleryRoute(): ReactElement {
       <PageHero
         eyebrow="JOCEV’S 2026"
         title="Galeria"
-        description="Os melhores momentos da festividade, dia a dia."
+        description="Os melhores momentos da festividade."
       />
       <Suspense fallback={<AlbumSectionSkeleton />}>
         <GalleryIndexLoader />

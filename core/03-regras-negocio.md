@@ -37,7 +37,7 @@ Itens **(a confirmar)** dependem de resposta do cliente (ver [99-perguntas-abert
 ## Conteúdo e acesso
 - **RN-30** Todo o portal público é de acesso livre, sem login.
 - **RN-31** Somente usuário autenticado **com a permissão adequada** cria, edita ou exclui conteúdo.
-- **RN-32** Foto da galeria pertence a um **sub-evento** (sem separação por dia nem por partida), ou a um item da história. **Só a equipe do painel envia fotos** (Admin, Gerente e Fotógrafo); o público não envia (sem moderação).
+- **RN-32** Foto da galeria pertence a um **sub-evento** (sem separação por dia nem por partida). **Só a equipe do painel envia fotos** (Admin, Gerente e Fotógrafo); o público não envia (sem moderação).
 - **RN-33** Excluir um time com partidas é bloqueado (as partidas devem ser removidas antes).
 
 ## Usuários, papéis e permissões
