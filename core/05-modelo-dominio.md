@@ -167,13 +167,12 @@ classDiagram
   UserPermissionOverride "*" --> "1" Permission
   Match "*" --> "0..1" User : finalizedBy
 
-  HistoryItem "1" o-- "*" Photo
   Team ..> Photo : photoUrl
 ```
 
 ## Decisões de modelagem (para validar)
 1. **`Edition` como raiz**: o evento se repete todo ano; evita refazer a estrutura em 2027.
-2. **Sem `Album` (decisão de 03/11/2026)**: a foto pertence direto a um sub-evento (galeria esporádica, sem dia nem partida) ou a um item da história. Não há mural da partida.
+2. **Sem `Album` (decisão de 03/11/2026)**: a foto pertence direto a um sub-evento (galeria esporádica, sem dia nem partida). Não há mural da partida.
 3. **Placar com pênaltis separados:** `scoreA/B` é o resultado do jogo; `penaltiesA/B` só é preenchido em mata-mata empatado. `winnerId` é derivado (gols; se empate, pênaltis) e guardado para facilitar o chaveamento.
 4. **Vôlei de areia fora do modelo esportivo:** é só `SubEvent` + `Photo`. Sem `Modality`, `Team` ou `Match`.
 5. **Permissões como dados, não como `if (role == ...)`:** o código verifica **permissão**, nunca papel. É isso que permite o admin ajustar um usuário específico sem mexer no código.

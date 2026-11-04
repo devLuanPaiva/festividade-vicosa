@@ -30,7 +30,6 @@ erDiagram
   match_group ||--o{ qualified_team : "classificados confirmados"
   team ||--o{ qualified_team : classifica
   team ||--o{ match : "team_a / team_b"
-  history_item ||--o{ photo : fotos
   role ||--o{ users : tem
   role ||--o{ role_permissions : tem
   permission ||--o{ role_permissions : em
@@ -99,9 +98,9 @@ Restrições da `match`:
 ### Fotos
 | Tabela | Colunas principais | Restrições |
 |--------|-------------------|-----------|
-| `photo` | `id`, `sub_event_id` (nulo), `history_item_id` (nulo), `storage_key` (único), `sort_order`, `uploaded_by_id`, `created_at` | **`CHECK` de exatamente um dono**: sub-evento ou item da história; `ON DELETE CASCADE` a partir do dono; índices `(sub_event_id, sort_order)` e `(history_item_id, sort_order)`. Sem legenda nem dimensões por enquanto |
+| `photo` | `id`, `sub_event_id`, `storage_key` (único), `sort_order`, `uploaded_by_id`, `created_at` | `ON DELETE CASCADE` a partir do sub-evento; índice `(sub_event_id, sort_order)`. Sem legenda nem dimensões por enquanto |
 
-A tabela `album` deixa de existir (decisão de 03/11/2026): a galeria é só por sub-evento, sem dia nem partida. As fotos de demonstração existentes são descartadas pela migration.
+A tabela `album` deixou de existir (decisão de 03/11/2026): a galeria é só por sub-evento, sem dia nem partida. A migration `MovePhotosToSubEvent` converteu as fotos de dia em fotos do sub-evento (ordenadas pelo dia) e descartou as de partida; os arquivos das fotos descartadas continuam no bucket, fora do banco. As fotos da história entram quando o resource da história existir.
 
 **`live_stream`** (RN-51, RN-52)
 | Coluna | Tipo | Nota |
