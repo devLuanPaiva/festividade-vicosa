@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { LoginThrottlerGuard } from '../guards/login-throttler.guard';
 import { AuthService } from '../services/auth.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { SessionRenewalService } from '../services/session-renewal.service';
@@ -11,6 +12,7 @@ import { LoginDto } from '../dto/login.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 
 const LOGIN_ATTEMPTS_PER_MINUTE = 5;
+const GOOGLE_LOGINS_PER_MINUTE = 60;
 const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 
 @Controller('auth')
@@ -22,7 +24,7 @@ export class AuthController {
   ) {}
 
   @Public()
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(LoginThrottlerGuard)
   @Throttle({ default: { limit: LOGIN_ATTEMPTS_PER_MINUTE, ttl: ONE_MINUTE_IN_MILLISECONDS } })
   @Post('login')
   @HttpCode(200)
@@ -32,7 +34,7 @@ export class AuthController {
 
   @Public()
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: LOGIN_ATTEMPTS_PER_MINUTE, ttl: ONE_MINUTE_IN_MILLISECONDS } })
+  @Throttle({ default: { limit: GOOGLE_LOGINS_PER_MINUTE, ttl: ONE_MINUTE_IN_MILLISECONDS } })
   @Post('google')
   @HttpCode(200)
   public loginWithGoogle(@Body() identity: GoogleLoginDto): Promise<AuthTokensDto> {
