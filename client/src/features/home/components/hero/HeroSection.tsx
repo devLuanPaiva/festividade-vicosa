@@ -5,6 +5,7 @@ import { SparkleField } from '@/components/ui/SparkleField';
 import { CountdownPanel } from './CountdownPanel';
 import { HeroParallax } from './HeroParallax';
 import { LogoStage } from './LogoStage';
+import { HeroInstallButton } from './HeroInstallButton';
 import { ScrollCue } from './ScrollCue';
 
 export function HeroSection(): ReactElement {
@@ -31,6 +32,7 @@ export function HeroSection(): ReactElement {
             <ButtonLink href="/#trajetoria" variant="outline">
               Conhecer a história
             </ButtonLink>
+            <HeroInstallButton />
           </div>
         </div>
         <div className="order-1 flex flex-col gap-8 lg:order-2">
