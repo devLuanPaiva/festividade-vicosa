@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-const SITE_NAME = 'Festividade de Viçosa';
+const SITE_NAME = 'JOCEV’S';
 
 export interface ShareMetadataInput {
   title: string;

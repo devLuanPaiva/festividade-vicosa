@@ -6,7 +6,7 @@ import { getSubEventImages } from './get-gallery';
 
 const FALLBACK: Metadata = {
   title: 'Galeria do evento',
-  description: 'Fotos da festividade de Viçosa.',
+  description: 'Fotos da JOCEV’S.',
 };
 
 export async function getSubEventGalleryMetadata(
@@ -21,7 +21,7 @@ export async function getSubEventGalleryMetadata(
   const images = photoId === null ? [] : await getSubEventImages(subEventId);
   return buildShareMetadata({
     title: subEvent.name,
-    description: 'Fotos da festividade de Viçosa.',
+    description: 'Fotos da JOCEV’S.',
     imageUrl: images.find((image) => image.id === photoId)?.largeUrl,
   });
 }

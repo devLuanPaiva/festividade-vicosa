@@ -7,10 +7,10 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  openGraph: { siteName: 'Festividade de Viçosa', locale: 'pt_BR', type: 'website' },
+  openGraph: { siteName: 'JOCEV’S', locale: 'pt_BR', type: 'website' },
   title: {
-    default: 'Festividade de Viçosa 2026 | JOCEV’S 25 anos de emoções',
-    template: '%s | Festividade de Viçosa',
+    default: 'JOCEV’S 25 anos | Jornada Cultural e Esportiva de Viçosa',
+    template: '%s | JOCEV’S',
   },
   description:
     'Jogos, placares, fotos, programação e a história da festividade de emancipação política de Viçosa/RN.',

@@ -22,15 +22,13 @@ function Brand({ isCollapsed }: { isCollapsed: boolean }): ReactElement {
     <Link
       href={ADMIN_HOME_PATH}
       className="mt-4 flex min-h-14 min-w-0 flex-1 items-center gap-3 px-3 text-white"
-      aria-label="Painel da Festividade, ir para o início"
+      aria-label="Painel JOCEV’S, ir para o início"
     >
       <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-sun text-brand-900">
         <Icon name="ball" className="size-6" />
       </span>
       {isCollapsed ? null : (
-        <span className="font-display text-2xl leading-none tracking-wide">
-          Painel da Festividade
-        </span>
+        <span className="font-display text-2xl leading-none tracking-wide">Painel JOCEV’S</span>
       )}
     </Link>
   );

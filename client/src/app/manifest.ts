@@ -5,7 +5,7 @@ const SPLASH_BACKGROUND = '#ffffff';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Festividade de Viçosa 2026 | JOCEV’S',
+    name: 'JOCEV’S 25 anos | Jornada Cultural e Esportiva de Viçosa',
     short_name: 'JOCEV’S 2026',
     description:
       'Jogos, placares, fotos, programação e a história da festividade de emancipação política de Viçosa/RN.',
