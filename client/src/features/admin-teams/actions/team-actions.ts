@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
 import { categoryPath } from '../lib/admin-team-paths';
@@ -22,7 +22,7 @@ export async function createTeamAction(
     return { ...failure, values };
   }
   refreshChampionshipData();
-  redirect(categoryPath(categoryId));
+  redirectToSuccess('team-created', categoryPath(categoryId));
 }
 
 export async function updateTeamAction(
@@ -39,7 +39,7 @@ export async function updateTeamAction(
     return { ...failure, values };
   }
   refreshChampionshipData();
-  redirect(categoryPath(categoryId));
+  redirectToSuccess('team-updated', categoryPath(categoryId));
 }
 
 export async function deleteTeamAction({
@@ -53,5 +53,5 @@ export async function deleteTeamAction({
     return failure;
   }
   refreshChampionshipData();
-  redirect(categoryPath(categoryId));
+  redirectToSuccess('team-deleted', categoryPath(categoryId));
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { requestAdminResult, submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
 import { parseRoleForm } from '../lib/parse-role-form';
@@ -28,7 +28,7 @@ export async function createRoleAction(
     return { ...outcome.failure, values, isSaved: false };
   }
   refreshUsersData();
-  redirect(rolePath(outcome.result.id));
+  redirectToSuccess('role-created', rolePath(outcome.result.id));
 }
 
 export async function updateRoleAction(
@@ -64,5 +64,5 @@ export async function deleteRoleAction(roleId: string): Promise<FormErrorState> 
     return failure;
   }
   refreshUsersData();
-  redirect(ROLES_PATH);
+  redirectToSuccess('role-deleted', ROLES_PATH);
 }
