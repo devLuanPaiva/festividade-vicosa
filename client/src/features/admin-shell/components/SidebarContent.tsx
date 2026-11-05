@@ -8,6 +8,7 @@ import { ADMIN_HOME_PATH } from '@/lib/auth/auth-paths';
 import { isActiveSection, visibleSections } from '../lib/admin-sections';
 import type { ShellUser } from '../types';
 import { SidebarLink } from './SidebarLink';
+import { SidebarInstallApp } from './SidebarInstallApp';
 import { SidebarUser } from './SidebarUser';
 
 interface SidebarContentProps {
@@ -59,6 +60,7 @@ export function SidebarContent({
           />
         ))}
       </nav>
+      <SidebarInstallApp isCollapsed={isCollapsed} />
       <SidebarUser user={user} isCollapsed={isCollapsed} />
     </div>
   );
