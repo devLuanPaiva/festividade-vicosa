@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactElement } from 'react';
-import { PasswordInput } from './PasswordInput';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 
 const FIELD_CLASS =
   'min-h-12 w-full rounded-xl border border-admin-line bg-white px-4 text-base text-admin-ink outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30';
