@@ -17,7 +17,7 @@ const HIGHLIGHTS: Highlight[] = [
 export function LoginBrandPanel(): ReactElement {
   return (
     <section
-      aria-label="Festividade de Viçosa"
+      aria-label="JOCEV’S"
       className="surface-sky flex flex-col items-center justify-center gap-8 px-6 pb-16 pt-10 text-center lg:items-start lg:px-16 lg:py-16 lg:text-left"
     >
       <div className="w-44 rounded-2xl bg-white p-3 shadow-[0_18px_40px_rgba(7,59,134,0.35)] sm:w-52 lg:w-72 lg:p-5">
@@ -30,9 +30,7 @@ export function LoginBrandPanel(): ReactElement {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <p className="font-display text-4xl tracking-wide text-sun lg:text-6xl">
-          Painel da Festividade
-        </p>
+        <p className="font-display text-4xl tracking-wide text-sun lg:text-6xl">Painel JOCEV’S</p>
         <p className="max-w-md text-base text-white/90 lg:text-lg">
           Tudo o que a equipe precisa para tocar o campeonato, do apito inicial ao placar final.
         </p>

@@ -7,7 +7,7 @@ export function HeaderBrand(): ReactElement {
   return (
     <Link
       href="/"
-      aria-label="Festividade de Viçosa, página inicial"
+      aria-label="JOCEV’S, página inicial"
       className="inline-flex min-h-11 items-center"
     >
       <Image

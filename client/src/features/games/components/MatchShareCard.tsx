@@ -32,9 +32,7 @@ export function MatchShareCard({ detail }: MatchShareCardProps): ReactElement {
         color: WHITE,
       }}
     >
-      <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: SUN }}>
-        Festividade de Viçosa 2026
-      </div>
+      <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: SUN }}>JOCEV’S 2026</div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', width: TEAM_NAME_WIDTH, fontSize: 56, fontWeight: 700 }}>
           {teamA.name}

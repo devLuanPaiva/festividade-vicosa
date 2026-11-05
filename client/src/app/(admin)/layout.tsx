@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: { default: 'Painel', template: '%s | Painel da Festividade' },
+  title: { default: 'Painel', template: '%s | Painel JOCEV’S' },
   robots: { index: false, follow: false },
 };
 
