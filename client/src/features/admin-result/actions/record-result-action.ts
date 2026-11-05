@@ -1,8 +1,8 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
-import { ADMIN_HOME_PATH } from '@/lib/auth/auth-paths';
+import { ADMIN_MATCHES_PATH } from '@/features/admin-shell/lib/admin-sections';
 import { buildResultPayload } from '../lib/build-result-payload';
 import { parseResultForm } from '../lib/parse-result-form';
 import type { ResultFormState } from '../types';
@@ -19,5 +19,5 @@ export async function recordResultAction(
   if (failure) {
     return failure;
   }
-  redirect(ADMIN_HOME_PATH);
+  redirectToSuccess('result-recorded', ADMIN_MATCHES_PATH);
 }

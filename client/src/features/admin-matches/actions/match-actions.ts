@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { refreshChampionshipData } from '@/features/admin-teams/lib/refresh-championship-data';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
@@ -26,7 +26,7 @@ export async function createMatchAction(
     return { ...failure, values };
   }
   refreshChampionshipData();
-  redirect(categoryMatchesPath(categoryId));
+  redirectToSuccess('match-created', categoryMatchesPath(categoryId));
 }
 
 export async function updateMatchAction(
@@ -43,7 +43,7 @@ export async function updateMatchAction(
     return { ...failure, values };
   }
   refreshChampionshipData();
-  redirect(categoryMatchesPath(categoryId));
+  redirectToSuccess('match-updated', categoryMatchesPath(categoryId));
 }
 
 export async function deleteMatchAction({
@@ -57,5 +57,5 @@ export async function deleteMatchAction({
     return failure;
   }
   refreshChampionshipData();
-  redirect(categoryMatchesPath(categoryId));
+  redirectToSuccess('match-deleted', categoryMatchesPath(categoryId));
 }
