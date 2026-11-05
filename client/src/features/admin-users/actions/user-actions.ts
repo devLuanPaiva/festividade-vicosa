@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { requestAdminResult, submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
 import { refreshUsersData } from '../lib/refresh-users-data';
@@ -26,7 +26,7 @@ export async function createUserAction(
     return { ...outcome.failure, values, isSaved: false };
   }
   refreshUsersData();
-  redirect(userPath(outcome.result.id));
+  redirectToSuccess('user-created', userPath(outcome.result.id));
 }
 
 export async function updateUserAction(
@@ -61,7 +61,7 @@ export async function setUserActiveAction(
     return failure;
   }
   refreshUsersData();
-  redirect(userPath(userId));
+  redirectToSuccess(isActive ? 'user-activated' : 'user-deactivated', userPath(userId));
 }
 
 export async function deleteUserAction(userId: string): Promise<FormErrorState> {
@@ -70,5 +70,5 @@ export async function deleteUserAction(userId: string): Promise<FormErrorState> 
     return failure;
   }
   refreshUsersData();
-  redirect(ADMIN_USERS_PATH);
+  redirectToSuccess('user-deleted', ADMIN_USERS_PATH);
 }

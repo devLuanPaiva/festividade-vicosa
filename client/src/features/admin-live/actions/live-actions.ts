@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { ADMIN_LIVE_PATH } from '@/features/admin-shell/lib/admin-sections';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import { INITIAL_FORM_ERROR_STATE, type FormErrorState } from '@/lib/forms/form-errors';
@@ -29,7 +29,7 @@ export async function createLiveAction(
     return { ...failure, values };
   }
   refreshLiveData();
-  redirect(ADMIN_LIVE_PATH);
+  redirectToSuccess('live-created', ADMIN_LIVE_PATH);
 }
 
 export async function updateLiveAction(
@@ -46,7 +46,7 @@ export async function updateLiveAction(
     return { ...failure, values };
   }
   refreshLiveData();
-  redirect(ADMIN_LIVE_PATH);
+  redirectToSuccess('live-updated', ADMIN_LIVE_PATH);
 }
 
 export async function setLiveActiveAction(
@@ -70,5 +70,5 @@ export async function deleteLiveAction(liveId: string): Promise<FormErrorState> 
     return failure;
   }
   refreshLiveData();
-  redirect(ADMIN_LIVE_PATH);
+  redirectToSuccess('live-deleted', ADMIN_LIVE_PATH);
 }

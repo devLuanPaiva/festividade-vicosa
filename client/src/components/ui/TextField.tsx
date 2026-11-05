@@ -1,6 +1,7 @@
-import type { ReactElement } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 import { FieldError, controlProps } from './field-control';
 import { FieldLabel } from './FieldLabel';
+import { PasswordInput } from './PasswordInput';
 
 interface TextFieldProps {
   name: string;
@@ -25,20 +26,24 @@ export function TextField({
   autoComplete = 'off',
   onInput,
 }: TextFieldProps): ReactElement {
+  const inputProps: ComponentProps<'input'> = {
+    ...controlProps(name, errorMessage),
+    defaultValue,
+    onChange: onInput,
+    maxLength,
+    autoComplete,
+    required: !isOptional,
+  };
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className="flex flex-col gap-2">
         <FieldLabel text={label} isOptional={isOptional} />
       </label>
-      <input
-        {...controlProps(name, errorMessage)}
-        type={type}
-        defaultValue={defaultValue}
-        onChange={onInput}
-        maxLength={maxLength}
-        autoComplete={autoComplete}
-        required={!isOptional}
-      />
+      {type === 'password' ? (
+        <PasswordInput {...inputProps} />
+      ) : (
+        <input {...inputProps} type={type} />
+      )}
       <FieldError name={name} message={errorMessage} />
     </div>
   );

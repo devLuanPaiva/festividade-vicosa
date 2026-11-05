@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirectToSuccess } from '@/features/admin-shell/lib/redirect-to-success';
 import { refreshChampionshipData } from '@/features/admin-teams/lib/refresh-championship-data';
 import { submitAdminRequest } from '@/lib/api/submit-admin-request';
 import type { FormErrorState } from '@/lib/forms/form-errors';
@@ -79,5 +79,5 @@ export async function confirmSuggestionsAction(
     return { ...failure, values };
   }
   refreshChampionshipData();
-  redirect(returnPath);
+  redirectToSuccess('matches-confirmed', returnPath);
 }
