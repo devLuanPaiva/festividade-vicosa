@@ -38,6 +38,7 @@ export const INSTALL_INSTRUCTIONS: Record<InstallPlatform, InstallInstructions> 
       'Abra o menu do navegador (os três pontinhos).',
       'Toque em “Instalar app” ou “Adicionar à tela inicial”.',
       'Confirme em “Instalar”.',
+      'Se o app já estiver instalado neste aparelho, abra-o pela tela inicial.',
     ],
   },
   other: {
