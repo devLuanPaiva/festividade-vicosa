@@ -59,6 +59,14 @@ describe('buildErrorResponse', () => {
     expect(response.message).toBe('Muitas requisições');
   });
 
+  it('tells the user to wait a few minutes after too many attempts', () => {
+    const response = respond(new HttpException('ThrottlerException', HttpStatus.TOO_MANY_REQUESTS));
+
+    expect(response.errors.detail).toBe(
+      'Você tentou muitas vezes em pouco tempo. Aguarde alguns minutos e tente de novo.',
+    );
+  });
+
   it('tells in portuguese that an uploaded file is too big', () => {
     const response = respond(new HttpException('File too large', HttpStatus.PAYLOAD_TOO_LARGE));
 

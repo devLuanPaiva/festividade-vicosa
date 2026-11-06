@@ -43,6 +43,11 @@ const CODE_BY_STATUS: Record<number, string> = {
   [HttpStatus.SERVICE_UNAVAILABLE]: 'SERVICE_UNAVAILABLE',
 };
 
+const DETAIL_BY_STATUS: Record<number, string> = {
+  [HttpStatus.TOO_MANY_REQUESTS]:
+    'Você tentou muitas vezes em pouco tempo. Aguarde alguns minutos e tente de novo.',
+};
+
 const SERVER_ERROR_MIN_STATUS = 500;
 
 const asNonEmptyString = (value: unknown): string | undefined =>
@@ -66,6 +71,10 @@ function resolveDetail(body: ErrorBody, fallback: string, isHttpError: boolean):
   return asNonEmptyString(body.detail) ?? (isHttpError ? fallback : UNEXPECTED_ERROR_DETAIL);
 }
 
+function detailFallback(status: number, fallback: string): string {
+  return DETAIL_BY_STATUS[status] ?? fallback;
+}
+
 export function resolveStatus(exception: unknown): number {
   return exception instanceof HttpException ? exception.getStatus() : FALLBACK_STATUS;
 }
@@ -85,7 +94,11 @@ export function buildErrorResponse(exception: unknown, status: number): ErrorRes
     errors: {
       code: asNonEmptyString(body.code) ?? CODE_BY_STATUS[status] ?? 'INTERNAL_SERVER_ERROR',
       field: asNonEmptyString(body.field) ?? '',
-      detail: resolveDetail(body, fallback, exception instanceof HttpException),
+      detail: resolveDetail(
+        body,
+        detailFallback(status, fallback),
+        exception instanceof HttpException,
+      ),
     },
   };
 }
