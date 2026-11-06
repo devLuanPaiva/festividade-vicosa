@@ -11,7 +11,7 @@ interface GroupFixtureLinksProps {
 export function GroupFixtureLinks({
   categoryId,
   groups,
-}: GroupFixtureLinksProps): ReactElement | null {
+}: Readonly<GroupFixtureLinksProps>): ReactElement | null {
   if (groups.length === 0) {
     return null;
   }

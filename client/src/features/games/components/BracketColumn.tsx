@@ -34,7 +34,11 @@ function toPairs(slots: BracketSlot[]): BracketSlot[][] {
   );
 }
 
-export function BracketColumn({ column, side, hasIncoming }: BracketColumnProps): ReactElement {
+export function BracketColumn({
+  column,
+  side,
+  hasIncoming,
+}: Readonly<BracketColumnProps>): ReactElement {
   const classes = SIDE_CLASSES[side];
   const cellClasses = `relative flex flex-1 items-center py-2 ${LINE} ${classes.outgoing} ${
     hasIncoming ? `${INCOMING_LINE} ${classes.incoming}` : ''

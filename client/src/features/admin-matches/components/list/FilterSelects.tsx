@@ -18,7 +18,12 @@ interface FilterSelectProps {
   children: ReactNode;
 }
 
-function FilterSelect({ name, label, defaultValue, children }: FilterSelectProps): ReactElement {
+function FilterSelect({
+  name,
+  label,
+  defaultValue,
+  children,
+}: Readonly<FilterSelectProps>): ReactElement {
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={`filter-${name}`} className="text-sm font-semibold">
@@ -36,7 +41,11 @@ function FilterSelect({ name, label, defaultValue, children }: FilterSelectProps
   );
 }
 
-export function FilterSelects({ modalities, days, selected }: FilterSelectsProps): ReactElement {
+export function FilterSelects({
+  modalities,
+  days,
+  selected,
+}: Readonly<FilterSelectsProps>): ReactElement {
   return (
     <>
       <FilterSelect name="categoria" label="Categoria" defaultValue={selected.categoryId}>

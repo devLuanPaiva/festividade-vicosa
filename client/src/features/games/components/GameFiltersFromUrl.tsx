@@ -8,6 +8,6 @@ interface GameFiltersFromUrlProps {
 
 export async function GameFiltersFromUrl({
   searchParams,
-}: GameFiltersFromUrlProps): Promise<ReactElement> {
+}: Readonly<GameFiltersFromUrlProps>): Promise<ReactElement> {
   return <GameFilters params={parseGameFilterParams(await searchParams)} />;
 }

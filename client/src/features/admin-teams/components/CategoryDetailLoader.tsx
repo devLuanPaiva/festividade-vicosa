@@ -18,7 +18,7 @@ interface CategoryDetailLoaderProps {
 export async function CategoryDetailLoader({
   params,
   searchParams,
-}: CategoryDetailLoaderProps): Promise<ReactElement> {
+}: Readonly<CategoryDetailLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'team:manage')) {
     return <NoPermission action="gerir categorias, grupos e times" />;

@@ -6,7 +6,7 @@ interface StatItemProps {
   stat: Stat;
 }
 
-export function StatItem({ stat }: StatItemProps): ReactElement {
+export function StatItem({ stat }: Readonly<StatItemProps>): ReactElement {
   return (
     <div className="border-l-4 border-sun pl-4">
       <dt className="sr-only">{stat.label}</dt>

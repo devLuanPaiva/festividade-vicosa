@@ -9,7 +9,7 @@ interface InstallInstructionsDialogProps {
 export function InstallInstructionsDialog({
   platform,
   dialogRef,
-}: InstallInstructionsDialogProps): ReactElement {
+}: Readonly<InstallInstructionsDialogProps>): ReactElement {
   const { title, steps } = INSTALL_INSTRUCTIONS[platform];
   return (
     <dialog

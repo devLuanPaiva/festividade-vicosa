@@ -20,7 +20,7 @@ export function AlbumCard({
   detail,
   coverPhotoKey,
   photoCount,
-}: AlbumCardProps): ReactElement {
+}: Readonly<AlbumCardProps>): ReactElement {
   const coverUrl = resolvePhotoUrl(coverPhotoKey, 'medium');
   return (
     <Link

@@ -13,7 +13,9 @@ interface OperationSuccessViewProps {
   success: OperationSuccess;
 }
 
-export function OperationSuccessView({ success }: OperationSuccessViewProps): ReactElement {
+export function OperationSuccessView({
+  success,
+}: Readonly<OperationSuccessViewProps>): ReactElement {
   return (
     <section
       role="status"

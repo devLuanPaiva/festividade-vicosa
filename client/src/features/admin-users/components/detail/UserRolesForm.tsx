@@ -20,7 +20,11 @@ function initialSelection(user: AdminUser): RoleSelection {
   };
 }
 
-export function UserRolesForm({ user, roles, canEdit }: UserRolesFormProps): ReactElement {
+export function UserRolesForm({
+  user,
+  roles,
+  canEdit,
+}: Readonly<UserRolesFormProps>): ReactElement {
   const [state, formAction] = useActionState(
     assignUserRolesAction.bind(null, user.id),
     INITIAL_ACCESS_STATE,

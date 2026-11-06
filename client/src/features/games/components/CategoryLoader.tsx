@@ -11,7 +11,9 @@ interface CategoryLoaderProps {
   params: Promise<{ categoryId: string }>;
 }
 
-export async function CategoryLoader({ params }: CategoryLoaderProps): Promise<ReactElement> {
+export async function CategoryLoader({
+  params,
+}: Readonly<CategoryLoaderProps>): Promise<ReactElement> {
   const { categoryId } = await params;
   const category = await getCategory(categoryId);
   if (!category) {

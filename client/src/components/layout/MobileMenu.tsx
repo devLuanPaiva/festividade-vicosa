@@ -10,7 +10,7 @@ interface MobileMenuProps {
   onNavigate: () => void;
 }
 
-export function MobileMenu({ isOpen, onNavigate }: MobileMenuProps): ReactElement {
+export function MobileMenu({ isOpen, onNavigate }: Readonly<MobileMenuProps>): ReactElement {
   return (
     <AnimatePresence>
       {isOpen ? (

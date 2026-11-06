@@ -17,7 +17,7 @@ function blockedReason(role: AdminRole): string | null {
   return null;
 }
 
-export function DeleteRoleSection({ role }: DeleteRoleSectionProps): ReactElement {
+export function DeleteRoleSection({ role }: Readonly<DeleteRoleSectionProps>): ReactElement {
   const reason = blockedReason(role);
   return (
     <section

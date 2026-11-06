@@ -13,7 +13,10 @@ interface ActiveFilterChipsProps {
   filters: ActiveFilter[];
 }
 
-export function ActiveFilterChips({ query, filters }: ActiveFilterChipsProps): ReactElement | null {
+export function ActiveFilterChips({
+  query,
+  filters,
+}: Readonly<ActiveFilterChipsProps>): ReactElement | null {
   if (filters.length === 0) {
     return null;
   }

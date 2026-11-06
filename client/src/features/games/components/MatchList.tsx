@@ -21,7 +21,7 @@ interface MatchListProps {
   scope: MatchScope;
 }
 
-export function MatchList({ matches, scope }: MatchListProps): ReactElement {
+export function MatchList({ matches, scope }: Readonly<MatchListProps>): ReactElement {
   if (matches.length === 0) {
     return <EmptyState icon="ball" {...EMPTY_STATES[scope]} />;
   }

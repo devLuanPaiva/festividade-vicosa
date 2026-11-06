@@ -8,7 +8,9 @@ interface GameMatchesProps {
   searchParams: Promise<SearchParams>;
 }
 
-export async function GameMatches({ searchParams }: GameMatchesProps): Promise<ReactElement> {
+export async function GameMatches({
+  searchParams,
+}: Readonly<GameMatchesProps>): Promise<ReactElement> {
   const params = parseGameFilterParams(await searchParams);
   const matches = await getGameMatches(params);
   return (

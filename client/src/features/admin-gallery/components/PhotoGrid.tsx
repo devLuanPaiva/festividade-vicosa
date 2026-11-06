@@ -41,7 +41,7 @@ function PhotoCard({
   isBusy,
   onMove,
   deleteAction,
-}: PhotoCardProps): ReactElement {
+}: Readonly<PhotoCardProps>): ReactElement {
   return (
     <li className="flex flex-col gap-2 rounded-2xl border border-admin-line bg-admin-surface p-2">
       <Image
@@ -86,7 +86,7 @@ export function PhotoGrid({
   canManage,
   reorderAction,
   deleteAction,
-}: PhotoGridProps): ReactElement {
+}: Readonly<PhotoGridProps>): ReactElement {
   const [state, reorder, isBusy] = useActionState(
     (_previous: FormErrorState, photoIds: string[]) => reorderAction(photoIds),
     INITIAL_FORM_ERROR_STATE,

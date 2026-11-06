@@ -16,7 +16,9 @@ interface UserDetailLoaderProps {
   params: Promise<{ userId: string }>;
 }
 
-export async function UserDetailLoader({ params }: UserDetailLoaderProps): Promise<ReactElement> {
+export async function UserDetailLoader({
+  params,
+}: Readonly<UserDetailLoaderProps>): Promise<ReactElement> {
   const access = await findUserManagerAccess();
   if (!access) {
     return <NoPermission action="gerenciar usuários" />;

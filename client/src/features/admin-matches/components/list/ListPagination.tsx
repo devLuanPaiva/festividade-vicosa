@@ -10,7 +10,7 @@ interface ListPaginationProps {
 
 const NOUN = { singular: 'partida', plural: 'partidas' };
 
-export function ListPagination({ query, page }: ListPaginationProps): ReactElement {
+export function ListPagination({ query, page }: Readonly<ListPaginationProps>): ReactElement {
   return (
     <PaginationBar
       page={page.page}

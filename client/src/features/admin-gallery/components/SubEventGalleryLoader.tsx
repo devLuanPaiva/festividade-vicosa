@@ -12,7 +12,7 @@ interface SubEventGalleryLoaderProps {
 
 export async function SubEventGalleryLoader({
   params,
-}: SubEventGalleryLoaderProps): Promise<ReactElement> {
+}: Readonly<SubEventGalleryLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'photo:upload')) {
     return <NoPermission action="gerir a galeria de fotos" />;

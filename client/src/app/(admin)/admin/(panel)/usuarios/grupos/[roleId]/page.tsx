@@ -9,7 +9,7 @@ interface RoleRouteProps {
   params: Promise<{ roleId: string }>;
 }
 
-export default function RolePage({ params }: RoleRouteProps): ReactElement {
+export default function RolePage({ params }: Readonly<RoleRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando o grupo" />}>
       <EditRoleLoader params={params} />

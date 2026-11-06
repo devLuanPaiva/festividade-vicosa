@@ -16,7 +16,7 @@ function HairBehind(): ReactElement {
   );
 }
 
-function HairFront({ gender }: PlayerAvatarProps): ReactElement {
+function HairFront({ gender }: Readonly<PlayerAvatarProps>): ReactElement {
   const fringe =
     gender === 'FEMALE'
       ? 'M31 40c2-12 10-18 18-18s16 6 18 18c-8-3-14-9-17-14-3 7-10 13-19 14Z'
@@ -42,7 +42,7 @@ function Face(): ReactElement {
   );
 }
 
-export function PlayerAvatar({ gender }: PlayerAvatarProps): ReactElement {
+export function PlayerAvatar({ gender }: Readonly<PlayerAvatarProps>): ReactElement {
   return (
     <svg
       role="img"

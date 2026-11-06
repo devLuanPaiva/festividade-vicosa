@@ -37,7 +37,7 @@ export function UserPermissionsForm({
   roles,
   overrides,
   canEdit,
-}: UserPermissionsFormProps): ReactElement {
+}: Readonly<UserPermissionsFormProps>): ReactElement {
   const rows = describePermissionRows({ catalog, roles, overrides });
   const [choices, setChoices] = useState(() => toChoices(rows));
   const [state, formAction] = useActionState(

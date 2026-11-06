@@ -10,7 +10,11 @@ interface BestPlayerCardProps {
   gender: Gender;
 }
 
-export function BestPlayerCard({ player, team, gender }: BestPlayerCardProps): ReactElement {
+export function BestPlayerCard({
+  player,
+  team,
+  gender,
+}: Readonly<BestPlayerCardProps>): ReactElement {
   const photoUrl = resolvePhotoUrl(player.photoKey);
   return (
     <div className="flex items-center gap-5 rounded-3xl bg-white p-5 shadow-[0_10px_30px_rgba(7,59,134,0.12)]">

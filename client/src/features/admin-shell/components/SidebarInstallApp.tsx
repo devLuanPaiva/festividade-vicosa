@@ -9,7 +9,7 @@ interface SidebarInstallAppProps {
   isCollapsed: boolean;
 }
 
-export function SidebarInstallApp({ isCollapsed }: SidebarInstallAppProps): ReactElement {
+export function SidebarInstallApp({ isCollapsed }: Readonly<SidebarInstallAppProps>): ReactElement {
   const layout = isCollapsed ? 'justify-center px-0' : 'px-3';
   return (
     <div className="px-3 pb-3">

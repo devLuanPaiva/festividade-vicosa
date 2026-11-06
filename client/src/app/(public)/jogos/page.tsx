@@ -12,6 +12,6 @@ interface GamesRouteProps {
   searchParams: Promise<SearchParams>;
 }
 
-export default function GamesRoute({ searchParams }: GamesRouteProps): ReactElement {
+export default function GamesRoute({ searchParams }: Readonly<GamesRouteProps>): ReactElement {
   return <GamesPage searchParams={searchParams} />;
 }

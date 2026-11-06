@@ -13,7 +13,7 @@ const VIEWS: { mode: ViewMode; label: string; icon: IconName }[] = [
   { mode: 'cards', label: 'Ver em cards', icon: 'grid' },
 ];
 
-export function ViewToggle({ query }: ViewToggleProps): ReactElement {
+export function ViewToggle({ query }: Readonly<ViewToggleProps>): ReactElement {
   const effective: ViewMode = query.view === 'cards' ? 'cards' : 'tabela';
   return (
     <div role="group" aria-label="Modo de exibição" className="hidden gap-1 md:flex">

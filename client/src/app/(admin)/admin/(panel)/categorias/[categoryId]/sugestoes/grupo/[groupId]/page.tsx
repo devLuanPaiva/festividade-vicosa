@@ -9,7 +9,9 @@ interface GroupFixturesRouteProps {
   params: Promise<{ categoryId: string; groupId: string }>;
 }
 
-export default function GroupFixturesRoute({ params }: GroupFixturesRouteProps): ReactElement {
+export default function GroupFixturesRoute({
+  params,
+}: Readonly<GroupFixturesRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando a sugestão de jogos" count={5} />}>
       <GroupFixturesLoader params={params} />

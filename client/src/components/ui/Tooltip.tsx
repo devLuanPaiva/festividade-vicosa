@@ -21,7 +21,7 @@ export function Tooltip({
   side = 'bottom',
   isDisabled = false,
   className = '',
-}: TooltipProps): ReactElement {
+}: Readonly<TooltipProps>): ReactElement {
   if (isDisabled) {
     return <>{children}</>;
   }

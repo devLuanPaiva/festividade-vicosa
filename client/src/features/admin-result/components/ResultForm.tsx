@@ -17,7 +17,7 @@ interface ResultFormProps {
   detail: MatchDetail;
 }
 
-export function ResultForm({ detail }: ResultFormProps): ReactElement {
+export function ResultForm({ detail }: Readonly<ResultFormProps>): ReactElement {
   const { match } = detail;
   const [state, formAction] = useActionState(
     recordResultAction.bind(null, match.id),

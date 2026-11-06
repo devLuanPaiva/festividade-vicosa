@@ -21,7 +21,7 @@ export function PlayedFields({
   draft,
   formError,
   onChange,
-}: PlayedFieldsProps): ReactElement {
+}: Readonly<PlayedFieldsProps>): ReactElement {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start gap-3">

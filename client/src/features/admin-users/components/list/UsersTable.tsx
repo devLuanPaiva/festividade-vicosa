@@ -32,7 +32,7 @@ function UserName({
   );
 }
 
-export function UsersTable({ users, currentUserId }: UsersTableProps): ReactElement {
+export function UsersTable({ users, currentUserId }: Readonly<UsersTableProps>): ReactElement {
   return (
     <table className="w-full">
       <caption className="sr-only">Usuários do painel</caption>

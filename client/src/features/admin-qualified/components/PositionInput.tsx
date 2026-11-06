@@ -13,7 +13,7 @@ export function PositionInput({
   label,
   defaultValue,
   onInput,
-}: PositionInputProps): ReactElement {
+}: Readonly<PositionInputProps>): ReactElement {
   return (
     <input
       type="number"

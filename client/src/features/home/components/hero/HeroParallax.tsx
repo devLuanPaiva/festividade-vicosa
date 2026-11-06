@@ -8,7 +8,7 @@ interface HeroParallaxProps {
   className?: string;
 }
 
-export function HeroParallax({ children, className }: HeroParallaxProps): ReactElement {
+export function HeroParallax({ children, className }: Readonly<HeroParallaxProps>): ReactElement {
   const elementRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({

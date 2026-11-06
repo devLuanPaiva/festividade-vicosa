@@ -20,7 +20,7 @@ export function LoginField({
   autoComplete,
   defaultValue,
   errorMessage,
-}: LoginFieldProps): ReactElement {
+}: Readonly<LoginFieldProps>): ReactElement {
   const errorId = `${name}-error`;
   const inputProps: ComponentProps<'input'> = {
     id: name,

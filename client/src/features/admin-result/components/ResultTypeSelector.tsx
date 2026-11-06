@@ -12,7 +12,10 @@ const OPTIONS: { value: MatchResultType; label: string }[] = [
   { value: 'DOUBLE_WALKOVER', label: 'W.O. dos dois' },
 ];
 
-export function ResultTypeSelector({ value, onChange }: ResultTypeSelectorProps): ReactElement {
+export function ResultTypeSelector({
+  value,
+  onChange,
+}: Readonly<ResultTypeSelectorProps>): ReactElement {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-2 text-sm font-semibold">Como terminou a partida?</legend>

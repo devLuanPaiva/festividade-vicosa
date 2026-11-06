@@ -10,7 +10,9 @@ interface UserListLoaderProps {
   searchParams: Promise<RawSearchParams>;
 }
 
-export async function UserListLoader({ searchParams }: UserListLoaderProps): Promise<ReactElement> {
+export async function UserListLoader({
+  searchParams,
+}: Readonly<UserListLoaderProps>): Promise<ReactElement> {
   const access = await findUserManagerAccess();
   if (!access) {
     return <NoPermission action="gerenciar usuários" />;

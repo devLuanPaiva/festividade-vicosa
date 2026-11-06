@@ -4,7 +4,7 @@ interface NoPermissionProps {
   action: string;
 }
 
-export function NoPermission({ action }: NoPermissionProps): ReactElement {
+export function NoPermission({ action }: Readonly<NoPermissionProps>): ReactElement {
   return (
     <section aria-labelledby="no-permission-title" className="flex flex-col gap-2">
       <h2 id="no-permission-title" className="text-lg font-bold">

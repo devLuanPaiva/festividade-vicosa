@@ -48,6 +48,9 @@ const PANELS: Record<CategoryTab, (detail: CategoryDetail) => ReactElement> = {
   ),
 };
 
-export function CategoryTabPanel({ activeTab, detail }: CategoryTabPanelProps): ReactElement {
+export function CategoryTabPanel({
+  activeTab,
+  detail,
+}: Readonly<CategoryTabPanelProps>): ReactElement {
   return PANELS[activeTab](detail);
 }

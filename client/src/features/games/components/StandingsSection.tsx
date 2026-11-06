@@ -10,7 +10,7 @@ interface StandingsSectionProps {
   groups: GroupStandings[];
 }
 
-export function StandingsSection({ groups }: StandingsSectionProps): ReactElement {
+export function StandingsSection({ groups }: Readonly<StandingsSectionProps>): ReactElement {
   return (
     <section aria-labelledby="standings-title" className="surface-paper">
       <WaveEdge />

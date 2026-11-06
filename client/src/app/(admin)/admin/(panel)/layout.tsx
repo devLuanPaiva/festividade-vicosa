@@ -11,7 +11,9 @@ function ShellFallback(): ReactElement {
   );
 }
 
-export default function AdminPanelLayout({ children }: AdminPanelLayoutProps): ReactElement {
+export default function AdminPanelLayout({
+  children,
+}: Readonly<AdminPanelLayoutProps>): ReactElement {
   return (
     <Suspense fallback={<ShellFallback />}>
       <AdminShell>{children}</AdminShell>

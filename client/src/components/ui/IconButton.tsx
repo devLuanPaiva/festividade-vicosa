@@ -18,7 +18,7 @@ export function IconButton({
   className = '',
   ariaExpanded,
   ariaPressed,
-}: IconButtonProps): ReactElement {
+}: Readonly<IconButtonProps>): ReactElement {
   return (
     <Tooltip label={label}>
       <button

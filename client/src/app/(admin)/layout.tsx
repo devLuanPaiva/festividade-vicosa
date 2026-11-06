@@ -13,6 +13,8 @@ interface AdminGroupLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminGroupLayout({ children }: AdminGroupLayoutProps): ReactElement {
+export default function AdminGroupLayout({
+  children,
+}: Readonly<AdminGroupLayoutProps>): ReactElement {
   return <div className="min-h-dvh bg-admin-canvas text-admin-ink">{children}</div>;
 }

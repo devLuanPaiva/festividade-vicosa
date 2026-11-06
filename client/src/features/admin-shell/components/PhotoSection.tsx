@@ -115,7 +115,7 @@ function PhotoEditor({
   photoUrl,
   uploadAction,
   removeAction,
-}: Omit<PhotoSectionProps, 'title'>): ReactElement {
+}: Readonly<Omit<PhotoSectionProps, 'title'>>): ReactElement {
   const [picked, setPicked] = useState<PickedPhoto | null>(null);
   const previewUrlRef = useRef<string | null>(null);
 
@@ -138,7 +138,7 @@ function PhotoEditor({
   );
 }
 
-export function PhotoSection({ title, ...editor }: PhotoSectionProps): ReactElement {
+export function PhotoSection({ title, ...editor }: Readonly<PhotoSectionProps>): ReactElement {
   return (
     <section
       aria-label={title}

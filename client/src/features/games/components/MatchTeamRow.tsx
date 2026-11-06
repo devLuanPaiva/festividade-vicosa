@@ -8,7 +8,7 @@ interface MatchTeamRowProps {
   outcome: SideOutcome;
 }
 
-export function MatchTeamRow({ team, outcome }: MatchTeamRowProps): ReactElement {
+export function MatchTeamRow({ team, outcome }: Readonly<MatchTeamRowProps>): ReactElement {
   const emphasis = outcome.isWinner ? 'font-bold text-brand-900' : 'font-medium text-ink-soft';
   return (
     <div className="flex items-center gap-3">

@@ -9,7 +9,7 @@ interface FactProps {
   value: string;
 }
 
-function Fact({ label, value }: FactProps): ReactElement {
+function Fact({ label, value }: Readonly<FactProps>): ReactElement {
   return (
     <div className="rounded-3xl bg-white p-5 shadow-[0_10px_30px_rgba(7,59,134,0.12)]">
       <dt className="text-xs font-semibold uppercase tracking-wider text-brand-600">{label}</dt>
@@ -22,7 +22,7 @@ interface MatchFactsProps {
   detail: MatchDetail;
 }
 
-export function MatchFacts({ detail }: MatchFactsProps): ReactElement {
+export function MatchFacts({ detail }: Readonly<MatchFactsProps>): ReactElement {
   const { match, category, groupName } = detail;
   return (
     <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

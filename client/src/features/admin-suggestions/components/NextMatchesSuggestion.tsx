@@ -15,7 +15,7 @@ interface NextMatchesSuggestionProps {
 export async function NextMatchesSuggestion({
   categoryId,
   teamOptions,
-}: NextMatchesSuggestionProps): Promise<ReactElement> {
+}: Readonly<NextMatchesSuggestionProps>): Promise<ReactElement> {
   const suggestions = await getNextMatchSuggestions(categoryId);
   if (suggestions.length === 0) {
     return (

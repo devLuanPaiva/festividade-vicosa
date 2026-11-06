@@ -12,7 +12,7 @@ interface StatusBadgeProps {
   label: string;
 }
 
-export function StatusBadge({ status, label }: StatusBadgeProps): ReactElement {
+export function StatusBadge({ status, label }: Readonly<StatusBadgeProps>): ReactElement {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${TONES[status]}`}

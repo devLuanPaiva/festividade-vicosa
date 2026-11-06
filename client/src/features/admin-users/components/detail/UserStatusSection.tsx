@@ -12,7 +12,10 @@ interface UserStatusSectionProps {
   isSelf: boolean;
 }
 
-export function UserStatusSection({ user, isSelf }: UserStatusSectionProps): ReactElement {
+export function UserStatusSection({
+  user,
+  isSelf,
+}: Readonly<UserStatusSectionProps>): ReactElement {
   const [state, formAction] = useActionState(
     setUserActiveAction.bind(null, user.id, !user.active),
     INITIAL_FORM_ERROR_STATE,

@@ -13,7 +13,7 @@ interface AdminCategoryRouteProps {
 export default function AdminCategoryRoute({
   params,
   searchParams,
-}: AdminCategoryRouteProps): ReactElement {
+}: Readonly<AdminCategoryRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminListSkeleton label="Carregando categoria" />}>
       <CategoryDetailLoader params={params} searchParams={searchParams} />

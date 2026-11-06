@@ -8,7 +8,7 @@ interface SubEventGridProps {
   subEvents: SubEvent[];
 }
 
-export function SubEventGrid({ subEvents }: SubEventGridProps): ReactElement {
+export function SubEventGrid({ subEvents }: Readonly<SubEventGridProps>): ReactElement {
   if (subEvents.length === 0) {
     return (
       <div className="mt-8">

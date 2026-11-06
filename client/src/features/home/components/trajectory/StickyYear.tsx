@@ -8,7 +8,7 @@ interface StickyYearProps {
   milestone: Milestone | undefined;
 }
 
-export function StickyYear({ milestone }: StickyYearProps): ReactElement {
+export function StickyYear({ milestone }: Readonly<StickyYearProps>): ReactElement {
   return (
     <div aria-hidden="true" className="hidden lg:block">
       <div className="sticky top-32">

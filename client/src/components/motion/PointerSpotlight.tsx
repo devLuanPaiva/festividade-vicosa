@@ -7,7 +7,10 @@ interface PointerSpotlightProps {
   className?: string;
 }
 
-export function PointerSpotlight({ children, className }: PointerSpotlightProps): ReactElement {
+export function PointerSpotlight({
+  children,
+  className,
+}: Readonly<PointerSpotlightProps>): ReactElement {
   function followPointer(event: PointerEvent<HTMLDivElement>): void {
     const bounds = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--mx', `${event.clientX - bounds.left}px`);

@@ -8,7 +8,7 @@ interface AdminShellProps {
   children: ReactNode;
 }
 
-export async function AdminShell({ children }: AdminShellProps): Promise<ReactElement> {
+export async function AdminShell({ children }: Readonly<AdminShellProps>): Promise<ReactElement> {
   const [user, cookieStore] = await Promise.all([requireCurrentUser(), cookies()]);
   const initialCollapsed = isSidebarCollapsed(cookieStore.get(SIDEBAR_COOKIE_NAME)?.value);
   return (

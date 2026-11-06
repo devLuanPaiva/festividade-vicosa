@@ -8,7 +8,7 @@ interface ScoreboardSideProps {
   outcome: SideOutcome;
 }
 
-function ScoreboardSide({ team, outcome }: ScoreboardSideProps): ReactElement {
+function ScoreboardSide({ team, outcome }: Readonly<ScoreboardSideProps>): ReactElement {
   const dimmed = outcome.isWinner ? '' : 'opacity-80';
   return (
     <div className={`flex min-w-0 flex-col items-center gap-2 text-center ${dimmed}`}>
@@ -33,7 +33,7 @@ export function MatchScoreboard({
   sideA,
   sideB,
   note,
-}: MatchScoreboardProps): ReactElement {
+}: Readonly<MatchScoreboardProps>): ReactElement {
   const hasPenalties = sideA.penalties !== null && sideB.penalties !== null;
   return (
     <div className="mt-10 rounded-[2rem] bg-white/10 p-4 ring-1 ring-white/25 backdrop-blur sm:p-6 md:p-10">

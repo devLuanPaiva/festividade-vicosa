@@ -7,7 +7,7 @@ interface GalleryLinkProps {
   detail: string;
 }
 
-export function GalleryLink({ href, title, detail }: GalleryLinkProps): ReactElement {
+export function GalleryLink({ href, title, detail }: Readonly<GalleryLinkProps>): ReactElement {
   return (
     <Link
       href={href}

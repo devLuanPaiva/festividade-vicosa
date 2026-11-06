@@ -12,7 +12,7 @@ export function SuggestionReviewForm({
   rows,
   teamOptions,
   submitLabel,
-}: SuggestionReviewProps): ReactElement {
+}: Readonly<SuggestionReviewProps>): ReactElement {
   const form = useSuggestionForm(target, rows);
   const rowsError = form.errorFor(ROWS_ERROR_FIELD);
 

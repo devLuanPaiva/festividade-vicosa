@@ -10,7 +10,7 @@ interface ModalityGridProps {
   subEvents: SubEvent[];
 }
 
-export function ModalityGrid({ subEvents }: ModalityGridProps): ReactElement {
+export function ModalityGrid({ subEvents }: Readonly<ModalityGridProps>): ReactElement {
   return (
     <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {modalities.map((modality, index) => (

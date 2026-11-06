@@ -8,7 +8,7 @@ interface CountdownUnitProps {
   label: string;
 }
 
-export function CountdownUnit({ value, label }: CountdownUnitProps): ReactElement {
+export function CountdownUnit({ value, label }: Readonly<CountdownUnitProps>): ReactElement {
   return (
     <div className="flex flex-col items-center rounded-2xl bg-brand-900/70 px-2 py-3 ring-1 ring-white/30">
       <span className="relative flex h-14 w-full justify-center overflow-hidden md:h-16">

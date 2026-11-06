@@ -25,7 +25,7 @@ export function PhotoLightbox({
   shareText,
   openIndex,
   onChange,
-}: PhotoLightboxProps): ReactElement {
+}: Readonly<PhotoLightboxProps>): ReactElement {
   const image = openIndex === null ? undefined : images[openIndex];
   const dialogRef = useDialogVisibility(image !== undefined);
 

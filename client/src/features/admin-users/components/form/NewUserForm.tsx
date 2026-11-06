@@ -14,7 +14,7 @@ interface NewUserFormProps {
   roles: AdminRole[];
 }
 
-export function NewUserForm({ roles }: NewUserFormProps): ReactElement {
+export function NewUserForm({ roles }: Readonly<NewUserFormProps>): ReactElement {
   const form = useUserForm(createUserAction, {
     ...EMPTY_USER_VALUES,
     roleId: roles[0]?.id ?? '',

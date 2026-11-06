@@ -18,7 +18,7 @@ interface MatchListLoaderProps {
 
 export async function MatchListLoader({
   searchParams,
-}: MatchListLoaderProps): Promise<ReactElement> {
+}: Readonly<MatchListLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:record-score')) {
     return <NoPermission action="lançar placares" />;

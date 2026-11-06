@@ -24,7 +24,7 @@ function Legend(): ReactElement {
   );
 }
 
-function DataTable({ columns }: MatchesByDayChartProps): ReactElement {
+function DataTable({ columns }: Readonly<MatchesByDayChartProps>): ReactElement {
   return (
     <table className="sr-only">
       <caption>Partidas por dia</caption>
@@ -48,7 +48,7 @@ function DataTable({ columns }: MatchesByDayChartProps): ReactElement {
   );
 }
 
-export function MatchesByDayChart({ columns }: MatchesByDayChartProps): ReactElement {
+export function MatchesByDayChart({ columns }: Readonly<MatchesByDayChartProps>): ReactElement {
   const scale = niceScale(Math.max(0, ...columns.map((column) => column.total)));
   return (
     <figure className="flex flex-col gap-4 rounded-2xl border border-admin-line bg-admin-surface p-4 sm:p-5">

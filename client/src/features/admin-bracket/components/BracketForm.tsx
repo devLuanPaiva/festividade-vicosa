@@ -20,7 +20,7 @@ export function BracketForm({
   seeding,
   teamOptions,
   returnPath,
-}: BracketFormProps): ReactElement {
+}: Readonly<BracketFormProps>): ReactElement {
   const form = useBracketForm(categoryId, seeding);
   const seedsError = form.errorFor(BRACKET_ERROR_FIELD);
 

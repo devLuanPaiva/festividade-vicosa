@@ -19,7 +19,7 @@ interface UploadQueueListProps {
   items: UploadItem[];
 }
 
-export function UploadQueueList({ items }: UploadQueueListProps): ReactElement | null {
+export function UploadQueueList({ items }: Readonly<UploadQueueListProps>): ReactElement | null {
   if (items.length === 0) {
     return null;
   }

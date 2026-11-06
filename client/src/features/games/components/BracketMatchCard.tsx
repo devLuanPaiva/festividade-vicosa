@@ -9,7 +9,7 @@ interface BracketMatchCardProps {
   match: MatchListItem;
 }
 
-export function BracketMatchCard({ match }: BracketMatchCardProps): ReactElement {
+export function BracketMatchCard({ match }: Readonly<BracketMatchCardProps>): ReactElement {
   const outcome = getMatchOutcome(match);
   return (
     <Link

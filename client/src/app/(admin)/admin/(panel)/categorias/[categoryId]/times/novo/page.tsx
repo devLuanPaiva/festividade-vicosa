@@ -9,7 +9,7 @@ interface NewTeamRouteProps {
   params: Promise<{ categoryId: string }>;
 }
 
-export default function NewTeamRoute({ params }: NewTeamRouteProps): ReactElement {
+export default function NewTeamRoute({ params }: Readonly<NewTeamRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando o formulário do time" />}>
       <NewTeamLoader params={params} />

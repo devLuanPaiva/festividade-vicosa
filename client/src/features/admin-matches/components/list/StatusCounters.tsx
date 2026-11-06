@@ -29,7 +29,7 @@ function toneFor(isActive: boolean, needsAttention: boolean): string {
     : 'border-admin-line bg-admin-surface hover:border-brand-500';
 }
 
-export function StatusCounters({ query, counts }: StatusCountersProps): ReactElement {
+export function StatusCounters({ query, counts }: Readonly<StatusCountersProps>): ReactElement {
   return (
     <nav
       aria-label="Situação das partidas"

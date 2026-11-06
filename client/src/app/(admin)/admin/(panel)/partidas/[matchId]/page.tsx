@@ -10,7 +10,7 @@ interface AdminMatchRouteProps {
   params: Promise<{ matchId: string }>;
 }
 
-export default function AdminMatchRoute({ params }: AdminMatchRouteProps): ReactElement {
+export default function AdminMatchRoute({ params }: Readonly<AdminMatchRouteProps>): ReactElement {
   return (
     <>
       <Link href="/admin" className="inline-flex min-h-11 items-center text-sm font-semibold">

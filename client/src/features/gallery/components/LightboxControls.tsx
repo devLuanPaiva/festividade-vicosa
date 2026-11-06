@@ -18,7 +18,7 @@ export function LightboxControls({
   share,
   onStep,
   onClose,
-}: LightboxControlsProps): ReactElement {
+}: Readonly<LightboxControlsProps>): ReactElement {
   return (
     <>
       <button

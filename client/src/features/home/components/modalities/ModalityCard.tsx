@@ -7,7 +7,7 @@ interface ModalityCardProps {
   href: string;
 }
 
-export function ModalityCard({ modality, href }: ModalityCardProps): ReactElement {
+export function ModalityCard({ modality, href }: Readonly<ModalityCardProps>): ReactElement {
   return (
     <Link
       href={href}

@@ -10,7 +10,10 @@ interface MatchCardRouteContext {
   params: Promise<{ matchId: string }>;
 }
 
-export async function GET(_request: Request, { params }: MatchCardRouteContext): Promise<Response> {
+export async function GET(
+  _request: Request,
+  { params }: Readonly<MatchCardRouteContext>,
+): Promise<Response> {
   const { matchId } = await params;
   const detail = await getMatchDetail(matchId);
   if (!detail) {

@@ -19,7 +19,7 @@ export function MilestoneEntry({
   milestone,
   photos,
   onActivate,
-}: MilestoneEntryProps): ReactElement {
+}: Readonly<MilestoneEntryProps>): ReactElement {
   return (
     <motion.li
       onViewportEnter={onActivate}

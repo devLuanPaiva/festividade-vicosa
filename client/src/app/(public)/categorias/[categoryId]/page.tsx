@@ -13,7 +13,7 @@ interface CategoryRouteProps {
   params: Promise<{ categoryId: string }>;
 }
 
-export default function CategoryRoute({ params }: CategoryRouteProps): ReactElement {
+export default function CategoryRoute({ params }: Readonly<CategoryRouteProps>): ReactElement {
   return (
     <Suspense
       fallback={

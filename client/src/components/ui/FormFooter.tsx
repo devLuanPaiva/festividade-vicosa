@@ -7,7 +7,7 @@ interface FormFooterProps {
   submitLabel: string;
 }
 
-export function FormFooter({ cancelHref, submitLabel }: FormFooterProps): ReactElement {
+export function FormFooter({ cancelHref, submitLabel }: Readonly<FormFooterProps>): ReactElement {
   return (
     <div className="sticky bottom-0 flex gap-3 border-t border-admin-line bg-admin-canvas py-3">
       <Link

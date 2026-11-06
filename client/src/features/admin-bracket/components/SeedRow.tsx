@@ -8,7 +8,7 @@ interface SeedRowProps {
   onInput: () => void;
 }
 
-export function SeedRow({ team, defaultSeed, onInput }: SeedRowProps): ReactElement {
+export function SeedRow({ team, defaultSeed, onInput }: Readonly<SeedRowProps>): ReactElement {
   return (
     <li className="flex min-h-16 items-center gap-3 px-4 py-2">
       <span className="flex min-w-0 flex-1 flex-col">

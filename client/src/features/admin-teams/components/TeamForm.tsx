@@ -23,7 +23,7 @@ export function TeamForm({
   groups,
   cancelHref,
   submitLabel,
-}: TeamFormProps): ReactElement {
+}: Readonly<TeamFormProps>): ReactElement {
   const { state, formAction, errorFor, touch, otherError } = useTeamForm(action, initialValues);
   const groupOptions = [
     NO_GROUP_OPTION,

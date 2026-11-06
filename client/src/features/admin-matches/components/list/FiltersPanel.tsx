@@ -60,7 +60,7 @@ export function FiltersPanel({
   selected,
   fields,
   activeCount,
-}: FiltersPanelProps): ReactElement {
+}: Readonly<FiltersPanelProps>): ReactElement {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const close = (): void => dialogRef.current?.close();
   return (

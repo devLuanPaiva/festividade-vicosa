@@ -32,7 +32,9 @@ function ResultsFrame({
   page,
   hasAnyMatch,
   newMatchHref,
-}: Pick<MatchListViewProps, 'query' | 'page' | 'hasAnyMatch' | 'newMatchHref'>): ReactElement {
+}: Readonly<
+  Pick<MatchListViewProps, 'query' | 'page' | 'hasAnyMatch' | 'newMatchHref'>
+>): ReactElement {
   const showTable = query.view !== 'cards';
   const showCards = query.view !== 'tabela';
   return (
@@ -58,7 +60,7 @@ function ResultsFrame({
   );
 }
 
-export function MatchListView(props: MatchListViewProps): ReactElement {
+export function MatchListView(props: Readonly<MatchListViewProps>): ReactElement {
   const { query, counts, modalities, days, activeFilters, newMatchHref } = props;
   const filterFields = toFormFields(query, ['categoryId', 'stage', 'day']);
   const searchFields = toFormFields(query, ['search']);

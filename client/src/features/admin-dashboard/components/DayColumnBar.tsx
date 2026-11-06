@@ -13,7 +13,7 @@ interface Segment {
   className: string;
 }
 
-function toSegments({ finalized, scheduled }: DayColumn): Segment[] {
+function toSegments({ finalized, scheduled }: Readonly<DayColumn>): Segment[] {
   return [
     { key: 'finalized', value: finalized, className: 'bg-chart-1' },
     { key: 'scheduled', value: scheduled, className: 'bg-chart-2' },
@@ -28,7 +28,7 @@ export function DayColumnBar({
   column,
   scaleMax,
   isTooltipOnRight,
-}: DayColumnBarProps): ReactElement {
+}: Readonly<DayColumnBarProps>): ReactElement {
   const segments = toSegments(column);
   const tooltipSide = isTooltipOnRight ? 'right-0' : 'left-0';
   return (

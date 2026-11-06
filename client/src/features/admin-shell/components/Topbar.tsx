@@ -15,7 +15,7 @@ export function Topbar({
   isSidebarCollapsed,
   onToggleSidebar,
   onOpenMenu,
-}: TopbarProps): ReactElement {
+}: Readonly<TopbarProps>): ReactElement {
   const toggleLabel = isSidebarCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral';
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-admin-line bg-admin-surface px-3">

@@ -49,7 +49,9 @@ function groupBySubEvent(categories: CategoryProgress[]): [string, CategoryProgr
   return [...groups.entries()];
 }
 
-export function CategoryProgressList({ categories }: CategoryProgressListProps): ReactElement {
+export function CategoryProgressList({
+  categories,
+}: Readonly<CategoryProgressListProps>): ReactElement {
   return (
     <section
       aria-labelledby="category-progress-title"

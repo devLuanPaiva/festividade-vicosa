@@ -10,7 +10,7 @@ interface SubEventCardProps {
   subEvent: SubEvent;
 }
 
-export function SubEventCard({ subEvent }: SubEventCardProps): ReactElement {
+export function SubEventCard({ subEvent }: Readonly<SubEventCardProps>): ReactElement {
   return (
     <Link
       href={subEventHref(subEvent)}

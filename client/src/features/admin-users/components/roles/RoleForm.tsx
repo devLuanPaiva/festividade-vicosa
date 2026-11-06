@@ -24,7 +24,7 @@ export function RoleForm({
   catalog,
   canChangePermissions,
   submitLabel,
-}: RoleFormProps): ReactElement {
+}: Readonly<RoleFormProps>): ReactElement {
   const form = useRoleForm(action, initialValues);
   return (
     <form action={form.formAction} className="flex flex-col gap-5">

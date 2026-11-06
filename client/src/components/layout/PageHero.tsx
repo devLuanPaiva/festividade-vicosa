@@ -10,7 +10,12 @@ interface PageHeroProps {
   children?: ReactNode;
 }
 
-export function PageHero({ eyebrow, title, description, children }: PageHeroProps): ReactElement {
+export function PageHero({
+  eyebrow,
+  title,
+  description,
+  children,
+}: Readonly<PageHeroProps>): ReactElement {
   return (
     <section aria-labelledby="page-title" className="surface-arena overflow-hidden">
       <SparkleField />

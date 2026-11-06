@@ -41,7 +41,7 @@ export function MatchForm({
   canChangeTeams,
   cancelHref,
   submitLabel,
-}: MatchFormProps): ReactElement {
+}: Readonly<MatchFormProps>): ReactElement {
   const form = useMatchForm(action, initialValues);
   return (
     <form action={form.formAction} className="flex flex-col gap-5">

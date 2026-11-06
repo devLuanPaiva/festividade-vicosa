@@ -11,7 +11,7 @@ interface OperationSuccessPageProps {
 
 export default function OperationSuccessPage({
   searchParams,
-}: OperationSuccessPageProps): ReactElement {
+}: Readonly<OperationSuccessPageProps>): ReactElement {
   return (
     <Suspense fallback={null}>
       <OperationSuccessLoader searchParams={searchParams} />

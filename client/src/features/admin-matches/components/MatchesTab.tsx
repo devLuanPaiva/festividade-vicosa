@@ -64,7 +64,7 @@ function MatchDay({
   );
 }
 
-export function MatchesTab({ categoryId, days, groups }: MatchesTabProps): ReactElement {
+export function MatchesTab({ categoryId, days, groups }: Readonly<MatchesTabProps>): ReactElement {
   return (
     <div className="flex flex-col gap-4">
       <Link href={newMatchPath(categoryId)} className={`${PRIMARY_LINK_CLASS} self-start`}>

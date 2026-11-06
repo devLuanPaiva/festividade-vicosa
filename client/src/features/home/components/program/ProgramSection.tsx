@@ -7,7 +7,7 @@ interface ProgramSectionProps {
   children: ReactNode;
 }
 
-export function ProgramSection({ children }: ProgramSectionProps): ReactElement {
+export function ProgramSection({ children }: Readonly<ProgramSectionProps>): ReactElement {
   return (
     <section id="programacao" aria-labelledby="program-title" className="surface-deep scroll-mt-20">
       <WaveEdge />

@@ -60,7 +60,7 @@ function Row({ row }: { row: MatchListRow }): ReactElement {
   );
 }
 
-export function MatchesTable({ rows, query }: MatchesTableProps): ReactElement {
+export function MatchesTable({ rows, query }: Readonly<MatchesTableProps>): ReactElement {
   return (
     <div className="relative overflow-x-auto scrollbar-hidden">
       <table className="w-full min-w-[56rem] border-collapse">

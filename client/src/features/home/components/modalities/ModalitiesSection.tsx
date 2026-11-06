@@ -8,7 +8,7 @@ interface ModalitiesSectionProps {
   children: ReactNode;
 }
 
-export function ModalitiesSection({ children }: ModalitiesSectionProps): ReactElement {
+export function ModalitiesSection({ children }: Readonly<ModalitiesSectionProps>): ReactElement {
   return (
     <Section tone="arena" id="modalidades" labelledBy="modalities-title">
       <RevealText

@@ -16,7 +16,7 @@ export function SidebarLink({
   isActive,
   isCollapsed,
   onNavigate,
-}: SidebarLinkProps): ReactElement {
+}: Readonly<SidebarLinkProps>): ReactElement {
   const tone = isActive
     ? 'bg-white/15 text-white shadow-[inset_3px_0_0_var(--color-sun)]'
     : 'text-white/75 hover:bg-white/10 hover:text-white';

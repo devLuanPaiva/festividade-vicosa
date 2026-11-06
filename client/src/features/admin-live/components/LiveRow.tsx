@@ -10,7 +10,7 @@ interface LiveRowProps {
   liveStream: LiveStream;
 }
 
-export function LiveRow({ liveStream }: LiveRowProps): ReactElement {
+export function LiveRow({ liveStream }: Readonly<LiveRowProps>): ReactElement {
   const { id, title, startsAt, active } = liveStream;
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 p-4">

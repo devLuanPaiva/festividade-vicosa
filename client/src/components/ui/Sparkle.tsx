@@ -5,7 +5,7 @@ interface SparkleProps {
   style?: CSSProperties;
 }
 
-export function Sparkle({ className, style }: SparkleProps): ReactElement {
+export function Sparkle({ className, style }: Readonly<SparkleProps>): ReactElement {
   return (
     <svg
       aria-hidden="true"

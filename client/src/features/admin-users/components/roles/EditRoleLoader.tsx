@@ -14,7 +14,9 @@ interface EditRoleLoaderProps {
   params: Promise<{ roleId: string }>;
 }
 
-export async function EditRoleLoader({ params }: EditRoleLoaderProps): Promise<ReactElement> {
+export async function EditRoleLoader({
+  params,
+}: Readonly<EditRoleLoaderProps>): Promise<ReactElement> {
   const access = await findUserManagerAccess();
   if (!access) {
     return <NoPermission action="gerenciar usuários" />;

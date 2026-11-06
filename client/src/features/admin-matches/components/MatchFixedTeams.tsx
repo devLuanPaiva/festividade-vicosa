@@ -11,7 +11,7 @@ function nameOf(teams: Team[], teamId: string): string {
   return teams.find((team) => team.id === teamId)?.name ?? '';
 }
 
-export function MatchFixedTeams({ values, teams }: MatchFixedTeamsProps): ReactElement {
+export function MatchFixedTeams({ values, teams }: Readonly<MatchFixedTeamsProps>): ReactElement {
   return (
     <div className="flex flex-col gap-1 rounded-xl border border-admin-line bg-admin-surface p-4">
       <input type="hidden" name="teamAId" value={values.teamAId} />

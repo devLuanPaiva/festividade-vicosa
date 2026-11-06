@@ -39,7 +39,7 @@ export function PaginationBar({
   pageSize,
   noun,
   hrefFor,
-}: PaginationBarProps): ReactElement {
+}: Readonly<PaginationBarProps>): ReactElement {
   const previous = page > 1 ? hrefFor({ page: page - 1 }) : null;
   const next = page < totalPages ? hrefFor({ page: page + 1 }) : null;
   return (

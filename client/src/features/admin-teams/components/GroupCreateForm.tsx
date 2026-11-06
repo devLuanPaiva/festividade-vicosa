@@ -13,7 +13,7 @@ interface GroupCreateFormProps {
 
 const NAME_FIELD = 'name';
 
-export function GroupCreateForm({ categoryId }: GroupCreateFormProps): ReactElement {
+export function GroupCreateForm({ categoryId }: Readonly<GroupCreateFormProps>): ReactElement {
   const [state, formAction] = useActionState(
     createGroupAction.bind(null, categoryId),
     INITIAL_GROUP_STATE,

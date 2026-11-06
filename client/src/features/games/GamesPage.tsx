@@ -13,7 +13,7 @@ interface GamesPageProps {
   searchParams: Promise<SearchParams>;
 }
 
-export function GamesPage({ searchParams }: GamesPageProps): ReactElement {
+export function GamesPage({ searchParams }: Readonly<GamesPageProps>): ReactElement {
   return (
     <>
       <PageHero

@@ -5,7 +5,7 @@ interface FieldLabelProps {
   isOptional?: boolean;
 }
 
-export function FieldLabel({ text, isOptional = false }: FieldLabelProps): ReactElement {
+export function FieldLabel({ text, isOptional = false }: Readonly<FieldLabelProps>): ReactElement {
   return (
     <span className="text-sm font-semibold">
       {text}{' '}

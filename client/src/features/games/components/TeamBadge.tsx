@@ -13,7 +13,7 @@ interface TeamBadgeProps {
   size?: keyof typeof SIZE_CLASS_NAMES;
 }
 
-export function TeamBadge({ team, size = 'small' }: TeamBadgeProps): ReactElement {
+export function TeamBadge({ team, size = 'small' }: Readonly<TeamBadgeProps>): ReactElement {
   const initials = (team.abbreviation ?? team.name).slice(0, INITIALS_LENGTH).toUpperCase();
   return (
     <span

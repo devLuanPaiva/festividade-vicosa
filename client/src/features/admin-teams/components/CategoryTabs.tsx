@@ -24,7 +24,7 @@ export function CategoryTabs({
   teamCount,
   groupCount,
   matchCount,
-}: CategoryTabsProps): ReactElement {
+}: Readonly<CategoryTabsProps>): ReactElement {
   const tabs: { tab: CategoryTab; label: string }[] = [
     { tab: 'times', label: `Times (${teamCount})` },
     { tab: 'grupos', label: `Grupos (${groupCount})` },

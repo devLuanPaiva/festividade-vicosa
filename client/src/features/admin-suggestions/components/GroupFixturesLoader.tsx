@@ -19,7 +19,7 @@ interface GroupFixturesLoaderProps {
 
 export async function GroupFixturesLoader({
   params,
-}: GroupFixturesLoaderProps): Promise<ReactElement> {
+}: Readonly<GroupFixturesLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:create')) {
     return <NoPermission action="cadastrar partidas" />;

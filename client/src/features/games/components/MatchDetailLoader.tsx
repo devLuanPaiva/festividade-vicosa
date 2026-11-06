@@ -7,7 +7,9 @@ interface MatchDetailLoaderProps {
   params: Promise<{ matchId: string }>;
 }
 
-export async function MatchDetailLoader({ params }: MatchDetailLoaderProps): Promise<ReactElement> {
+export async function MatchDetailLoader({
+  params,
+}: Readonly<MatchDetailLoaderProps>): Promise<ReactElement> {
   const { matchId } = await params;
   const detail = await getMatchDetail(matchId);
   if (!detail) {

@@ -18,7 +18,7 @@ export function ResultFields({
   draft,
   formError,
   onChange,
-}: ResultFieldsProps): ReactElement | null {
+}: Readonly<ResultFieldsProps>): ReactElement | null {
   const { match, teamA, teamB } = detail;
   if (draft.resultType === 'WALKOVER') {
     return (

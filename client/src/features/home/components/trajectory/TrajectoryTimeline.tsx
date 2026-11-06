@@ -15,7 +15,7 @@ interface TrajectoryTimelineProps {
 export function TrajectoryTimeline({
   milestones,
   photosByMilestone,
-}: TrajectoryTimelineProps): ReactElement {
+}: Readonly<TrajectoryTimelineProps>): ReactElement {
   const listRef = useRef<HTMLOListElement>(null);
   const [activeMilestone, setActiveMilestone] = useState<Milestone | undefined>(milestones[0]);
   const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 65%', 'end 55%'] });

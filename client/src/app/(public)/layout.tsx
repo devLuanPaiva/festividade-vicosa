@@ -5,6 +5,8 @@ interface PublicGroupLayoutProps {
   children: ReactNode;
 }
 
-export default function PublicGroupLayout({ children }: PublicGroupLayoutProps): ReactElement {
+export default function PublicGroupLayout({
+  children,
+}: Readonly<PublicGroupLayoutProps>): ReactElement {
   return <PublicLayout>{children}</PublicLayout>;
 }

@@ -17,7 +17,7 @@ export function TeamChoice({
   value,
   errorMessage,
   onChange,
-}: TeamChoiceProps): ReactElement {
+}: Readonly<TeamChoiceProps>): ReactElement {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-2 text-sm font-semibold">{legend}</legend>

@@ -25,7 +25,7 @@ interface ChipProps {
   isSelected: boolean;
 }
 
-function Chip({ href, label, isSelected }: ChipProps): ReactElement {
+function Chip({ href, label, isSelected }: Readonly<ChipProps>): ReactElement {
   return (
     <Link
       href={href}
@@ -41,7 +41,7 @@ function Chip({ href, label, isSelected }: ChipProps): ReactElement {
   );
 }
 
-export function UserFilters({ query, roles }: UserFiltersProps): ReactElement {
+export function UserFilters({ query, roles }: Readonly<UserFiltersProps>): ReactElement {
   return (
     <div className="flex flex-col gap-2">
       <div role="group" aria-label="Situação" className="flex flex-wrap gap-2">

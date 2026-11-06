@@ -5,7 +5,10 @@ interface FormFeedbackProps {
   isSaved: boolean;
 }
 
-export function FormFeedback({ errorMessage, isSaved }: FormFeedbackProps): ReactElement | null {
+export function FormFeedback({
+  errorMessage,
+  isSaved,
+}: Readonly<FormFeedbackProps>): ReactElement | null {
   if (errorMessage) {
     return (
       <p role="alert" className="rounded-xl bg-danger/10 p-4 text-sm font-semibold text-danger">

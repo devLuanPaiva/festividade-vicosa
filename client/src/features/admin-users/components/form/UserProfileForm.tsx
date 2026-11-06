@@ -12,7 +12,7 @@ interface UserProfileFormProps {
   user: AdminUser;
 }
 
-export function UserProfileForm({ user }: UserProfileFormProps): ReactElement {
+export function UserProfileForm({ user }: Readonly<UserProfileFormProps>): ReactElement {
   const form = useUserForm(updateUserAction.bind(null, user.id), {
     name: user.name,
     email: user.email,

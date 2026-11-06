@@ -7,7 +7,11 @@ interface MarqueeProps {
   className?: string;
 }
 
-export function Marquee({ items, reverse = false, className = '' }: MarqueeProps): ReactElement {
+export function Marquee({
+  items,
+  reverse = false,
+  className = '',
+}: Readonly<MarqueeProps>): ReactElement {
   const loopedItems = [...items, ...items];
   const animationClassName = reverse ? 'animate-marquee-reverse' : 'animate-marquee';
 

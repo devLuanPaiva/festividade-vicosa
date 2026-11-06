@@ -4,7 +4,10 @@ import { useState, type ComponentProps, type ReactElement } from 'react';
 
 type PasswordInputProps = Omit<ComponentProps<'input'>, 'type'>;
 
-export function PasswordInput({ className = '', ...inputProps }: PasswordInputProps): ReactElement {
+export function PasswordInput({
+  className = '',
+  ...inputProps
+}: Readonly<PasswordInputProps>): ReactElement {
   const [isVisible, setIsVisible] = useState(false);
   return (
     <div className="relative">

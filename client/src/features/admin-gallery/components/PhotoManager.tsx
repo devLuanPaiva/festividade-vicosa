@@ -25,7 +25,7 @@ function toGridPhotos(photos: SubEventPhoto[]): GridPhoto[] {
 export async function PhotoManager({
   subEventId,
   canManage,
-}: PhotoManagerProps): Promise<ReactElement> {
+}: Readonly<PhotoManagerProps>): Promise<ReactElement> {
   const photos = await getSubEventPhotos(subEventId);
   return (
     <>

@@ -34,7 +34,10 @@ function ResultRow({ result, now }: { result: RecentResult; now: Date }): ReactE
   );
 }
 
-export function RecentResultsList({ results, now }: RecentResultsListProps): ReactElement {
+export function RecentResultsList({
+  results,
+  now,
+}: Readonly<RecentResultsListProps>): ReactElement {
   return (
     <section
       aria-labelledby="recent-results-title"

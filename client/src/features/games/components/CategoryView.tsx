@@ -20,7 +20,7 @@ export function CategoryView({
   subEvent,
   standings,
   knockoutMatches,
-}: CategoryViewProps): ReactElement {
+}: Readonly<CategoryViewProps>): ReactElement {
   const modality = subEvent ? modalitySlugOfType(subEvent.type) : undefined;
   return (
     <>

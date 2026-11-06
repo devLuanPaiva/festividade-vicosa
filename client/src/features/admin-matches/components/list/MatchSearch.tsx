@@ -8,7 +8,7 @@ interface MatchSearchProps {
   fields: FormField[];
 }
 
-export function MatchSearch({ defaultValue, fields }: MatchSearchProps): ReactElement {
+export function MatchSearch({ defaultValue, fields }: Readonly<MatchSearchProps>): ReactElement {
   return (
     <ListSearch
       action={ADMIN_MATCHES_PATH}

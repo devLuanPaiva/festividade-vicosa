@@ -11,7 +11,7 @@ interface BracketTreeProps {
 const FINAL_LINES =
   'before:absolute before:-left-3 before:top-1/2 before:h-px before:w-3 before:bg-white/40 after:absolute after:-right-3 after:top-1/2 after:h-px after:w-3 after:bg-white/40';
 
-export function BracketTree({ tree }: BracketTreeProps): ReactElement {
+export function BracketTree({ tree }: Readonly<BracketTreeProps>): ReactElement {
   const hasSides = tree.sideA.length > 0;
   return (
     <div className="-mx-[5%] mt-8 overflow-x-auto scrollbar-hidden px-[5%] pb-4">

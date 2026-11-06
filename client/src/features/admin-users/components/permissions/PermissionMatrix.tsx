@@ -11,7 +11,28 @@ interface PermissionMatrixProps {
 
 const HEADER_CLASS = 'px-4 py-3 text-xs font-bold uppercase tracking-wide text-admin-muted';
 
-export function PermissionMatrix({ catalog, roles }: PermissionMatrixProps): ReactElement {
+function PermissionCell({ granted }: Readonly<{ granted: boolean }>): ReactElement {
+  return (
+    <td className="px-4 py-3 text-center">
+      {granted ? (
+        <span className="font-bold text-success">
+          <span aria-hidden="true">✔</span>
+          <span className="sr-only">Sim</span>
+        </span>
+      ) : (
+        <span className="text-admin-muted">
+          <span aria-hidden="true">—</span>
+          <span className="sr-only">Não</span>
+        </span>
+      )}
+    </td>
+  );
+}
+
+export function PermissionMatrix({
+  catalog,
+  roles,
+}: Readonly<PermissionMatrixProps>): ReactElement {
   return (
     <div className="overflow-x-auto rounded-2xl border border-admin-line bg-admin-surface">
       <table className="w-full min-w-xl">
@@ -48,19 +69,10 @@ export function PermissionMatrix({ catalog, roles }: PermissionMatrixProps): Rea
                   <span className="text-sm text-admin-muted">{permission.code}</span>
                 </th>
                 {roles.map((role) => (
-                  <td key={role.id} className="px-4 py-3 text-center">
-                    {role.permissions.includes(permission.code) ? (
-                      <span className="font-bold text-success">
-                        <span aria-hidden="true">✔</span>
-                        <span className="sr-only">Sim</span>
-                      </span>
-                    ) : (
-                      <span className="text-admin-muted">
-                        <span aria-hidden="true">—</span>
-                        <span className="sr-only">Não</span>
-                      </span>
-                    )}
-                  </td>
+                  <PermissionCell
+                    key={role.id}
+                    granted={role.permissions.includes(permission.code)}
+                  />
                 ))}
               </tr>
             ))}
