@@ -18,7 +18,7 @@ export function HomePage({
   liveContent,
   modalitiesContent,
   programContent,
-}: HomePageProps): ReactElement {
+}: Readonly<HomePageProps>): ReactElement {
   return (
     <>
       <HeroSection />

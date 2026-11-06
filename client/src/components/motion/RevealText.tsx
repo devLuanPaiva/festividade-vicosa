@@ -34,7 +34,7 @@ export function RevealText({
   className,
   playOnLoad = false,
   delay = 0,
-}: RevealTextProps): ReactElement {
+}: Readonly<RevealTextProps>): ReactElement {
   const shouldReduceMotion = useReducedMotion();
 
   if (shouldReduceMotion) {

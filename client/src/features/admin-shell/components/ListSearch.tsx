@@ -30,7 +30,7 @@ export function ListSearch({
   placeholder,
   defaultValue,
   fields,
-}: ListSearchProps): ReactElement {
+}: Readonly<ListSearchProps>): ReactElement {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);

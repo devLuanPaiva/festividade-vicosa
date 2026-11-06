@@ -18,7 +18,9 @@ interface EditTeamLoaderProps {
   params: Promise<{ teamId: string }>;
 }
 
-export async function EditTeamLoader({ params }: EditTeamLoaderProps): Promise<ReactElement> {
+export async function EditTeamLoader({
+  params,
+}: Readonly<EditTeamLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'team:manage')) {
     return <NoPermission action="gerir categorias, grupos e times" />;

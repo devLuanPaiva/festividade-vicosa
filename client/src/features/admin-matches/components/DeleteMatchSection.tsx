@@ -7,7 +7,7 @@ interface DeleteMatchSectionProps {
   target: MatchTarget;
 }
 
-export function DeleteMatchSection({ target }: DeleteMatchSectionProps): ReactElement {
+export function DeleteMatchSection({ target }: Readonly<DeleteMatchSectionProps>): ReactElement {
   return (
     <section
       aria-labelledby="delete-match-title"

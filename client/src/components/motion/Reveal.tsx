@@ -26,7 +26,7 @@ export function Reveal({
   direction = 'up',
   delay = 0,
   className,
-}: RevealProps): ReactElement {
+}: Readonly<RevealProps>): ReactElement {
   const shouldReduceMotion = useReducedMotion();
 
   if (shouldReduceMotion) {

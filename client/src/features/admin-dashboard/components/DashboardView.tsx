@@ -34,7 +34,11 @@ function EmptyChampionship(): ReactElement {
   );
 }
 
-export function DashboardView({ firstName, data, now }: DashboardViewProps): ReactElement {
+export function DashboardView({
+  firstName,
+  data,
+  now,
+}: Readonly<DashboardViewProps>): ReactElement {
   const { overview, matchesByDay, categoriesProgress, recentResults } = data;
   return (
     <>

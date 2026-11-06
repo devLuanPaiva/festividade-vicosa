@@ -9,7 +9,7 @@ interface EditMatchRouteProps {
   params: Promise<{ categoryId: string; matchId: string }>;
 }
 
-export default function EditMatchRoute({ params }: EditMatchRouteProps): ReactElement {
+export default function EditMatchRoute({ params }: Readonly<EditMatchRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando a partida" count={5} />}>
       <EditMatchLoader params={params} />

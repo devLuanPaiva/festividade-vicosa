@@ -34,7 +34,7 @@ function EmptyTeams({ categoryId }: { categoryId: string }): ReactElement {
   );
 }
 
-export function TeamsTab({ categoryId, groups, teams }: TeamsTabProps): ReactElement {
+export function TeamsTab({ categoryId, groups, teams }: Readonly<TeamsTabProps>): ReactElement {
   const sections = buildRosterSections(groups, teams);
   return (
     <div className="overflow-hidden rounded-2xl border border-admin-line bg-admin-surface">

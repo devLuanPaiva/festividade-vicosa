@@ -34,7 +34,7 @@ export function PermissionChoiceRow({
   choice,
   canEdit,
   onChoose,
-}: PermissionChoiceRowProps): ReactElement {
+}: Readonly<PermissionChoiceRowProps>): ReactElement {
   const origin = row.roleNames.length > 0 ? row.roleNames.join(', ') : 'nenhum grupo';
   return (
     <li className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">

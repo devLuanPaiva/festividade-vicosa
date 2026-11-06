@@ -18,7 +18,7 @@ export function SuggestionTeamFields({
   row,
   teamOptions,
   form,
-}: SuggestionRowFieldsProps): ReactElement {
+}: Readonly<SuggestionRowFieldsProps>): ReactElement {
   const { errorFor, touch } = form;
   const teamA = rowFieldName(index, 'teamAId');
   const teamB = rowFieldName(index, 'teamBId');
@@ -48,7 +48,7 @@ export function SuggestionScheduleFields({
   index,
   row,
   form,
-}: Omit<SuggestionRowFieldsProps, 'teamOptions'>): ReactElement {
+}: Readonly<Omit<SuggestionRowFieldsProps, 'teamOptions'>>): ReactElement {
   const { errorFor, touch } = form;
   const date = rowFieldName(index, 'date');
   const time = rowFieldName(index, 'time');

@@ -18,7 +18,12 @@ interface GalleryThumbProps {
   onActivate: () => void;
 }
 
-function labelFor({ isSelecting, isSelected, position, total }: GalleryThumbProps): string {
+function labelFor({
+  isSelecting,
+  isSelected,
+  position,
+  total,
+}: Readonly<GalleryThumbProps>): string {
   const photo = `a foto ${position} de ${total}`;
   if (!isSelecting) {
     return `Abrir ${photo}`;
@@ -38,7 +43,7 @@ function SelectionMark({ isSelected }: { isSelected: boolean }): ReactElement {
   );
 }
 
-export function GalleryThumb(props: GalleryThumbProps): ReactElement {
+export function GalleryThumb(props: Readonly<GalleryThumbProps>): ReactElement {
   const { image, isSelecting, isSelected, onActivate } = props;
   return (
     <button

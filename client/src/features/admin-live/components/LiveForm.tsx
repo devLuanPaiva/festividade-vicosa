@@ -21,7 +21,7 @@ export function LiveForm({
   initialValues,
   cancelHref,
   submitLabel,
-}: LiveFormProps): ReactElement {
+}: Readonly<LiveFormProps>): ReactElement {
   const { state, formAction, errorFor, touch, otherError } = useLiveForm(action, initialValues);
   return (
     <form action={formAction} className="flex flex-col gap-5">

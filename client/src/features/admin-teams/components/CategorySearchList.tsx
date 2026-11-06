@@ -30,7 +30,9 @@ function EmptyResult({ onClear }: { onClear: () => void }): ReactElement {
   );
 }
 
-export function CategorySearchList({ modalities }: CategorySearchListProps): ReactElement {
+export function CategorySearchList({
+  modalities,
+}: Readonly<CategorySearchListProps>): ReactElement {
   const [search, setSearch] = useState('');
   const visible = filterCategories(modalities, search);
 

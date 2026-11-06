@@ -8,12 +8,12 @@ interface MatchRouteProps {
   params: Promise<{ matchId: string }>;
 }
 
-export async function generateMetadata({ params }: MatchRouteProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Readonly<MatchRouteProps>): Promise<Metadata> {
   const { matchId } = await params;
   return getMatchMetadata(matchId);
 }
 
-export default function MatchRoute({ params }: MatchRouteProps): ReactElement {
+export default function MatchRoute({ params }: Readonly<MatchRouteProps>): ReactElement {
   return (
     <Suspense fallback={<MatchDetailSkeleton />}>
       <MatchDetailLoader params={params} />

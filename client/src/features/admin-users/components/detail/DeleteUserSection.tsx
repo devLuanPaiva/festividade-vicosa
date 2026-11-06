@@ -6,7 +6,7 @@ interface DeleteUserSectionProps {
   userId: string;
 }
 
-export function DeleteUserSection({ userId }: DeleteUserSectionProps): ReactElement {
+export function DeleteUserSection({ userId }: Readonly<DeleteUserSectionProps>): ReactElement {
   return (
     <section
       aria-labelledby="delete-user-title"

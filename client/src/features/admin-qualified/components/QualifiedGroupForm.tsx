@@ -20,7 +20,7 @@ function confirmedPositions(group: GroupStandings): Record<string, string> {
   );
 }
 
-export function QualifiedGroupForm({ group }: QualifiedGroupFormProps): ReactElement {
+export function QualifiedGroupForm({ group }: Readonly<QualifiedGroupFormProps>): ReactElement {
   const [state, formAction] = useActionState(
     confirmQualifiedAction.bind(null, group.groupId),
     initialQualifiedState(confirmedPositions(group)),

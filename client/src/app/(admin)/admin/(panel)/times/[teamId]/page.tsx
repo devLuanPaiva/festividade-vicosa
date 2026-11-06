@@ -9,7 +9,7 @@ interface EditTeamRouteProps {
   params: Promise<{ teamId: string }>;
 }
 
-export default function EditTeamRoute({ params }: EditTeamRouteProps): ReactElement {
+export default function EditTeamRoute({ params }: Readonly<EditTeamRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando o time" />}>
       <EditTeamLoader params={params} />

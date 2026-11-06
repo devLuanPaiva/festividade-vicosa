@@ -19,7 +19,7 @@ interface MatchDetailViewProps {
   detail: MatchDetail;
 }
 
-export function MatchDetailView({ detail }: MatchDetailViewProps): ReactElement {
+export function MatchDetailView({ detail }: Readonly<MatchDetailViewProps>): ReactElement {
   const { match, teamA, teamB, category } = detail;
   const outcome = getMatchOutcome(match);
   const share = buildMatchShare(detail);

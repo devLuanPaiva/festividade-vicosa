@@ -20,7 +20,7 @@ export function PhotoGallery({
   fileBase,
   shareText,
   initialPhotoId = null,
-}: PhotoGalleryProps): ReactElement {
+}: Readonly<PhotoGalleryProps>): ReactElement {
   const [openIndex, setOpenIndex] = useState<number | null>(() =>
     findImageIndex(images, initialPhotoId),
   );

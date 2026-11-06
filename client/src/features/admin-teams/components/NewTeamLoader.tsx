@@ -15,7 +15,9 @@ interface NewTeamLoaderProps {
   params: Promise<{ categoryId: string }>;
 }
 
-export async function NewTeamLoader({ params }: NewTeamLoaderProps): Promise<ReactElement> {
+export async function NewTeamLoader({
+  params,
+}: Readonly<NewTeamLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'team:manage')) {
     return <NoPermission action="gerir categorias, grupos e times" />;

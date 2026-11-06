@@ -19,7 +19,11 @@ interface ButtonLinkProps {
   children: ReactNode;
 }
 
-export function ButtonLink({ href, variant = 'sun', children }: ButtonLinkProps): ReactElement {
+export function ButtonLink({
+  href,
+  variant = 'sun',
+  children,
+}: Readonly<ButtonLinkProps>): ReactElement {
   return (
     <Link href={href} className={`${BASE_CLASS_NAME} ${VARIANT_CLASS_NAMES[variant]}`}>
       {children}

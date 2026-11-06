@@ -15,7 +15,7 @@ interface MatchStageFieldsProps {
   groups: MatchGroup[];
 }
 
-export function MatchStageFields({ form, groups }: MatchStageFieldsProps): ReactElement {
+export function MatchStageFields({ form, groups }: Readonly<MatchStageFieldsProps>): ReactElement {
   const { state, errorFor, touch, stage, changeStage, changeGroup } = form;
   const groupOptions: SelectOption[] = [
     { value: '', label: 'Escolha o grupo' },

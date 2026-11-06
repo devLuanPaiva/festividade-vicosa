@@ -9,7 +9,7 @@ interface CardGridSkeletonProps {
 export function CardGridSkeleton({
   count = 6,
   withImage = false,
-}: CardGridSkeletonProps): ReactElement {
+}: Readonly<CardGridSkeletonProps>): ReactElement {
   return (
     <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }, (_, index) => (

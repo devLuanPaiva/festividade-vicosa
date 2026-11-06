@@ -15,7 +15,7 @@ interface UsersAreaTabsProps {
   active: UsersArea;
 }
 
-export function UsersAreaTabs({ active }: UsersAreaTabsProps): ReactElement {
+export function UsersAreaTabs({ active }: Readonly<UsersAreaTabsProps>): ReactElement {
   return (
     <nav
       aria-label="Seções de usuários e acessos"

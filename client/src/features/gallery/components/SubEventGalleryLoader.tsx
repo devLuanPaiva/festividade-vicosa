@@ -19,7 +19,7 @@ interface SubEventGalleryLoaderProps {
 export async function SubEventGalleryLoader({
   params,
   searchParams,
-}: SubEventGalleryLoaderProps): Promise<ReactElement> {
+}: Readonly<SubEventGalleryLoaderProps>): Promise<ReactElement> {
   const { subEventId } = await params;
   const sharedPhotoId = readSharedPhotoId((await searchParams).foto);
   const subEvents = await getEditionSubEvents(FESTIVAL_YEAR);

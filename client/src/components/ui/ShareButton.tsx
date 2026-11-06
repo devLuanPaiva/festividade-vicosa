@@ -40,7 +40,7 @@ export function ShareButton({
   url,
   label,
   iconClassName,
-}: ShareButtonProps): ReactElement {
+}: Readonly<ShareButtonProps>): ReactElement {
   const isIconOnly = label === undefined;
   return (
     <button

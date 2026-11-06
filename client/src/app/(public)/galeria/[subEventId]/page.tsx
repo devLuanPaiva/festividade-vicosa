@@ -14,7 +14,7 @@ interface SubEventGalleryRouteProps {
 export async function generateMetadata({
   params,
   searchParams,
-}: SubEventGalleryRouteProps): Promise<Metadata> {
+}: Readonly<SubEventGalleryRouteProps>): Promise<Metadata> {
   const { subEventId } = await params;
   return getSubEventGalleryMetadata(subEventId, readSharedPhotoId((await searchParams).foto));
 }
@@ -22,7 +22,7 @@ export async function generateMetadata({
 export default function SubEventGalleryRoute({
   params,
   searchParams,
-}: SubEventGalleryRouteProps): ReactElement {
+}: Readonly<SubEventGalleryRouteProps>): ReactElement {
   return (
     <Suspense
       fallback={

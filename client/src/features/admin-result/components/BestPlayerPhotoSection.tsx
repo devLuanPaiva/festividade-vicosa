@@ -11,7 +11,9 @@ interface BestPlayerPhotoSectionProps {
   match: Match;
 }
 
-export function BestPlayerPhotoSection({ match }: BestPlayerPhotoSectionProps): ReactElement {
+export function BestPlayerPhotoSection({
+  match,
+}: Readonly<BestPlayerPhotoSectionProps>): ReactElement {
   const { bestPlayer } = match;
   if (!bestPlayer) {
     return (

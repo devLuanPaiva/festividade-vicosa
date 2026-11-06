@@ -13,7 +13,9 @@ interface ResultFormLoaderProps {
   params: Promise<{ matchId: string }>;
 }
 
-export async function ResultFormLoader({ params }: ResultFormLoaderProps): Promise<ReactElement> {
+export async function ResultFormLoader({
+  params,
+}: Readonly<ResultFormLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:record-score')) {
     return <NoPermission action="lançar placares" />;

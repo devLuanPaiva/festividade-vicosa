@@ -13,7 +13,7 @@ export function CategoryPageHeader({
   categoryId,
   categoryTitle,
   title,
-}: CategoryPageHeaderProps): ReactElement {
+}: Readonly<CategoryPageHeaderProps>): ReactElement {
   return (
     <header className="flex flex-col gap-2">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">

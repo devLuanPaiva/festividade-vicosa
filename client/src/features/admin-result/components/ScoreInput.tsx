@@ -14,7 +14,7 @@ export function ScoreInput({
   value,
   errorMessage,
   onChange,
-}: ScoreInputProps): ReactElement {
+}: Readonly<ScoreInputProps>): ReactElement {
   const errorId = `${name}-error`;
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     onChange(event.target.value.replace(/\D/g, ''));

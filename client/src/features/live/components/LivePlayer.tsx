@@ -43,7 +43,7 @@ function useExpansion(): { isExpanded: boolean; toggle: () => void; collapse: ()
   };
 }
 
-function PlayFacade({ title, previewUrl, onPlay }: PlayFacadeProps): ReactElement {
+function PlayFacade({ title, previewUrl, onPlay }: Readonly<PlayFacadeProps>): ReactElement {
   return (
     <button
       type="button"
@@ -81,7 +81,11 @@ interface PlayFacadeProps {
   onPlay: () => void;
 }
 
-export function LivePlayer({ title, videoId, previewUrl }: LivePlayerProps): ReactElement {
+export function LivePlayer({
+  title,
+  videoId,
+  previewUrl,
+}: Readonly<LivePlayerProps>): ReactElement {
   const [isPlaying, setIsPlaying] = useState(false);
   const { isExpanded, toggle, collapse } = useExpansion();
   return (

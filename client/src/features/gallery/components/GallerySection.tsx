@@ -7,7 +7,7 @@ interface GallerySectionProps {
   children: ReactNode;
 }
 
-export function GallerySection({ label, children }: GallerySectionProps): ReactElement {
+export function GallerySection({ label, children }: Readonly<GallerySectionProps>): ReactElement {
   return (
     <section aria-label={label} className="surface-paper">
       <WaveEdge />

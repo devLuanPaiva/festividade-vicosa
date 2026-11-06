@@ -7,7 +7,7 @@ interface MatchDayGroupProps {
   day: MatchDay;
 }
 
-export function MatchDayGroup({ day }: MatchDayGroupProps): ReactElement {
+export function MatchDayGroup({ day }: Readonly<MatchDayGroupProps>): ReactElement {
   return (
     <section aria-labelledby={`day-${day.key}`}>
       <Reveal direction="left">

@@ -18,7 +18,11 @@ interface ShellFrameProps {
   children: ReactNode;
 }
 
-export function ShellFrame({ user, initialCollapsed, children }: ShellFrameProps): ReactElement {
+export function ShellFrame({
+  user,
+  initialCollapsed,
+  children,
+}: Readonly<ShellFrameProps>): ReactElement {
   const pathname = usePathname();
   const { isCollapsed, toggle } = useSidebarCollapse(initialCollapsed);
   const drawer = useMobileDrawer(pathname);

@@ -11,7 +11,10 @@ interface MatchListEmptyProps {
 const ACTION_CLASS =
   'inline-flex min-h-12 items-center rounded-xl bg-brand-600 px-6 font-semibold text-white hover:bg-brand-700';
 
-export function MatchListEmpty({ hasAnyMatch, newMatchHref }: MatchListEmptyProps): ReactElement {
+export function MatchListEmpty({
+  hasAnyMatch,
+  newMatchHref,
+}: Readonly<MatchListEmptyProps>): ReactElement {
   if (hasAnyMatch) {
     return (
       <EmptyState

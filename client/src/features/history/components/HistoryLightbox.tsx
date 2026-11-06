@@ -43,7 +43,7 @@ export function HistoryLightbox({
   photos,
   openIndex,
   onChange,
-}: HistoryLightboxProps): ReactElement {
+}: Readonly<HistoryLightboxProps>): ReactElement {
   const photo = openIndex === null ? undefined : photos[openIndex];
   const close = (): void => onChange(null);
   const step = (offset: number): void => {

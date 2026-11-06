@@ -45,7 +45,7 @@ export function EmptyState({
   description,
   tone = 'public',
   children,
-}: EmptyStateProps): ReactElement {
+}: Readonly<EmptyStateProps>): ReactElement {
   const style = TONE_STYLES[tone];
   return (
     <section

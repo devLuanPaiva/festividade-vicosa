@@ -18,7 +18,7 @@ export function Section({
   labelledBy,
   withWave = false,
   children,
-}: SectionProps): ReactElement {
+}: Readonly<SectionProps>): ReactElement {
   return (
     <section id={id} aria-labelledby={labelledBy} className={`surface-${tone} scroll-mt-20`}>
       {withWave ? <WaveEdge /> : null}

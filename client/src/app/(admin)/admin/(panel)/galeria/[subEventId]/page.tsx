@@ -9,7 +9,9 @@ interface SubEventGalleryRouteProps {
   params: Promise<{ subEventId: string }>;
 }
 
-export default function SubEventGalleryRoute({ params }: SubEventGalleryRouteProps): ReactElement {
+export default function SubEventGalleryRoute({
+  params,
+}: Readonly<SubEventGalleryRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminAlbumSkeleton label="Carregando a galeria" />}>
       <SubEventGalleryLoader params={params} />

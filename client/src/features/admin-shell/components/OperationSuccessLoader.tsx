@@ -9,7 +9,7 @@ interface OperationSuccessLoaderProps {
 
 export async function OperationSuccessLoader({
   searchParams,
-}: OperationSuccessLoaderProps): Promise<ReactElement> {
+}: Readonly<OperationSuccessLoaderProps>): Promise<ReactElement> {
   const success = resolveOperationSuccess(await searchParams);
   return success ? <OperationSuccessView success={success} /> : <AdminNotFound />;
 }

@@ -17,7 +17,7 @@ export function QualifiedTeamRow({
   row,
   defaultPosition,
   onInput,
-}: QualifiedTeamRowProps): ReactElement {
+}: Readonly<QualifiedTeamRowProps>): ReactElement {
   return (
     <li className="flex min-h-16 items-center gap-3 px-4 py-2">
       <span className="w-6 shrink-0 text-center font-bold text-admin-muted">{row.position}º</span>

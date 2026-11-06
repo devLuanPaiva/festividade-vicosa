@@ -9,7 +9,7 @@ interface UserRouteProps {
   params: Promise<{ userId: string }>;
 }
 
-export default function UserPage({ params }: UserRouteProps): ReactElement {
+export default function UserPage({ params }: Readonly<UserRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando o usuário" />}>
       <UserDetailLoader params={params} />

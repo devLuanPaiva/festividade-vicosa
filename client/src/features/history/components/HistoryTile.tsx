@@ -16,7 +16,12 @@ interface HistoryTileProps {
   onOpen: () => void;
 }
 
-export function HistoryTile({ photo, position, total, onOpen }: HistoryTileProps): ReactElement {
+export function HistoryTile({
+  photo,
+  position,
+  total,
+  onOpen,
+}: Readonly<HistoryTileProps>): ReactElement {
   const ratio = photo.width / photo.height;
 
   return (

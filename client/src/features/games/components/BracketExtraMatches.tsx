@@ -10,7 +10,7 @@ interface BracketExtraMatchesProps {
 export function BracketExtraMatches({
   title,
   matches,
-}: BracketExtraMatchesProps): ReactElement | null {
+}: Readonly<BracketExtraMatchesProps>): ReactElement | null {
   if (matches.length === 0) {
     return null;
   }

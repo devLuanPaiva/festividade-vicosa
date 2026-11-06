@@ -21,7 +21,7 @@ interface GameFiltersProps {
   params: GameFilterParams;
 }
 
-function FilterRow({ label, children }: FilterRowProps): ReactElement {
+function FilterRow({ label, children }: Readonly<FilterRowProps>): ReactElement {
   return (
     <div role="group" aria-label={label} className="flex flex-wrap items-center gap-2">
       <span className="mr-1 w-full text-xs font-semibold uppercase tracking-wider text-white/70 sm:w-24">
@@ -32,7 +32,7 @@ function FilterRow({ label, children }: FilterRowProps): ReactElement {
   );
 }
 
-function ScopeRow({ params }: GameFiltersProps): ReactElement {
+function ScopeRow({ params }: Readonly<GameFiltersProps>): ReactElement {
   return (
     <FilterRow label="Jogos">
       {MATCH_SCOPES.map((item) => (
@@ -47,7 +47,7 @@ function ScopeRow({ params }: GameFiltersProps): ReactElement {
   );
 }
 
-function ModalityRow({ params }: GameFiltersProps): ReactElement {
+function ModalityRow({ params }: Readonly<GameFiltersProps>): ReactElement {
   return (
     <FilterRow label="Modalidade">
       <FilterChip
@@ -67,7 +67,7 @@ function ModalityRow({ params }: GameFiltersProps): ReactElement {
   );
 }
 
-async function CategoryRow({ params }: GameFiltersProps): Promise<ReactElement> {
+async function CategoryRow({ params }: Readonly<GameFiltersProps>): Promise<ReactElement> {
   const subEvents = subEventsOfModality(await getEditionSubEvents(GAMES_YEAR), params.modality);
   const lists = await Promise.all(subEvents.map((subEvent) => getSubEventCategories(subEvent.id)));
   return (
@@ -89,7 +89,7 @@ async function CategoryRow({ params }: GameFiltersProps): Promise<ReactElement> 
   );
 }
 
-export function GameFilters({ params }: GameFiltersProps): ReactElement {
+export function GameFilters({ params }: Readonly<GameFiltersProps>): ReactElement {
   return (
     <div className="mt-10 flex flex-col gap-4 rounded-3xl bg-brand-900/70 p-5 ring-1 ring-white/20 backdrop-blur-md">
       <ScopeRow params={params} />

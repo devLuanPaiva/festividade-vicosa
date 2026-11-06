@@ -1,22 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
-import { getSiteUrl } from '@/lib/config/server-env';
 import { fontVariableClassNames } from '@/lib/fonts';
 import { EARLY_CAPTURE_SCRIPT } from '@/lib/pwa/early-install-capture';
+import { buildSiteMetadata } from '@/lib/seo/site-metadata';
 import './globals.css';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
-  openGraph: { siteName: 'JOCEV’S', locale: 'pt_BR', type: 'website' },
-  title: {
-    default: 'JOCEV’S 25 anos | Jornada Cultural e Esportiva de Viçosa',
-    template: '%s | JOCEV’S',
-  },
-  description:
-    'Jogos, placares, fotos, programação e a história da festividade de emancipação política de Viçosa/RN.',
-  appleWebApp: { capable: true, title: 'JOCEV’S 2026', statusBarStyle: 'default' },
-};
+export const metadata: Metadata = buildSiteMetadata();
 
 export const viewport: Viewport = {
   themeColor: '#073b86',
@@ -26,7 +16,7 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps): ReactElement {
+export default function RootLayout({ children }: Readonly<RootLayoutProps>): ReactElement {
   return (
     <html lang="pt-BR" className={fontVariableClassNames}>
       <head>

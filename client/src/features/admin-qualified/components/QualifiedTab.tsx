@@ -7,7 +7,9 @@ interface QualifiedTabProps {
   categoryId: string;
 }
 
-export async function QualifiedTab({ categoryId }: QualifiedTabProps): Promise<ReactElement> {
+export async function QualifiedTab({
+  categoryId,
+}: Readonly<QualifiedTabProps>): Promise<ReactElement> {
   const groups = await getAdminStandings(categoryId, await requireSessionToken());
   return (
     <div className="flex flex-col gap-6">

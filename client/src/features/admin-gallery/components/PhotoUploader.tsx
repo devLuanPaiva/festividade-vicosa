@@ -12,7 +12,7 @@ interface PhotoUploaderProps {
   upload: (formData: FormData) => Promise<FormErrorState>;
 }
 
-export function PhotoUploader({ upload }: PhotoUploaderProps): ReactElement {
+export function PhotoUploader({ upload }: Readonly<PhotoUploaderProps>): ReactElement {
   const { items, isRunning, start } = usePhotoUploadQueue(upload);
 
   return (

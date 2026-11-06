@@ -6,7 +6,7 @@ interface SubEventListProps {
   year: number;
 }
 
-export async function SubEventList({ year }: SubEventListProps): Promise<ReactElement> {
+export async function SubEventList({ year }: Readonly<SubEventListProps>): Promise<ReactElement> {
   const subEvents = await getEditionSubEvents(year);
   return <SubEventGrid subEvents={subEvents} />;
 }

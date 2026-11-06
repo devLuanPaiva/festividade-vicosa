@@ -27,7 +27,7 @@ export function SuggestionRowCard({
   row,
   teamOptions,
   form,
-}: SuggestionRowCardProps): ReactElement {
+}: Readonly<SuggestionRowCardProps>): ReactElement {
   const include = rowFieldName(index, 'include');
   return (
     <li className="flex flex-col gap-4 rounded-2xl border border-admin-line bg-admin-surface p-4">

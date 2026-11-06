@@ -15,7 +15,7 @@ export function IconSubmitButton({
   icon,
   label,
   className = '',
-}: IconSubmitButtonProps): ReactElement {
+}: Readonly<IconSubmitButtonProps>): ReactElement {
   const { pending } = useFormStatus();
   return (
     <Tooltip label={label}>

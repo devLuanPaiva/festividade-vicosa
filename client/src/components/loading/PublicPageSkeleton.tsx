@@ -8,7 +8,10 @@ interface PublicPageSkeletonProps {
   children: ReactNode;
 }
 
-export function PublicPageSkeleton({ label, children }: PublicPageSkeletonProps): ReactElement {
+export function PublicPageSkeleton({
+  label,
+  children,
+}: Readonly<PublicPageSkeletonProps>): ReactElement {
   return (
     <LoadingRegion label={label}>
       <section className="surface-arena overflow-hidden">

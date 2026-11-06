@@ -14,7 +14,10 @@ interface GalleryBreadcrumbProps {
 
 const GALLERY_CRUMB: Crumb = { label: 'Galeria', href: ADMIN_GALLERY_PATH };
 
-export function GalleryBreadcrumb({ crumbs = [], title }: GalleryBreadcrumbProps): ReactElement {
+export function GalleryBreadcrumb({
+  crumbs = [],
+  title,
+}: Readonly<GalleryBreadcrumbProps>): ReactElement {
   return (
     <header className="flex flex-col gap-2">
       <nav aria-label="Você está em" className="flex flex-wrap items-center text-sm">

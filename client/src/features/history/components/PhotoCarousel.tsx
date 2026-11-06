@@ -32,7 +32,7 @@ function useSlideIndex(total: number, isPaused: boolean): number {
   return index;
 }
 
-export function PhotoCarousel({ photos }: PhotoCarouselProps): ReactElement {
+export function PhotoCarousel({ photos }: Readonly<PhotoCarouselProps>): ReactElement {
   const shouldReduceMotion = useReducedMotion();
   const index = useSlideIndex(photos.length, shouldReduceMotion === true);
   const photo = photos[index];

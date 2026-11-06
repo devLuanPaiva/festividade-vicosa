@@ -14,7 +14,7 @@ interface MatchShareCardProps {
   detail: MatchDetail;
 }
 
-export function MatchShareCard({ detail }: MatchShareCardProps): ReactElement {
+export function MatchShareCard({ detail }: Readonly<MatchShareCardProps>): ReactElement {
   const { match, teamA, teamB } = detail;
   const { sideA, sideB } = getMatchOutcome(match);
   const isScheduled = match.status === 'SCHEDULED';

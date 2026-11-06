@@ -12,7 +12,7 @@ interface SuggestionDefaultFieldsProps {
 export function SuggestionDefaultFields({
   defaults,
   touch,
-}: SuggestionDefaultFieldsProps): ReactElement {
+}: Readonly<SuggestionDefaultFieldsProps>): ReactElement {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
       <TextField

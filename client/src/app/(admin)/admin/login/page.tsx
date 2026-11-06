@@ -11,7 +11,9 @@ interface AdminLoginPageProps {
   searchParams: Promise<{ error?: string }>;
 }
 
-export default function AdminLoginPage({ searchParams }: AdminLoginPageProps): ReactElement {
+export default function AdminLoginPage({
+  searchParams,
+}: Readonly<AdminLoginPageProps>): ReactElement {
   return (
     <main className="grid min-h-dvh lg:grid-cols-2">
       <LoginBrandPanel />

@@ -17,7 +17,9 @@ interface EditLiveLoaderProps {
   params: Promise<{ liveId: string }>;
 }
 
-export async function EditLiveLoader({ params }: EditLiveLoaderProps): Promise<ReactElement> {
+export async function EditLiveLoader({
+  params,
+}: Readonly<EditLiveLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'live:manage')) {
     return <NoPermission action="gerir a transmissão ao vivo" />;

@@ -13,7 +13,7 @@ interface HistoryGalleryProps {
   photos: HistoryPhoto[];
 }
 
-export function HistoryGallery({ photos }: HistoryGalleryProps): ReactElement {
+export function HistoryGallery({ photos }: Readonly<HistoryGalleryProps>): ReactElement {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [containerRef, width] = useContainerWidth();
   const rows = useMemo(() => splitIntoRows(photos, rowCountFor(photos, width)), [photos, width]);

@@ -36,7 +36,7 @@ export function UserListView({
   page,
   roles,
   currentUserId,
-}: UserListViewProps): ReactElement {
+}: Readonly<UserListViewProps>): ReactElement {
   return (
     <>
       <header className="flex flex-wrap items-start justify-between gap-3">

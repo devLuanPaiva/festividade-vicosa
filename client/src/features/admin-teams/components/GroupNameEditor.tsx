@@ -15,7 +15,7 @@ interface NameInputProps {
   onCancel: () => void;
 }
 
-function NameInput({ name, onCancel }: NameInputProps): ReactElement {
+function NameInput({ name, onCancel }: Readonly<NameInputProps>): ReactElement {
   const { pending } = useFormStatus();
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Escape') {
@@ -43,7 +43,7 @@ function NameInput({ name, onCancel }: NameInputProps): ReactElement {
   );
 }
 
-export function GroupNameEditor({ groupId, name }: GroupNameEditorProps): ReactElement {
+export function GroupNameEditor({ groupId, name }: Readonly<GroupNameEditorProps>): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const [state, formAction] = useActionState(renameGroupAction.bind(null, groupId), {
     ...INITIAL_GROUP_STATE,

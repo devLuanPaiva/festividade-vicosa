@@ -25,7 +25,7 @@ export function UserAccessSections({
   overrides,
   canEdit,
   isSelf,
-}: UserAccessSectionsProps): ReactElement {
+}: Readonly<UserAccessSectionsProps>): ReactElement {
   const userRoles = roles.filter((role) => user.roles.some((assigned) => assigned.id === role.id));
   return (
     <>

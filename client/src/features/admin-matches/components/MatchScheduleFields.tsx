@@ -8,7 +8,7 @@ interface MatchScheduleFieldsProps {
   form: MatchFormControls;
 }
 
-export function MatchScheduleFields({ form }: MatchScheduleFieldsProps): ReactElement {
+export function MatchScheduleFields({ form }: Readonly<MatchScheduleFieldsProps>): ReactElement {
   const { state, errorFor, touch } = form;
   return (
     <>

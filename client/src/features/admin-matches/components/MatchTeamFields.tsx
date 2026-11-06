@@ -13,7 +13,7 @@ function placeholderFor(stage: string, groupId: string): string {
   return stage === 'GROUP' && !groupId ? 'Escolha o grupo primeiro' : 'Escolha o time';
 }
 
-export function MatchTeamFields({ form, teams }: MatchTeamFieldsProps): ReactElement {
+export function MatchTeamFields({ form, teams }: Readonly<MatchTeamFieldsProps>): ReactElement {
   const { state, errorFor, touch, stage, groupId } = form;
   const options = toTeamOptions(
     teamsOfGroup(teams, stage, groupId),

@@ -43,7 +43,7 @@ function Card({ row }: { row: MatchListRow }): ReactElement {
   );
 }
 
-export function MatchCards({ rows }: MatchCardsProps): ReactElement {
+export function MatchCards({ rows }: Readonly<MatchCardsProps>): ReactElement {
   return (
     <ul className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
       {rows.map((row) => (

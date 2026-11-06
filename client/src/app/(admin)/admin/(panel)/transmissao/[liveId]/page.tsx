@@ -9,7 +9,7 @@ interface EditLiveRouteProps {
   params: Promise<{ liveId: string }>;
 }
 
-export default function EditLiveRoute({ params }: EditLiveRouteProps): ReactElement {
+export default function EditLiveRoute({ params }: Readonly<EditLiveRouteProps>): ReactElement {
   return (
     <Suspense fallback={<AdminFormSkeleton label="Carregando a transmissão" />}>
       <EditLiveLoader params={params} />

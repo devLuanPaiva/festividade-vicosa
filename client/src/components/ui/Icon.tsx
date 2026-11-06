@@ -35,7 +35,7 @@ interface IconProps {
   className?: string;
 }
 
-export function Icon({ name, className = 'size-5' }: IconProps): ReactElement {
+export function Icon({ name, className = 'size-5' }: Readonly<IconProps>): ReactElement {
   return (
     <svg
       viewBox="0 0 24 24"

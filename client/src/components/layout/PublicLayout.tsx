@@ -6,7 +6,7 @@ interface PublicLayoutProps {
   children: ReactNode;
 }
 
-export function PublicLayout({ children }: PublicLayoutProps): ReactElement {
+export function PublicLayout({ children }: Readonly<PublicLayoutProps>): ReactElement {
   return (
     <>
       <PublicHeader />

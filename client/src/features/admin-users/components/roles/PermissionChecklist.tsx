@@ -15,7 +15,7 @@ export function PermissionChecklist({
   selected,
   isDisabled,
   onChange,
-}: PermissionChecklistProps): ReactElement {
+}: Readonly<PermissionChecklistProps>): ReactElement {
   return (
     <div className="flex flex-col gap-4">
       {groupByResource(catalog).map((section) => (

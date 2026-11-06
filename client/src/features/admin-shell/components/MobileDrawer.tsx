@@ -11,7 +11,11 @@ interface MobileDrawerProps {
   onClose: () => void;
 }
 
-export function MobileDrawer({ dialogRef, user, onClose }: MobileDrawerProps): ReactElement {
+export function MobileDrawer({
+  dialogRef,
+  user,
+  onClose,
+}: Readonly<MobileDrawerProps>): ReactElement {
   const closeOnBackdropClick = (event: MouseEvent<HTMLDialogElement>): void => {
     if (event.target === event.currentTarget) {
       onClose();

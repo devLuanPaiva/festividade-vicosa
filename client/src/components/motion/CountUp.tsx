@@ -18,7 +18,7 @@ interface CountUpProps {
   className?: string;
 }
 
-export function CountUp({ value, suffix = '', className }: CountUpProps): ReactElement {
+export function CountUp({ value, suffix = '', className }: Readonly<CountUpProps>): ReactElement {
   const elementRef = useRef<HTMLSpanElement>(null);
   const isInView = useInView(elementRef, { once: true, margin: '0px 0px -10% 0px' });
   const shouldReduceMotion = useReducedMotion();

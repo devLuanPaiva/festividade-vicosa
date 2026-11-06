@@ -18,7 +18,7 @@ export async function BracketTab({
   categoryId,
   matches,
   teams,
-}: BracketTabProps): Promise<ReactElement> {
+}: Readonly<BracketTabProps>): Promise<ReactElement> {
   const teamOptions = toTeamSelectOptions(teams);
   if (hasGeneratedBracket(matches)) {
     return <NextMatchesSuggestion categoryId={categoryId} teamOptions={teamOptions} />;

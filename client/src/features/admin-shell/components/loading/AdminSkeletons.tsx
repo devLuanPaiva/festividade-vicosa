@@ -15,7 +15,10 @@ function AdminHeaderSkeleton(): ReactElement {
   );
 }
 
-export function AdminListSkeleton({ label, count = 6 }: AdminSkeletonProps): ReactElement {
+export function AdminListSkeleton({
+  label,
+  count = 6,
+}: Readonly<AdminSkeletonProps>): ReactElement {
   return (
     <LoadingRegion label={label} className="flex flex-col gap-5">
       <AdminHeaderSkeleton />
@@ -34,7 +37,10 @@ export function AdminListSkeleton({ label, count = 6 }: AdminSkeletonProps): Rea
   );
 }
 
-export function AdminLinksSkeleton({ label, count = 6 }: AdminSkeletonProps): ReactElement {
+export function AdminLinksSkeleton({
+  label,
+  count = 6,
+}: Readonly<AdminSkeletonProps>): ReactElement {
   return (
     <LoadingRegion label={label} className="flex flex-col gap-5">
       <AdminHeaderSkeleton />
@@ -49,7 +55,10 @@ export function AdminLinksSkeleton({ label, count = 6 }: AdminSkeletonProps): Re
   );
 }
 
-export function AdminFormSkeleton({ label, count = 4 }: AdminSkeletonProps): ReactElement {
+export function AdminFormSkeleton({
+  label,
+  count = 4,
+}: Readonly<AdminSkeletonProps>): ReactElement {
   return (
     <LoadingRegion label={label} className="flex flex-col gap-5">
       <AdminHeaderSkeleton />
@@ -64,7 +73,10 @@ export function AdminFormSkeleton({ label, count = 4 }: AdminSkeletonProps): Rea
   );
 }
 
-export function AdminAlbumSkeleton({ label, count = 8 }: AdminSkeletonProps): ReactElement {
+export function AdminAlbumSkeleton({
+  label,
+  count = 8,
+}: Readonly<AdminSkeletonProps>): ReactElement {
   return (
     <LoadingRegion label={label} className="flex flex-col gap-5">
       <AdminHeaderSkeleton />

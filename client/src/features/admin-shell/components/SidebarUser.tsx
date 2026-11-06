@@ -10,7 +10,7 @@ interface SidebarUserProps {
   isCollapsed: boolean;
 }
 
-export function SidebarUser({ user, isCollapsed }: SidebarUserProps): ReactElement {
+export function SidebarUser({ user, isCollapsed }: Readonly<SidebarUserProps>): ReactElement {
   const layout = isCollapsed ? 'flex-col' : 'items-center';
   return (
     <div className={`flex gap-2 border-t border-white/10 p-3 ${layout}`}>

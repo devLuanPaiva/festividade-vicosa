@@ -28,7 +28,7 @@ export function SubmitButton({
   variant = 'primary',
   className = 'min-h-12 px-6',
   disabled = false,
-}: SubmitButtonProps): ReactElement {
+}: Readonly<SubmitButtonProps>): ReactElement {
   const { pending } = useFormStatus();
   return (
     <button

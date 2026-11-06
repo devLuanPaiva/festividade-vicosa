@@ -27,7 +27,7 @@ interface FieldErrorProps {
   message: string | null;
 }
 
-export function FieldError({ name, message }: FieldErrorProps): ReactElement | null {
+export function FieldError({ name, message }: Readonly<FieldErrorProps>): ReactElement | null {
   if (message === null) {
     return null;
   }

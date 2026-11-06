@@ -26,7 +26,7 @@ interface LiveCountdownProps {
   startsAt: string;
 }
 
-export function LiveCountdown({ startsAt }: LiveCountdownProps): ReactElement | null {
+export function LiveCountdown({ startsAt }: Readonly<LiveCountdownProps>): ReactElement | null {
   const countdown = useCountdown(new Date(startsAt));
   if (countdown?.isFinished) {
     return null;

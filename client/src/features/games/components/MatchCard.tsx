@@ -11,7 +11,7 @@ interface MatchCardProps {
   match: MatchListItem;
 }
 
-export function MatchCard({ match }: MatchCardProps): ReactElement {
+export function MatchCard({ match }: Readonly<MatchCardProps>): ReactElement {
   const outcome = getMatchOutcome(match);
   const details = [stageLabel(match), courtLocationLabel(match.location)]
     .filter(Boolean)

@@ -10,7 +10,7 @@ interface UserFieldsProps {
   isPasswordOptional: boolean;
 }
 
-export function UserFields({ form, isPasswordOptional }: UserFieldsProps): ReactElement {
+export function UserFields({ form, isPasswordOptional }: Readonly<UserFieldsProps>): ReactElement {
   const { state, errorFor, touch } = form;
   return (
     <>

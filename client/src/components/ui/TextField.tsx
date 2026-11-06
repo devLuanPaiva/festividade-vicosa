@@ -25,7 +25,7 @@ export function TextField({
   type = 'text',
   autoComplete = 'off',
   onInput,
-}: TextFieldProps): ReactElement {
+}: Readonly<TextFieldProps>): ReactElement {
   const inputProps: ComponentProps<'input'> = {
     ...controlProps(name, errorMessage),
     defaultValue,

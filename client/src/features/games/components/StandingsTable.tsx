@@ -16,7 +16,7 @@ interface StandingRowViewProps {
   row: StandingRow;
 }
 
-function StandingRowView({ row }: StandingRowViewProps): ReactElement {
+function StandingRowView({ row }: Readonly<StandingRowViewProps>): ReactElement {
   const qualified = row.qualifiedPosition !== null;
   return (
     <tr className={`border-t border-paper ${qualified ? 'bg-grass/15' : ''}`}>
@@ -47,7 +47,7 @@ interface StandingsTableProps {
   group: GroupStandings;
 }
 
-export function StandingsTable({ group }: StandingsTableProps): ReactElement {
+export function StandingsTable({ group }: Readonly<StandingsTableProps>): ReactElement {
   return (
     <div className="overflow-hidden rounded-3xl bg-white shadow-[0_10px_30px_rgba(7,59,134,0.12)]">
       <table className="w-full text-sm text-ink">

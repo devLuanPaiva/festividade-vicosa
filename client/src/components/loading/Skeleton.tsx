@@ -13,7 +13,10 @@ interface SkeletonProps {
   tone?: SkeletonTone;
 }
 
-export function Skeleton({ className = '', tone = 'light' }: SkeletonProps): ReactElement {
+export function Skeleton({
+  className = '',
+  tone = 'light',
+}: Readonly<SkeletonProps>): ReactElement {
   return <div aria-hidden="true" className={`skeleton ${TONE_CLASSES[tone]} ${className}`} />;
 }
 
@@ -23,7 +26,11 @@ interface LoadingRegionProps {
   children: ReactNode;
 }
 
-export function LoadingRegion({ label, className, children }: LoadingRegionProps): ReactElement {
+export function LoadingRegion({
+  label,
+  className,
+  children,
+}: Readonly<LoadingRegionProps>): ReactElement {
   return (
     <div role="status" aria-busy="true" aria-label={label} className={className}>
       <span className="sr-only">{label}</span>

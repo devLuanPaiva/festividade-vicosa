@@ -34,7 +34,7 @@ function DialogActions({
   isPending,
   cancelRef,
   onCancel,
-}: DialogActionsProps): ReactElement {
+}: Readonly<DialogActionsProps>): ReactElement {
   return (
     <div className="flex flex-wrap justify-end gap-3">
       <button
@@ -87,7 +87,7 @@ export function ConfirmDeleteDialog({
   description,
   confirmLabel,
   action,
-}: ConfirmDeleteDialogProps): ReactElement {
+}: Readonly<ConfirmDeleteDialogProps>): ReactElement {
   const titleId = useId();
   const [state, formAction, isPending] = useActionState(action, INITIAL_FORM_ERROR_STATE);
   const { dialogRef, cancelRef, open, close, keepOpenWhilePending } = useDialogControls(isPending);

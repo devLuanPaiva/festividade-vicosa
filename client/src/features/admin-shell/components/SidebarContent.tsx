@@ -40,7 +40,7 @@ export function SidebarContent({
   isCollapsed,
   onNavigate,
   headerAction,
-}: SidebarContentProps): ReactElement {
+}: Readonly<SidebarContentProps>): ReactElement {
   const pathname = usePathname();
   const sections = visibleSections(user.permissions);
   return (

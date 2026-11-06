@@ -28,7 +28,7 @@ function deletionNote(teamCount: number): string {
   return `${teamsNote}Grupos com partidas não podem ser excluídos.`;
 }
 
-function GroupRow({ group, teamCount }: GroupRowProps): ReactElement {
+function GroupRow({ group, teamCount }: Readonly<GroupRowProps>): ReactElement {
   return (
     <li className="flex items-center gap-2 px-2 py-1">
       <GroupNameEditor key={group.name} groupId={group.id} name={group.name} />
@@ -44,7 +44,7 @@ function GroupRow({ group, teamCount }: GroupRowProps): ReactElement {
   );
 }
 
-export function GroupsTab({ categoryId, groups, teams }: GroupsTabProps): ReactElement {
+export function GroupsTab({ categoryId, groups, teams }: Readonly<GroupsTabProps>): ReactElement {
   return (
     <div className="flex flex-col gap-6">
       <GroupCreateForm categoryId={categoryId} />

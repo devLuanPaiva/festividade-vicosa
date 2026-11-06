@@ -27,7 +27,7 @@ export function GalleryToolbar({
   onCancel,
   onSelectAll,
   onDownload,
-}: GalleryToolbarProps): ReactElement {
+}: Readonly<GalleryToolbarProps>): ReactElement {
   if (!isSelecting) {
     return (
       <div className="flex justify-end">

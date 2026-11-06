@@ -15,7 +15,9 @@ interface NewMatchLoaderProps {
   params: Promise<{ categoryId: string }>;
 }
 
-export async function NewMatchLoader({ params }: NewMatchLoaderProps): Promise<ReactElement> {
+export async function NewMatchLoader({
+  params,
+}: Readonly<NewMatchLoaderProps>): Promise<ReactElement> {
   const user = await requireCurrentUser();
   if (!hasPermission(user, 'match:create')) {
     return <NoPermission action="cadastrar partidas" />;

@@ -9,7 +9,11 @@ interface ParallaxProps {
   className?: string;
 }
 
-export function Parallax({ children, distance = 70, className }: ParallaxProps): ReactElement {
+export function Parallax({
+  children,
+  distance = 70,
+  className,
+}: Readonly<ParallaxProps>): ReactElement {
   const elementRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({

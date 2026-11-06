@@ -25,7 +25,7 @@ export function SelectField({
   errorMessage,
   isOptional = false,
   onInput,
-}: SelectFieldProps): ReactElement {
+}: Readonly<SelectFieldProps>): ReactElement {
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className="flex flex-col gap-2">

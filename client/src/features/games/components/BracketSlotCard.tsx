@@ -7,6 +7,6 @@ interface BracketSlotCardProps {
   slot: BracketSlot;
 }
 
-export function BracketSlotCard({ slot }: BracketSlotCardProps): ReactElement {
+export function BracketSlotCard({ slot }: Readonly<BracketSlotCardProps>): ReactElement {
   return slot ? <BracketMatchCard match={slot} /> : <BracketPlaceholderCard />;
 }

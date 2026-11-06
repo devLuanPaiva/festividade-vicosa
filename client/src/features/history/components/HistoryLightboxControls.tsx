@@ -16,7 +16,7 @@ export function HistoryLightboxControls({
   total,
   onStep,
   onClose,
-}: HistoryLightboxControlsProps): ReactElement {
+}: Readonly<HistoryLightboxControlsProps>): ReactElement {
   const stepOnClick =
     (offset: number) =>
     (event: MouseEvent): void => {

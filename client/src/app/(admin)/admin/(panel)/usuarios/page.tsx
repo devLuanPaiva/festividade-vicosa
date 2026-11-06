@@ -10,7 +10,7 @@ interface UsersPageProps {
   searchParams: Promise<RawSearchParams>;
 }
 
-export default function UsersPage({ searchParams }: UsersPageProps): ReactElement {
+export default function UsersPage({ searchParams }: Readonly<UsersPageProps>): ReactElement {
   return (
     <Suspense fallback={<AdminListSkeleton label="Carregando usuários" />}>
       <UserListLoader searchParams={searchParams} />

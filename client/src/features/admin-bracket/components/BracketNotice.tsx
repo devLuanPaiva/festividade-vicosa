@@ -8,7 +8,12 @@ interface BracketNoticeProps {
   linkLabel: string;
 }
 
-export function BracketNotice({ title, text, href, linkLabel }: BracketNoticeProps): ReactElement {
+export function BracketNotice({
+  title,
+  text,
+  href,
+  linkLabel,
+}: Readonly<BracketNoticeProps>): ReactElement {
   return (
     <section
       aria-labelledby="bracket-notice-title"

@@ -9,7 +9,10 @@ interface LiveActivationFormProps {
   isActive: boolean;
 }
 
-export function LiveActivationForm({ action, isActive }: LiveActivationFormProps): ReactElement {
+export function LiveActivationForm({
+  action,
+  isActive,
+}: Readonly<LiveActivationFormProps>): ReactElement {
   const [state, formAction] = useActionState(action, INITIAL_FORM_ERROR_STATE);
   return (
     <form action={formAction} className="flex flex-col gap-1">

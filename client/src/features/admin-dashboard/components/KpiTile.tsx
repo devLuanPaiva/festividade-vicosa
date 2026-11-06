@@ -9,7 +9,7 @@ interface KpiTileProps {
 const TILE_CLASS =
   'flex h-full flex-col gap-1 rounded-2xl border border-admin-line bg-admin-surface p-4';
 
-function TileBody({ tile }: KpiTileProps): ReactElement {
+function TileBody({ tile }: Readonly<KpiTileProps>): ReactElement {
   const captionTone = tile.needsAttention ? 'font-semibold text-danger' : 'text-admin-muted';
   return (
     <>
@@ -35,7 +35,7 @@ function TileBody({ tile }: KpiTileProps): ReactElement {
   );
 }
 
-export function KpiTile({ tile }: KpiTileProps): ReactElement {
+export function KpiTile({ tile }: Readonly<KpiTileProps>): ReactElement {
   if (tile.href === null) {
     return (
       <div className={TILE_CLASS}>

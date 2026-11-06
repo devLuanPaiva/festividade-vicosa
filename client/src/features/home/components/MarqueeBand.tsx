@@ -13,7 +13,7 @@ export function MarqueeBand({
   items,
   reverse = false,
   tilt = 'left',
-}: MarqueeBandProps): ReactElement {
+}: Readonly<MarqueeBandProps>): ReactElement {
   return (
     <div className="relative z-20 -my-6 overflow-x-clip py-6 md:-my-10 md:py-10">
       <div

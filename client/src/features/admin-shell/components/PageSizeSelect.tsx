@@ -13,7 +13,7 @@ interface PageSizeSelectProps {
   choices: PageSizeChoice[];
 }
 
-export function PageSizeSelect({ current, choices }: PageSizeSelectProps): ReactElement {
+export function PageSizeSelect({ current, choices }: Readonly<PageSizeSelectProps>): ReactElement {
   const router = useRouter();
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {

@@ -7,7 +7,7 @@ interface GoogleLoginErrorProps {
 
 export async function GoogleLoginError({
   searchParams,
-}: GoogleLoginErrorProps): Promise<ReactElement | null> {
+}: Readonly<GoogleLoginErrorProps>): Promise<ReactElement | null> {
   const { error } = await searchParams;
   const message = googleErrorMessage(error);
   if (!message) {

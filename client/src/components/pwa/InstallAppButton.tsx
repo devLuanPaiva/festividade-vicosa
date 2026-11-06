@@ -12,7 +12,7 @@ interface InstallAppButtonProps {
 export function InstallAppButton({
   className,
   children,
-}: InstallAppButtonProps): ReactElement | null {
+}: Readonly<InstallAppButtonProps>): ReactElement | null {
   const { status, platform, install } = useInstallApp();
   const dialogRef = useRef<HTMLDialogElement>(null);
   if (status === 'checking' || status === 'installed') {

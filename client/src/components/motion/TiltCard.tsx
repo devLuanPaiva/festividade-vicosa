@@ -11,7 +11,7 @@ interface TiltCardProps {
   className?: string;
 }
 
-export function TiltCard({ children, className }: TiltCardProps): ReactElement {
+export function TiltCard({ children, className }: Readonly<TiltCardProps>): ReactElement {
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const rotateX = useSpring(

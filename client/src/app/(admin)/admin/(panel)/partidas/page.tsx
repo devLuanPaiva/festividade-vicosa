@@ -10,7 +10,9 @@ interface AdminMatchesPageProps {
   searchParams: Promise<RawSearchParams>;
 }
 
-export default function AdminMatchesPage({ searchParams }: AdminMatchesPageProps): ReactElement {
+export default function AdminMatchesPage({
+  searchParams,
+}: Readonly<AdminMatchesPageProps>): ReactElement {
   return (
     <Suspense fallback={<AdminListSkeleton label="Carregando partidas" />}>
       <MatchListLoader searchParams={searchParams} />

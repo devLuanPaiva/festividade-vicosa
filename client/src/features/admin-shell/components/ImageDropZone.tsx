@@ -41,7 +41,7 @@ function useImageDrop({
   multiple = false,
   disabled = false,
   onFiles,
-}: Pick<ImageDropZoneProps, 'name' | 'multiple' | 'disabled' | 'onFiles'>): DropHandlers {
+}: Readonly<Pick<ImageDropZoneProps, 'name' | 'multiple' | 'disabled' | 'onFiles'>>): DropHandlers {
   const [isDragging, setIsDragging] = useState(false);
 
   const deliver = (files: File[]): void => {
@@ -95,7 +95,7 @@ export function ImageDropZone({
   hint,
   invalidMessageId,
   onFiles,
-}: ImageDropZoneProps): ReactElement {
+}: Readonly<ImageDropZoneProps>): ReactElement {
   const drop = useImageDrop({ name, multiple, disabled, onFiles });
   const stateClass = drop.isDragging
     ? 'border-brand-500 bg-brand-500/10'

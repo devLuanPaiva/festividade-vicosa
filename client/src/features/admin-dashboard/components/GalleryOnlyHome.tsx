@@ -6,7 +6,7 @@ interface GalleryOnlyHomeProps {
   firstName: string;
 }
 
-export function GalleryOnlyHome({ firstName }: GalleryOnlyHomeProps): ReactElement {
+export function GalleryOnlyHome({ firstName }: Readonly<GalleryOnlyHomeProps>): ReactElement {
   return (
     <>
       <header className="flex flex-col gap-1">

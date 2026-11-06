@@ -9,7 +9,11 @@ interface CategoryHeaderProps {
   metadata: string;
 }
 
-export function CategoryHeader({ categoryId, title, metadata }: CategoryHeaderProps): ReactElement {
+export function CategoryHeader({
+  categoryId,
+  title,
+  metadata,
+}: Readonly<CategoryHeaderProps>): ReactElement {
   return (
     <header className="flex flex-col gap-3">
       <nav aria-label="Você está em" className="text-sm text-admin-muted">

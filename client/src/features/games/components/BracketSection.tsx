@@ -11,7 +11,7 @@ interface BracketSectionProps {
   matches: MatchListItem[];
 }
 
-export function BracketSection({ matches }: BracketSectionProps): ReactElement {
+export function BracketSection({ matches }: Readonly<BracketSectionProps>): ReactElement {
   const { tree, thirdPlace, others } = buildBracket(matches);
   const isEmpty = !tree && !thirdPlace && others.length === 0;
   return (
