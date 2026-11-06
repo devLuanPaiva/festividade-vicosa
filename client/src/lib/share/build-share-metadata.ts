@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-
-const SITE_NAME = 'JOCEV’S';
+import { SHARE_IMAGE, SITE_NAME } from '@/lib/seo/site-metadata';
 
 export interface ShareMetadataInput {
   title: string;
@@ -9,7 +8,7 @@ export interface ShareMetadataInput {
 }
 
 export function buildShareMetadata({ title, description, imageUrl }: ShareMetadataInput): Metadata {
-  const images = imageUrl ? [imageUrl] : undefined;
+  const images = imageUrl ? [imageUrl] : [SHARE_IMAGE];
   return {
     title,
     description,
@@ -21,6 +20,6 @@ export function buildShareMetadata({ title, description, imageUrl }: ShareMetada
       siteName: SITE_NAME,
       images,
     },
-    twitter: { card: images ? 'summary_large_image' : 'summary', title, description, images },
+    twitter: { card: 'summary_large_image', title, description, images },
   };
 }
