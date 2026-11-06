@@ -26,7 +26,7 @@ export function MilestoneEntry({
       viewport={{ margin: '-45% 0px -45% 0px' }}
       className="relative"
     >
-      <Sparkle className="absolute -left-[46px] top-2 size-6 text-sun drop-shadow md:-left-[62px]" />
+      <Sparkle className="absolute -left-[42px] top-2 size-6 text-sun drop-shadow md:-left-[58px]" />
       <p className="font-display text-6xl leading-none text-brand-500 lg:hidden">
         {milestone.year}
       </p>
@@ -38,11 +38,11 @@ export function MilestoneEntry({
         className="group mt-6 block overflow-hidden rounded-3xl bg-brand-900 shadow-[0_12px_40px_rgba(7,59,134,0.2)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sun"
       >
         <PhotoCarousel photos={photos} />
-        <div className="flex items-center justify-between px-5 py-3 text-sm text-white/85">
+        <div className="flex flex-col items-start gap-3 px-5 py-4 text-sm text-white/85 sm:flex-row sm:items-center sm:justify-between sm:py-3">
           <span>
             {milestone.title}, {milestone.year}
           </span>
-          <span className="rounded-full bg-sun px-3 py-1 text-xs font-semibold text-brand-900 transition-transform group-hover:translate-x-1">
+          <span className="whitespace-nowrap rounded-full bg-sun px-4 py-1.5 text-xs font-semibold text-brand-900 transition-transform group-hover:translate-x-1">
             Ver galeria →
           </span>
         </div>
