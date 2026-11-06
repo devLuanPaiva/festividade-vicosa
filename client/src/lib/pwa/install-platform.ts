@@ -26,10 +26,9 @@ export const INSTALL_INSTRUCTIONS: Record<InstallPlatform, InstallInstructions> 
   ios: {
     title: 'Instalar no iPhone ou iPad',
     steps: [
-      'Abra esta página no Safari.',
-      'Toque no botão Compartilhar (o quadrado com a seta para cima).',
-      'Role a lista e toque em “Adicionar à Tela de Início”.',
-      'Toque em “Adicionar”.',
+      'No Safari, toque no botão Compartilhar (o quadrado com a seta para cima, na barra do navegador).',
+      'Role as opções para baixo e toque em “Adicionar à Tela de Início”.',
+      'Toque em “Adicionar”. O app JOCEV’S aparece na sua tela inicial.',
     ],
   },
   android: {
