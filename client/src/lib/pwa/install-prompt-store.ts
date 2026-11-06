@@ -1,3 +1,5 @@
+import { EARLY_PROMPT_KEY } from './early-install-capture';
+
 export type InstallStatus = 'checking' | 'installed' | 'promptable' | 'manual';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -10,8 +12,16 @@ type Listener = () => void;
 const STANDALONE_QUERY = '(display-mode: standalone)';
 
 const listeners = new Set<Listener>();
-let deferredPrompt: BeforeInstallPromptEvent | null = null;
+let deferredPrompt: BeforeInstallPromptEvent | null = readEarlyPrompt();
 let wasInstalled = false;
+
+function readEarlyPrompt(): BeforeInstallPromptEvent | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  const early = (window as unknown as Record<string, unknown>)[EARLY_PROMPT_KEY];
+  return (early as BeforeInstallPromptEvent | undefined) ?? null;
+}
 
 function notifyListeners(): void {
   listeners.forEach((listener) => listener());

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, type ReactElement, type ReactNode } from 'react';
+import { openShareSheet } from '@/lib/pwa/share-to-install';
 import { useInstallApp } from '@/lib/pwa/use-install-app';
 import { InstallInstructionsDialog } from './InstallInstructionsDialog';
 
@@ -18,12 +19,23 @@ export function InstallAppButton({
   if (status === 'checking' || status === 'installed') {
     return null;
   }
+  const showSteps = (): void => {
+    dialogRef.current?.showModal();
+  };
   const handleClick = (): void => {
     if (status === 'promptable') {
       void install();
       return;
     }
-    dialogRef.current?.showModal();
+    if (platform !== 'ios') {
+      showSteps();
+      return;
+    }
+    void openShareSheet({ title: document.title, url: window.location.href }).then((opened) => {
+      if (!opened) {
+        showSteps();
+      }
+    });
   };
   return (
     <>

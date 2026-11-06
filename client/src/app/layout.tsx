@@ -3,6 +3,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { getSiteUrl } from '@/lib/config/server-env';
 import { fontVariableClassNames } from '@/lib/fonts';
+import { EARLY_CAPTURE_SCRIPT } from '@/lib/pwa/early-install-capture';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -28,6 +29,9 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps): ReactElement {
   return (
     <html lang="pt-BR" className={fontVariableClassNames}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: EARLY_CAPTURE_SCRIPT }} />
+      </head>
       <body className="font-sans antialiased" cz-shortcut-listen="false">
         {children}
         <ServiceWorkerRegistration />

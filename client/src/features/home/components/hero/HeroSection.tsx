@@ -29,9 +29,6 @@ export function HeroSection(): ReactElement {
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <ButtonLink href="/#modalidades">Ver a JOCEV’S</ButtonLink>
-            <ButtonLink href="/#trajetoria" variant="outline">
-              Conhecer a história
-            </ButtonLink>
             <HeroInstallButton />
           </div>
         </div>
