@@ -26,7 +26,7 @@ export function MilestoneEntry({
       viewport={{ margin: '-45% 0px -45% 0px' }}
       className="relative"
     >
-      <Sparkle className="absolute -left-[46px] top-2 size-6 text-sun drop-shadow md:-left-[62px]" />
+      <Sparkle className="absolute -left-[42px] top-2 size-6 text-sun drop-shadow md:-left-[58px]" />
       <p className="font-display text-6xl leading-none text-brand-500 lg:hidden">
         {milestone.year}
       </p>
